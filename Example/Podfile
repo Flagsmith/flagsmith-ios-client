@@ -1,0 +1,5 @@
+use_frameworks!
+
+target 'BulletTrainClient_Example' do
+  pod 'BulletTrainClient', :path => '../'
+end

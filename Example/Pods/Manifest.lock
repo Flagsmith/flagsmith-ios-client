@@ -1,0 +1,16 @@
+PODS:
+  - BulletTrainClient (0.1.0)
+
+DEPENDENCIES:
+  - BulletTrainClient (from `../`)
+
+EXTERNAL SOURCES:
+  BulletTrainClient:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  BulletTrainClient: 9e55475a502f93657de849220749c7558b879925
+
+PODFILE CHECKSUM: be7a2446bc362d87dab4e909a6d3abf808921b04
+
+COCOAPODS: 1.6.2

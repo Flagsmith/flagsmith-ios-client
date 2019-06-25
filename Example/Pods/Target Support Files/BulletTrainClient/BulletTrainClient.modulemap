@@ -1,0 +1,6 @@
+framework module BulletTrainClient {
+  umbrella header "BulletTrainClient-umbrella.h"
+
+  export *
+  module * { export * }
+}
