@@ -8,35 +8,15 @@
 
 Pod::Spec.new do |s|
   s.name             = 'BulletTrainClient'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of BulletTrainClient.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
-  s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
-
-  s.homepage         = 'https://github.com/.../BulletTrainClient'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.version          = '1.0.0'
+  s.summary          = 'iOS Client written in Swift for Bullet-Train. Ship features with confidence using feature flags and remote config.'
+  s.homepage         = 'https://github.com/SolidStateGroup/bullet-train-ios-client'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Tomash Tsiupiak' => 'tomash.tsiupiak@gmail.com' }
-  s.source           = { :git => 'https://github.com/.../BulletTrainClient.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => 'https://github.com/SolidStateGroup/bullet-train-ios-client.git', :tag => s.version.to_s }
+  s.social_media_url = 'https://twitter.com/getbullettrain'
 
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'BulletTrainClient/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'BulletTrainClient' => ['BulletTrainClient/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end
