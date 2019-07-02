@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		12A23DE2EB951B6537BE41020B4A308B /* BulletTrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341BBAF2CD426DC86D86E611F0A570BB /* BulletTrain.swift */; };
 		2DD3A4E8406B9FAF1808E0899BF7A72E /* Pods-BulletTrainClient_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F068FDEB7A1D858AC813C9D42BEAE36 /* Pods-BulletTrainClient_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		605B09FD22BE772A00EB75B1 /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09F822BE772A00EB75B1 /* Flag.swift */; };
-		605B09FE22BE772A00EB75B1 /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09F922BE772A00EB75B1 /* Feature.swift */; };
-		605B09FF22BE772A00EB75B1 /* Identity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09FA22BE772A00EB75B1 /* Identity.swift */; };
-		605B0A0022BE772A00EB75B1 /* Trait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09FB22BE772A00EB75B1 /* Trait.swift */; };
-		605B0A0122BE772A00EB75B1 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09FC22BE772A00EB75B1 /* APIManager.swift */; };
+		609D055522CB667800B2686F /* BulletTrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609D054F22CB667800B2686F /* BulletTrain.swift */; };
+		609D055622CB667800B2686F /* Identity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609D055022CB667800B2686F /* Identity.swift */; };
+		609D055722CB667800B2686F /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609D055122CB667800B2686F /* APIManager.swift */; };
+		609D055822CB667800B2686F /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609D055222CB667800B2686F /* Flag.swift */; };
+		609D055922CB667800B2686F /* Trait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609D055322CB667800B2686F /* Trait.swift */; };
+		609D055A22CB667800B2686F /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609D055422CB667800B2686F /* Feature.swift */; };
 		7173968F567DAFA464F267A8AB834804 /* BulletTrainClient-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AC1520E8AD3338D2D2CA713E6C69FBF /* BulletTrainClient-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		82C405BC2F2F2BB8ED31E4C495CC0E5B /* BulletTrainClient-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C97B5E3D7D1D2FEBCF17CC8E395D79B5 /* BulletTrainClient-dummy.m */; };
 		97369BEDBB0DEDAE8FE80110F46C63E5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
@@ -36,14 +36,14 @@
 		1AFA6F6874DCF1E96C43D69C8F666698 /* Pods-BulletTrainClient_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BulletTrainClient_Example.modulemap"; sourceTree = "<group>"; };
 		27D28FEC278FCDA29FFE1E391CFFE5AB /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		341BBAF2CD426DC86D86E611F0A570BB /* BulletTrain.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BulletTrain.swift; path = BulletTrainClient/Classes/BulletTrain.swift; sourceTree = "<group>"; };
 		36EA6E9AD6E8365F889CF4030B238333 /* Pods-BulletTrainClient_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BulletTrainClient_Example-dummy.m"; sourceTree = "<group>"; };
 		5F068FDEB7A1D858AC813C9D42BEAE36 /* Pods-BulletTrainClient_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BulletTrainClient_Example-umbrella.h"; sourceTree = "<group>"; };
-		605B09F822BE772A00EB75B1 /* Flag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Flag.swift; path = BulletTrainClient/Classes/Flag.swift; sourceTree = "<group>"; };
-		605B09F922BE772A00EB75B1 /* Feature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Feature.swift; path = BulletTrainClient/Classes/Feature.swift; sourceTree = "<group>"; };
-		605B09FA22BE772A00EB75B1 /* Identity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Identity.swift; path = BulletTrainClient/Classes/Identity.swift; sourceTree = "<group>"; };
-		605B09FB22BE772A00EB75B1 /* Trait.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Trait.swift; path = BulletTrainClient/Classes/Trait.swift; sourceTree = "<group>"; };
-		605B09FC22BE772A00EB75B1 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APIManager.swift; path = BulletTrainClient/Classes/APIManager.swift; sourceTree = "<group>"; };
+		609D054F22CB667800B2686F /* BulletTrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BulletTrain.swift; path = BulletTrainClient/BulletTrain.swift; sourceTree = "<group>"; };
+		609D055022CB667800B2686F /* Identity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Identity.swift; path = BulletTrainClient/Identity.swift; sourceTree = "<group>"; };
+		609D055122CB667800B2686F /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APIManager.swift; path = BulletTrainClient/APIManager.swift; sourceTree = "<group>"; };
+		609D055222CB667800B2686F /* Flag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Flag.swift; path = BulletTrainClient/Flag.swift; sourceTree = "<group>"; };
+		609D055322CB667800B2686F /* Trait.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Trait.swift; path = BulletTrainClient/Trait.swift; sourceTree = "<group>"; };
+		609D055422CB667800B2686F /* Feature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Feature.swift; path = BulletTrainClient/Feature.swift; sourceTree = "<group>"; };
 		6CB8566F8D7553B448A92452C915AFD6 /* BulletTrainClient-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BulletTrainClient-prefix.pch"; sourceTree = "<group>"; };
 		6D709A6AAC48C1D430401E32EB717070 /* BulletTrainClient-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "BulletTrainClient-Info.plist"; sourceTree = "<group>"; };
 		898A946A88D5E7B440372DFB601451D7 /* Pods-BulletTrainClient_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BulletTrainClient_Example-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -95,12 +95,12 @@
 		3FF426B3B63698826B20F769A56163FE /* BulletTrainClient */ = {
 			isa = PBXGroup;
 			children = (
-				605B09FC22BE772A00EB75B1 /* APIManager.swift */,
-				341BBAF2CD426DC86D86E611F0A570BB /* BulletTrain.swift */,
-				605B09F822BE772A00EB75B1 /* Flag.swift */,
-				605B09F922BE772A00EB75B1 /* Feature.swift */,
-				605B09FB22BE772A00EB75B1 /* Trait.swift */,
-				605B09FA22BE772A00EB75B1 /* Identity.swift */,
+				609D055122CB667800B2686F /* APIManager.swift */,
+				609D054F22CB667800B2686F /* BulletTrain.swift */,
+				609D055222CB667800B2686F /* Flag.swift */,
+				609D055422CB667800B2686F /* Feature.swift */,
+				609D055322CB667800B2686F /* Trait.swift */,
+				609D055022CB667800B2686F /* Identity.swift */,
 				1B84DF60E25D4E6ED76860DDA555AF67 /* Pod */,
 				BE679AC7F85E4B8854F9A9077A7039AE /* Support Files */,
 			);
@@ -258,6 +258,11 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1020;
+				TargetAttributes = {
+					65C3C3BB84375AE8945B036B8A4B8858 = {
+						LastSwiftMigration = 1020;
+					};
+				};
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -299,13 +304,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				605B09FE22BE772A00EB75B1 /* Feature.swift in Sources */,
-				12A23DE2EB951B6537BE41020B4A308B /* BulletTrain.swift in Sources */,
-				605B09FF22BE772A00EB75B1 /* Identity.swift in Sources */,
-				605B09FD22BE772A00EB75B1 /* Flag.swift in Sources */,
-				605B0A0022BE772A00EB75B1 /* Trait.swift in Sources */,
+				609D055722CB667800B2686F /* APIManager.swift in Sources */,
+				609D055A22CB667800B2686F /* Feature.swift in Sources */,
+				609D055522CB667800B2686F /* BulletTrain.swift in Sources */,
+				609D055822CB667800B2686F /* Flag.swift in Sources */,
+				609D055622CB667800B2686F /* Identity.swift in Sources */,
+				609D055922CB667800B2686F /* Trait.swift in Sources */,
 				82C405BC2F2F2BB8ED31E4C495CC0E5B /* BulletTrainClient-dummy.m in Sources */,
-				605B0A0122BE772A00EB75B1 /* APIManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +338,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A2793110CAE1406BE13564FB9138CEA0 /* BulletTrainClient.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -457,6 +463,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A2793110CAE1406BE13564FB9138CEA0 /* BulletTrainClient.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -477,6 +484,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
