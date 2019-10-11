@@ -17,8 +17,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
-    BulletTrain.shared.apiKey = "XuXiWEnCXS7ebxmuG8U5z4"
-    
+    BulletTrain.shared.apiKey = "<add your API key from the Bullet Train settings page>"
+    BulletTrain.shared.getFeatureFlags() { (result) in
+        print(result)
+    }
+    BulletTrain.shared.hasFeatureFlag(withID: "freeze_delinquent_accounts") { (result) in
+        print(result)
+    }
     return true
   }
   
