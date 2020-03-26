@@ -7,6 +7,9 @@
 
 import Foundation
 
+/**
+A Flag represents a feature flag on the server.
+*/
 public struct Flag: Decodable {
   enum CodingKeys: String, CodingKey {
     case feature

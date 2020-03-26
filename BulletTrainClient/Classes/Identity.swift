@@ -7,6 +7,9 @@
 
 import Foundation
 
+/**
+An Identity represents a user stored on the server.
+*/
 public struct Identity: Decodable {
   enum CodingKeys: String, CodingKey {
     case flags
