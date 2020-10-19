@@ -34,7 +34,7 @@ BulletTrain.shared.apiKey = "<YOUR_API_KEY>"
 }
 ```
 
-Now you are all set to retrieve feature flags from your project. For example to list and print all flags: 
+Now you are all set to retrieve feature flags from your project. For example to list and print all flags:
 
 ```swift
 BulletTrain.shared.getFeatureFlags() { (result) in
@@ -43,7 +43,8 @@ BulletTrain.shared.getFeatureFlags() { (result) in
         for flag in flags {
             let name = flag.feature.name
             let value = flag.value
-            print(name, "=", value ?? "nil")
+            let enabled = flag.enabled
+            print(name, "= enabled:", enabled, "value:", value ?? "nil")
         }
     case .failure(let error):
         print(error)
@@ -51,7 +52,15 @@ BulletTrain.shared.getFeatureFlags() { (result) in
 }
 ```
 
-To retrieve a feature value by its name:
+To retrieve a feature flag boolean value by its name:
+
+```swift
+BulletTrain.shared.hasFeatureFlag(withID: "test_feature1", forIdentity: nil) { (result) in
+    print(result)
+}
+```
+
+To retrieve a config value by its name:
 
 ```swift
 BulletTrain.shared.getFeatureValue(withID: "test_feature2", forIdentity: nil) { (result) in
