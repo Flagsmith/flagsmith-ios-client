@@ -17,13 +17,8 @@ public struct Feature: Decodable {
     case description
   }
   
-  public enum FeatureType: String, Decodable {
-    case flag = "FLAG"
-    case config = "CONFIG"
-  }
-  
   /// The name of the feature
   public let name: String
-  public let type: FeatureType
+  public let type: String?
   public let description: String?
 }
