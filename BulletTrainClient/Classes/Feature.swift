@@ -20,6 +20,8 @@ public struct Feature: Decodable {
   public enum FeatureType: String, Decodable {
     case flag = "FLAG"
     case config = "CONFIG"
+    case standard = "STANDARD"
+    case multivariate = "MULTIVARIATE"
   }
   
   /// The name of the feature
