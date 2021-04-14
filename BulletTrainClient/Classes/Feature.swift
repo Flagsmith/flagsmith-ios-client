@@ -19,6 +19,6 @@ public struct Feature: Decodable {
   
   /// The name of the feature
   public let name: String
-  public let type: String
+  public let type: String?
   public let description: String?
 }
