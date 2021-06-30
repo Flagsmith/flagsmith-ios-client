@@ -7,159 +7,169 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		12A23DE2EB951B6537BE41020B4A308B /* BulletTrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341BBAF2CD426DC86D86E611F0A570BB /* BulletTrain.swift */; };
-		2DD3A4E8406B9FAF1808E0899BF7A72E /* Pods-BulletTrainClient_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F068FDEB7A1D858AC813C9D42BEAE36 /* Pods-BulletTrainClient_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		605B09FD22BE772A00EB75B1 /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09F822BE772A00EB75B1 /* Flag.swift */; };
-		605B09FE22BE772A00EB75B1 /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09F922BE772A00EB75B1 /* Feature.swift */; };
-		605B09FF22BE772A00EB75B1 /* Identity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09FA22BE772A00EB75B1 /* Identity.swift */; };
-		605B0A0022BE772A00EB75B1 /* Trait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09FB22BE772A00EB75B1 /* Trait.swift */; };
-		605B0A0122BE772A00EB75B1 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B09FC22BE772A00EB75B1 /* APIManager.swift */; };
-		7173968F567DAFA464F267A8AB834804 /* BulletTrainClient-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AC1520E8AD3338D2D2CA713E6C69FBF /* BulletTrainClient-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		82C405BC2F2F2BB8ED31E4C495CC0E5B /* BulletTrainClient-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C97B5E3D7D1D2FEBCF17CC8E395D79B5 /* BulletTrainClient-dummy.m */; };
-		97369BEDBB0DEDAE8FE80110F46C63E5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		D3D8F02C6826FE3B4D1422FC794C2E06 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		D51F1616BA048C76409091B343594543 /* Pods-BulletTrainClient_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 36EA6E9AD6E8365F889CF4030B238333 /* Pods-BulletTrainClient_Example-dummy.m */; };
+		21A409155FEF75928E99F1E40DF4001A /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077681B59A7CF96150CA7710C7E2C783 /* Flag.swift */; };
+		42DA188BEF50F27654A2AFBAE0FB3B92 /* Trait.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55F9AE8540D4CC68BF43B43D159EB8C /* Trait.swift */; };
+		639E7B99D3BE7D4B6CD720129232BED6 /* Pods-BulletTrainClient_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B283142B0C3636EFC8A00C7465C862 /* Pods-BulletTrainClient_Example-dummy.m */; };
+		65F699425A9210CEE75F861EF439FC48 /* BulletTrainClient-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 353A492A05591228EB00E5D7A8FFAD54 /* BulletTrainClient-dummy.m */; };
+		7A3243242B349737A8F0A484E24A9AA2 /* BulletTrainClient-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6339D209B8E42B431C26D3DB1D0F9ED4 /* BulletTrainClient-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		830E89180DCB64F21524908C33D8741E /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E086B7E6FC2695796956C1B3F47F1E67 /* APIManager.swift */; };
+		8B627B596A8FCAFBF85165CC3CF59116 /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FAE157E6DA2E578B12401076C7D871 /* Feature.swift */; };
+		CCCB3E5F400DF3D922BEE0F8D7301803 /* Identity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB85EC88983D664926B4FF7877DF39 /* Identity.swift */; };
+		D24AF278DBB3DA55EB0FD454F1621DB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		D90218D7669B12B592A7DB68E99CE2E0 /* Pods-BulletTrainClient_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 189E0D276AE4150E882A6CF9CBDA3613 /* Pods-BulletTrainClient_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D93F999D264F3C88E68473D4401F118B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		F00CC35648FD996F727602361D02E576 /* BulletTrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002287D278C469E089E3CF5130354179 /* BulletTrain.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8CEECE5014646AEEA19BA149DE51A373 /* PBXContainerItemProxy */ = {
+		FA374CE180EB1553757C324ACF73EB22 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 65C3C3BB84375AE8945B036B8A4B8858;
+			remoteGlobalIDString = 2D080BFC42E08678F50A812F8C6AE6D9;
 			remoteInfo = BulletTrainClient;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		065120BE7DA691ED5825A1FAA0E839B3 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1AFA6F6874DCF1E96C43D69C8F666698 /* Pods-BulletTrainClient_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BulletTrainClient_Example.modulemap"; sourceTree = "<group>"; };
-		27D28FEC278FCDA29FFE1E391CFFE5AB /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		341BBAF2CD426DC86D86E611F0A570BB /* BulletTrain.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BulletTrain.swift; path = BulletTrainClient/Classes/BulletTrain.swift; sourceTree = "<group>"; };
-		36EA6E9AD6E8365F889CF4030B238333 /* Pods-BulletTrainClient_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BulletTrainClient_Example-dummy.m"; sourceTree = "<group>"; };
-		5F068FDEB7A1D858AC813C9D42BEAE36 /* Pods-BulletTrainClient_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BulletTrainClient_Example-umbrella.h"; sourceTree = "<group>"; };
-		605B09F822BE772A00EB75B1 /* Flag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Flag.swift; path = BulletTrainClient/Classes/Flag.swift; sourceTree = "<group>"; };
-		605B09F922BE772A00EB75B1 /* Feature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Feature.swift; path = BulletTrainClient/Classes/Feature.swift; sourceTree = "<group>"; };
-		605B09FA22BE772A00EB75B1 /* Identity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Identity.swift; path = BulletTrainClient/Classes/Identity.swift; sourceTree = "<group>"; };
-		605B09FB22BE772A00EB75B1 /* Trait.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Trait.swift; path = BulletTrainClient/Classes/Trait.swift; sourceTree = "<group>"; };
-		605B09FC22BE772A00EB75B1 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APIManager.swift; path = BulletTrainClient/Classes/APIManager.swift; sourceTree = "<group>"; };
-		6CB8566F8D7553B448A92452C915AFD6 /* BulletTrainClient-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BulletTrainClient-prefix.pch"; sourceTree = "<group>"; };
-		6D709A6AAC48C1D430401E32EB717070 /* BulletTrainClient-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "BulletTrainClient-Info.plist"; sourceTree = "<group>"; };
-		898A946A88D5E7B440372DFB601451D7 /* Pods-BulletTrainClient_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BulletTrainClient_Example-acknowledgements.plist"; sourceTree = "<group>"; };
-		8AC1520E8AD3338D2D2CA713E6C69FBF /* BulletTrainClient-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BulletTrainClient-umbrella.h"; sourceTree = "<group>"; };
-		9331BFAB66A7D914AAC166A653875717 /* Pods-BulletTrainClient_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BulletTrainClient_Example-Info.plist"; sourceTree = "<group>"; };
-		9721529D5D2063BD4EA98F9F468E4D58 /* Pods_BulletTrainClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BulletTrainClient_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A2793110CAE1406BE13564FB9138CEA0 /* BulletTrainClient.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BulletTrainClient.xcconfig; sourceTree = "<group>"; };
-		B74567546374B5933B4684B71DDEFBF6 /* BulletTrainClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BulletTrainClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1C77E7447202BE08AEA5B16E08AC596 /* Pods-BulletTrainClient_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BulletTrainClient_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
-		C2543DB4FD131FE542C6A60813163D08 /* BulletTrainClient.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = BulletTrainClient.modulemap; sourceTree = "<group>"; };
-		C5C006775486C92BBD6EF7F0C53A0448 /* BulletTrainClient.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = BulletTrainClient.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		C97B5E3D7D1D2FEBCF17CC8E395D79B5 /* BulletTrainClient-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "BulletTrainClient-dummy.m"; sourceTree = "<group>"; };
-		E970FC1CACD66AC46797C160213B8323 /* Pods-BulletTrainClient_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BulletTrainClient_Example.release.xcconfig"; sourceTree = "<group>"; };
-		F1FC6EB754E239FFF7E06E2B13861C20 /* Pods-BulletTrainClient_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BulletTrainClient_Example-frameworks.sh"; sourceTree = "<group>"; };
-		F69FBFBD21190621309DDB4C3236D959 /* Pods-BulletTrainClient_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BulletTrainClient_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		002287D278C469E089E3CF5130354179 /* BulletTrain.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BulletTrain.swift; path = BulletTrainClient/Classes/BulletTrain.swift; sourceTree = "<group>"; };
+		077681B59A7CF96150CA7710C7E2C783 /* Flag.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Flag.swift; path = BulletTrainClient/Classes/Flag.swift; sourceTree = "<group>"; };
+		189E0D276AE4150E882A6CF9CBDA3613 /* Pods-BulletTrainClient_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BulletTrainClient_Example-umbrella.h"; sourceTree = "<group>"; };
+		31CDEFAF5225BCCFB51FC13098B14AE1 /* Pods-BulletTrainClient_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BulletTrainClient_Example-acknowledgements.plist"; sourceTree = "<group>"; };
+		353A492A05591228EB00E5D7A8FFAD54 /* BulletTrainClient-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "BulletTrainClient-dummy.m"; sourceTree = "<group>"; };
+		46F8253395A4BD55CF7BEF41908FEE37 /* Pods-BulletTrainClient_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BulletTrainClient_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
+		47FAE157E6DA2E578B12401076C7D871 /* Feature.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Feature.swift; path = BulletTrainClient/Classes/Feature.swift; sourceTree = "<group>"; };
+		5546E2304F42A708D94C365AEAE778D3 /* BulletTrainClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = BulletTrainClient.framework; path = BulletTrainClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		574DAEC4A7EDC2523FD4B6B132C9411D /* Pods-BulletTrainClient_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BulletTrainClient_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		5F41418BD47825C18F134AB431ADD93C /* BulletTrainClient-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "BulletTrainClient-Info.plist"; sourceTree = "<group>"; };
+		6339D209B8E42B431C26D3DB1D0F9ED4 /* BulletTrainClient-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BulletTrainClient-umbrella.h"; sourceTree = "<group>"; };
+		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		7BDA95A6360829173ED9A47EEF55E8A3 /* BulletTrainClient.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = BulletTrainClient.modulemap; sourceTree = "<group>"; };
+		80B10FE479AA2333348713B89F9CA0DB /* BulletTrainClient.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = BulletTrainClient.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A2B283142B0C3636EFC8A00C7465C862 /* Pods-BulletTrainClient_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BulletTrainClient_Example-dummy.m"; sourceTree = "<group>"; };
+		B1C8A414F07FF8C5A25333C9EE5B4896 /* Pods_BulletTrainClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_BulletTrainClient_Example.framework; path = "Pods-BulletTrainClient_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD1AD14DE2C8C9B4A9C4D7DB73681367 /* BulletTrainClient.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BulletTrainClient.release.xcconfig; sourceTree = "<group>"; };
+		C0D86530765A625A2076354A25D6B6B2 /* BulletTrainClient.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BulletTrainClient.debug.xcconfig; sourceTree = "<group>"; };
+		C31FA07BF13DE8D2261774922AD8B4C9 /* Pods-BulletTrainClient_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BulletTrainClient_Example.release.xcconfig"; sourceTree = "<group>"; };
+		C55F9AE8540D4CC68BF43B43D159EB8C /* Trait.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Trait.swift; path = BulletTrainClient/Classes/Trait.swift; sourceTree = "<group>"; };
+		C7BC40DE4C5BDBB82553CF1BDBEAE953 /* Pods-BulletTrainClient_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BulletTrainClient_Example-frameworks.sh"; sourceTree = "<group>"; };
+		C7FB85EC88983D664926B4FF7877DF39 /* Identity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Identity.swift; path = BulletTrainClient/Classes/Identity.swift; sourceTree = "<group>"; };
+		C9A96334992E2103B531CDBD462F677D /* Pods-BulletTrainClient_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BulletTrainClient_Example-Info.plist"; sourceTree = "<group>"; };
+		D4698EE4D1046FA80D51440033D9B230 /* BulletTrainClient-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BulletTrainClient-prefix.pch"; sourceTree = "<group>"; };
+		D9D73AEA416777C6F1A3E0E14C7F6EA4 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		E086B7E6FC2695796956C1B3F47F1E67 /* APIManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIManager.swift; path = BulletTrainClient/Classes/APIManager.swift; sourceTree = "<group>"; };
+		E2F01A9818AEECDAF6F77E715E07D6C7 /* Pods-BulletTrainClient_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BulletTrainClient_Example.modulemap"; sourceTree = "<group>"; };
+		E9DD2ABCB2DF50ECA32D3EFEA9ED7670 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		38147A3699BF92EBE4F0F259270A9FB9 /* Frameworks */ = {
+		0F772FD9ABE8A3A9FB0D0C30007115E5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97369BEDBB0DEDAE8FE80110F46C63E5 /* Foundation.framework in Frameworks */,
+				D93F999D264F3C88E68473D4401F118B /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EAA5B1CC3B859E712CC47CF613477B1C /* Frameworks */ = {
+		2465E69737D8C45F5B44C2FF9A94E9A6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D3D8F02C6826FE3B4D1422FC794C2E06 /* Foundation.framework in Frameworks */,
+				D24AF278DBB3DA55EB0FD454F1621DB5 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1B84DF60E25D4E6ED76860DDA555AF67 /* Pod */ = {
+		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				C5C006775486C92BBD6EF7F0C53A0448 /* BulletTrainClient.podspec */,
-				27D28FEC278FCDA29FFE1E391CFFE5AB /* LICENSE */,
-				065120BE7DA691ED5825A1FAA0E839B3 /* README.md */,
+				73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */,
 			);
-			name = Pod;
+			name = iOS;
 			sourceTree = "<group>";
 		};
-		3FF426B3B63698826B20F769A56163FE /* BulletTrainClient */ = {
+		672CE8EF405D50E245286F0723F9C1C9 /* Development Pods */ = {
 			isa = PBXGroup;
 			children = (
-				605B09FC22BE772A00EB75B1 /* APIManager.swift */,
-				341BBAF2CD426DC86D86E611F0A570BB /* BulletTrain.swift */,
-				605B09F822BE772A00EB75B1 /* Flag.swift */,
-				605B09F922BE772A00EB75B1 /* Feature.swift */,
-				605B09FB22BE772A00EB75B1 /* Trait.swift */,
-				605B09FA22BE772A00EB75B1 /* Identity.swift */,
-				1B84DF60E25D4E6ED76860DDA555AF67 /* Pod */,
-				BE679AC7F85E4B8854F9A9077A7039AE /* Support Files */,
+				CA735ED30FCAF745DF9D17C34CCD1963 /* BulletTrainClient */,
 			);
-			name = BulletTrainClient;
-			path = ../..;
-			sourceTree = "<group>";
-		};
-		5F8D368160DFFCFB1194B5EE9FFA3E20 /* Pods-BulletTrainClient_Example */ = {
-			isa = PBXGroup;
-			children = (
-				1AFA6F6874DCF1E96C43D69C8F666698 /* Pods-BulletTrainClient_Example.modulemap */,
-				C1C77E7447202BE08AEA5B16E08AC596 /* Pods-BulletTrainClient_Example-acknowledgements.markdown */,
-				898A946A88D5E7B440372DFB601451D7 /* Pods-BulletTrainClient_Example-acknowledgements.plist */,
-				36EA6E9AD6E8365F889CF4030B238333 /* Pods-BulletTrainClient_Example-dummy.m */,
-				F1FC6EB754E239FFF7E06E2B13861C20 /* Pods-BulletTrainClient_Example-frameworks.sh */,
-				9331BFAB66A7D914AAC166A653875717 /* Pods-BulletTrainClient_Example-Info.plist */,
-				5F068FDEB7A1D858AC813C9D42BEAE36 /* Pods-BulletTrainClient_Example-umbrella.h */,
-				F69FBFBD21190621309DDB4C3236D959 /* Pods-BulletTrainClient_Example.debug.xcconfig */,
-				E970FC1CACD66AC46797C160213B8323 /* Pods-BulletTrainClient_Example.release.xcconfig */,
-			);
-			name = "Pods-BulletTrainClient_Example";
-			path = "Target Support Files/Pods-BulletTrainClient_Example";
+			name = "Development Pods";
 			sourceTree = "<group>";
 		};
 		7B3A56D321EE52AA8D50CD53A0B7FD18 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				5F8D368160DFFCFB1194B5EE9FFA3E20 /* Pods-BulletTrainClient_Example */,
+				9C288955B5DB883C8098AAAE67EB1B7C /* Pods-BulletTrainClient_Example */,
 			);
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
-		BE679AC7F85E4B8854F9A9077A7039AE /* Support Files */ = {
+		83BF3ECD4EF2A1C8C343353CD41D6199 /* Pod */ = {
 			isa = PBXGroup;
 			children = (
-				C2543DB4FD131FE542C6A60813163D08 /* BulletTrainClient.modulemap */,
-				A2793110CAE1406BE13564FB9138CEA0 /* BulletTrainClient.xcconfig */,
-				C97B5E3D7D1D2FEBCF17CC8E395D79B5 /* BulletTrainClient-dummy.m */,
-				6D709A6AAC48C1D430401E32EB717070 /* BulletTrainClient-Info.plist */,
-				6CB8566F8D7553B448A92452C915AFD6 /* BulletTrainClient-prefix.pch */,
-				8AC1520E8AD3338D2D2CA713E6C69FBF /* BulletTrainClient-umbrella.h */,
+				80B10FE479AA2333348713B89F9CA0DB /* BulletTrainClient.podspec */,
+				D9D73AEA416777C6F1A3E0E14C7F6EA4 /* LICENSE */,
+				E9DD2ABCB2DF50ECA32D3EFEA9ED7670 /* README.md */,
+			);
+			name = Pod;
+			sourceTree = "<group>";
+		};
+		9C288955B5DB883C8098AAAE67EB1B7C /* Pods-BulletTrainClient_Example */ = {
+			isa = PBXGroup;
+			children = (
+				E2F01A9818AEECDAF6F77E715E07D6C7 /* Pods-BulletTrainClient_Example.modulemap */,
+				46F8253395A4BD55CF7BEF41908FEE37 /* Pods-BulletTrainClient_Example-acknowledgements.markdown */,
+				31CDEFAF5225BCCFB51FC13098B14AE1 /* Pods-BulletTrainClient_Example-acknowledgements.plist */,
+				A2B283142B0C3636EFC8A00C7465C862 /* Pods-BulletTrainClient_Example-dummy.m */,
+				C7BC40DE4C5BDBB82553CF1BDBEAE953 /* Pods-BulletTrainClient_Example-frameworks.sh */,
+				C9A96334992E2103B531CDBD462F677D /* Pods-BulletTrainClient_Example-Info.plist */,
+				189E0D276AE4150E882A6CF9CBDA3613 /* Pods-BulletTrainClient_Example-umbrella.h */,
+				574DAEC4A7EDC2523FD4B6B132C9411D /* Pods-BulletTrainClient_Example.debug.xcconfig */,
+				C31FA07BF13DE8D2261774922AD8B4C9 /* Pods-BulletTrainClient_Example.release.xcconfig */,
+			);
+			name = "Pods-BulletTrainClient_Example";
+			path = "Target Support Files/Pods-BulletTrainClient_Example";
+			sourceTree = "<group>";
+		};
+		B385D17D0EF805454D3A6615067C33F2 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				7BDA95A6360829173ED9A47EEF55E8A3 /* BulletTrainClient.modulemap */,
+				353A492A05591228EB00E5D7A8FFAD54 /* BulletTrainClient-dummy.m */,
+				5F41418BD47825C18F134AB431ADD93C /* BulletTrainClient-Info.plist */,
+				D4698EE4D1046FA80D51440033D9B230 /* BulletTrainClient-prefix.pch */,
+				6339D209B8E42B431C26D3DB1D0F9ED4 /* BulletTrainClient-umbrella.h */,
+				C0D86530765A625A2076354A25D6B6B2 /* BulletTrainClient.debug.xcconfig */,
+				BD1AD14DE2C8C9B4A9C4D7DB73681367 /* BulletTrainClient.release.xcconfig */,
 			);
 			name = "Support Files";
 			path = "Example/Pods/Target Support Files/BulletTrainClient";
 			sourceTree = "<group>";
 		};
-		C0834CEBB1379A84116EF29F93051C60 /* iOS */ = {
+		CA735ED30FCAF745DF9D17C34CCD1963 /* BulletTrainClient */ = {
 			isa = PBXGroup;
 			children = (
-				3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */,
+				E086B7E6FC2695796956C1B3F47F1E67 /* APIManager.swift */,
+				002287D278C469E089E3CF5130354179 /* BulletTrain.swift */,
+				47FAE157E6DA2E578B12401076C7D871 /* Feature.swift */,
+				077681B59A7CF96150CA7710C7E2C783 /* Flag.swift */,
+				C7FB85EC88983D664926B4FF7877DF39 /* Identity.swift */,
+				C55F9AE8540D4CC68BF43B43D159EB8C /* Trait.swift */,
+				83BF3ECD4EF2A1C8C343353CD41D6199 /* Pod */,
+				B385D17D0EF805454D3A6615067C33F2 /* Support Files */,
 			);
-			name = iOS;
+			name = BulletTrainClient;
+			path = ../..;
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
 			isa = PBXGroup;
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
-				F8F44DE5FEA5B10D22767F871516379C /* Development Pods */,
+				672CE8EF405D50E245286F0723F9C1C9 /* Development Pods */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
 				D22FC7E8CEBBE3C0526C102FEE525FFF /* Products */,
 				7B3A56D321EE52AA8D50CD53A0B7FD18 /* Targets Support Files */,
@@ -169,7 +179,7 @@
 		D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C0834CEBB1379A84116EF29F93051C60 /* iOS */,
+				578452D2E740E91742655AC8F1636D1F /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -177,69 +187,42 @@
 		D22FC7E8CEBBE3C0526C102FEE525FFF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B74567546374B5933B4684B71DDEFBF6 /* BulletTrainClient.framework */,
-				9721529D5D2063BD4EA98F9F468E4D58 /* Pods_BulletTrainClient_Example.framework */,
+				5546E2304F42A708D94C365AEAE778D3 /* BulletTrainClient.framework */,
+				B1C8A414F07FF8C5A25333C9EE5B4896 /* Pods_BulletTrainClient_Example.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		F8F44DE5FEA5B10D22767F871516379C /* Development Pods */ = {
-			isa = PBXGroup;
-			children = (
-				3FF426B3B63698826B20F769A56163FE /* BulletTrainClient */,
-			);
-			name = "Development Pods";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		5357E352E31542B319FD33B6A44079AF /* Headers */ = {
+		341C3F2BF98B8F087907E38F870F3B66 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7173968F567DAFA464F267A8AB834804 /* BulletTrainClient-umbrella.h in Headers */,
+				D90218D7669B12B592A7DB68E99CE2E0 /* Pods-BulletTrainClient_Example-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C920CF725655CB7ABA7196FC40712798 /* Headers */ = {
+		8687FCCE78B3F980D20BBA99E8D20CF1 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DD3A4E8406B9FAF1808E0899BF7A72E /* Pods-BulletTrainClient_Example-umbrella.h in Headers */,
+				7A3243242B349737A8F0A484E24A9AA2 /* BulletTrainClient-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		3AC6AD4AFDEE2AFCDD112DF42B43777F /* Pods-BulletTrainClient_Example */ = {
+		2D080BFC42E08678F50A812F8C6AE6D9 /* BulletTrainClient */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4D3A82BA671BBE420E57C917E1DFEA70 /* Build configuration list for PBXNativeTarget "Pods-BulletTrainClient_Example" */;
+			buildConfigurationList = 25F1F1844A0C0A1A13F43447CA4711D9 /* Build configuration list for PBXNativeTarget "BulletTrainClient" */;
 			buildPhases = (
-				C920CF725655CB7ABA7196FC40712798 /* Headers */,
-				861FD05805D789C810DB62DA43D19A98 /* Sources */,
-				EAA5B1CC3B859E712CC47CF613477B1C /* Frameworks */,
-				B91559B431C74036573145ED1DDC4D21 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9AED8F66ED6FC3BE66A0EBFC5282B20D /* PBXTargetDependency */,
-			);
-			name = "Pods-BulletTrainClient_Example";
-			productName = "Pods-BulletTrainClient_Example";
-			productReference = 9721529D5D2063BD4EA98F9F468E4D58 /* Pods_BulletTrainClient_Example.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		65C3C3BB84375AE8945B036B8A4B8858 /* BulletTrainClient */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E257C7EE6E48063D0B554B4D57A58FA6 /* Build configuration list for PBXNativeTarget "BulletTrainClient" */;
-			buildPhases = (
-				5357E352E31542B319FD33B6A44079AF /* Headers */,
-				2D38039C68D24A7B75DF731ECEF4D09B /* Sources */,
-				38147A3699BF92EBE4F0F259270A9FB9 /* Frameworks */,
-				05451C21C11F46A982DF9398AB283FBC /* Resources */,
+				8687FCCE78B3F980D20BBA99E8D20CF1 /* Headers */,
+				8F49456817307F8B3F22458965A048A8 /* Sources */,
+				2465E69737D8C45F5B44C2FF9A94E9A6 /* Frameworks */,
+				49E97227DC0B8A8531F02F8F5EC3060E /* Resources */,
 			);
 			buildRules = (
 			);
@@ -247,7 +230,26 @@
 			);
 			name = BulletTrainClient;
 			productName = BulletTrainClient;
-			productReference = B74567546374B5933B4684B71DDEFBF6 /* BulletTrainClient.framework */;
+			productReference = 5546E2304F42A708D94C365AEAE778D3 /* BulletTrainClient.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		A436EC89F22B8756231EB8141807B290 /* Pods-BulletTrainClient_Example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFA345A6DE19DC3A15DA527FF524580C /* Build configuration list for PBXNativeTarget "Pods-BulletTrainClient_Example" */;
+			buildPhases = (
+				341C3F2BF98B8F087907E38F870F3B66 /* Headers */,
+				7AD9306DEB8667621DBDD492EE44EF85 /* Sources */,
+				0F772FD9ABE8A3A9FB0D0C30007115E5 /* Frameworks */,
+				84D435849A2644CF208674D99E032454 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				59A6640FEFFF709C6C0C5F318368AFE9 /* PBXTargetDependency */,
+			);
+			name = "Pods-BulletTrainClient_Example";
+			productName = "Pods-BulletTrainClient_Example";
+			productReference = B1C8A414F07FF8C5A25333C9EE5B4896 /* Pods_BulletTrainClient_Example.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -256,8 +258,8 @@
 		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1020;
-				LastUpgradeCheck = 1020;
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -265,27 +267,28 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
 			productRefGroup = D22FC7E8CEBBE3C0526C102FEE525FFF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				65C3C3BB84375AE8945B036B8A4B8858 /* BulletTrainClient */,
-				3AC6AD4AFDEE2AFCDD112DF42B43777F /* Pods-BulletTrainClient_Example */,
+				2D080BFC42E08678F50A812F8C6AE6D9 /* BulletTrainClient */,
+				A436EC89F22B8756231EB8141807B290 /* Pods-BulletTrainClient_Example */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		05451C21C11F46A982DF9398AB283FBC /* Resources */ = {
+		49E97227DC0B8A8531F02F8F5EC3060E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B91559B431C74036573145ED1DDC4D21 /* Resources */ = {
+		84D435849A2644CF208674D99E032454 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -295,78 +298,45 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		2D38039C68D24A7B75DF731ECEF4D09B /* Sources */ = {
+		7AD9306DEB8667621DBDD492EE44EF85 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				605B09FE22BE772A00EB75B1 /* Feature.swift in Sources */,
-				12A23DE2EB951B6537BE41020B4A308B /* BulletTrain.swift in Sources */,
-				605B09FF22BE772A00EB75B1 /* Identity.swift in Sources */,
-				605B09FD22BE772A00EB75B1 /* Flag.swift in Sources */,
-				605B0A0022BE772A00EB75B1 /* Trait.swift in Sources */,
-				82C405BC2F2F2BB8ED31E4C495CC0E5B /* BulletTrainClient-dummy.m in Sources */,
-				605B0A0122BE772A00EB75B1 /* APIManager.swift in Sources */,
+				639E7B99D3BE7D4B6CD720129232BED6 /* Pods-BulletTrainClient_Example-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		861FD05805D789C810DB62DA43D19A98 /* Sources */ = {
+		8F49456817307F8B3F22458965A048A8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D51F1616BA048C76409091B343594543 /* Pods-BulletTrainClient_Example-dummy.m in Sources */,
+				830E89180DCB64F21524908C33D8741E /* APIManager.swift in Sources */,
+				F00CC35648FD996F727602361D02E576 /* BulletTrain.swift in Sources */,
+				65F699425A9210CEE75F861EF439FC48 /* BulletTrainClient-dummy.m in Sources */,
+				8B627B596A8FCAFBF85165CC3CF59116 /* Feature.swift in Sources */,
+				21A409155FEF75928E99F1E40DF4001A /* Flag.swift in Sources */,
+				CCCB3E5F400DF3D922BEE0F8D7301803 /* Identity.swift in Sources */,
+				42DA188BEF50F27654A2AFBAE0FB3B92 /* Trait.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		9AED8F66ED6FC3BE66A0EBFC5282B20D /* PBXTargetDependency */ = {
+		59A6640FEFFF709C6C0C5F318368AFE9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = BulletTrainClient;
-			target = 65C3C3BB84375AE8945B036B8A4B8858 /* BulletTrainClient */;
-			targetProxy = 8CEECE5014646AEEA19BA149DE51A373 /* PBXContainerItemProxy */;
+			target = 2D080BFC42E08678F50A812F8C6AE6D9 /* BulletTrainClient */;
+			targetProxy = FA374CE180EB1553757C324ACF73EB22 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		4CC5DDF490DB7D0FBC948FC253D92368 /* Release */ = {
+		2A7D51115F3AF2F5DABFCA9E6A920218 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A2793110CAE1406BE13564FB9138CEA0 /* BulletTrainClient.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/BulletTrainClient/BulletTrainClient-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/BulletTrainClient/BulletTrainClient-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/BulletTrainClient/BulletTrainClient.modulemap";
-				PRODUCT_MODULE_NAME = BulletTrainClient;
-				PRODUCT_NAME = BulletTrainClient;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		758FA4BEE540A5431D4C50F822947744 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F69FBFBD21190621309DDB4C3236D959 /* Pods-BulletTrainClient_Example.debug.xcconfig */;
+			baseConfigurationReference = 574DAEC4A7EDC2523FD4B6B132C9411D /* Pods-BulletTrainClient_Example.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -394,10 +364,11 @@
 			};
 			name = Debug;
 		};
-		B0087CB4594321EF41619F3181FE120E /* Release */ = {
+		431BA2B8298F0EE71735B9E0114E1955 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -420,6 +391,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -447,17 +419,17 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
 			name = Release;
 		};
-		B0B9149DFC544BF8CAB70A9B8942E13C /* Debug */ = {
+		59AA82D77FD2F7B5EF66045CAE172009 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A2793110CAE1406BE13564FB9138CEA0 /* BulletTrainClient.xcconfig */;
+			baseConfigurationReference = C0D86530765A625A2076354A25D6B6B2 /* BulletTrainClient.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -477,17 +449,18 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		B8BCBD0110C2658BB5DAADB9B7D97B92 /* Debug */ = {
+		79759604D78320E712558F49DF19AA9F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -510,6 +483,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -548,12 +522,42 @@
 			};
 			name = Debug;
 		};
-		EA5D16642AE8E5D6CE38EDE629C40134 /* Release */ = {
+		A0D85ABF79F62DA747601B260ACD49FD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E970FC1CACD66AC46797C160213B8323 /* Pods-BulletTrainClient_Example.release.xcconfig */;
+			baseConfigurationReference = BD1AD14DE2C8C9B4A9C4D7DB73681367 /* BulletTrainClient.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/BulletTrainClient/BulletTrainClient-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/BulletTrainClient/BulletTrainClient-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/BulletTrainClient/BulletTrainClient.modulemap";
+				PRODUCT_MODULE_NAME = BulletTrainClient;
+				PRODUCT_NAME = BulletTrainClient;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		BB08540EF6A6D7B5DE8AB9E694F2F2E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C31FA07BF13DE8D2261774922AD8B4C9 /* Pods-BulletTrainClient_Example.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -585,29 +589,29 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		25F1F1844A0C0A1A13F43447CA4711D9 /* Build configuration list for PBXNativeTarget "BulletTrainClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				59AA82D77FD2F7B5EF66045CAE172009 /* Debug */,
+				A0D85ABF79F62DA747601B260ACD49FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B8BCBD0110C2658BB5DAADB9B7D97B92 /* Debug */,
-				B0087CB4594321EF41619F3181FE120E /* Release */,
+				79759604D78320E712558F49DF19AA9F /* Debug */,
+				431BA2B8298F0EE71735B9E0114E1955 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4D3A82BA671BBE420E57C917E1DFEA70 /* Build configuration list for PBXNativeTarget "Pods-BulletTrainClient_Example" */ = {
+		CFA345A6DE19DC3A15DA527FF524580C /* Build configuration list for PBXNativeTarget "Pods-BulletTrainClient_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				758FA4BEE540A5431D4C50F822947744 /* Debug */,
-				EA5D16642AE8E5D6CE38EDE629C40134 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E257C7EE6E48063D0B554B4D57A58FA6 /* Build configuration list for PBXNativeTarget "BulletTrainClient" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B0B9149DFC544BF8CAB70A9B8942E13C /* Debug */,
-				4CC5DDF490DB7D0FBC948FC253D92368 /* Release */,
+				2A7D51115F3AF2F5DABFCA9E6A920218 /* Debug */,
+				BB08540EF6A6D7B5DE8AB9E694F2F2E3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

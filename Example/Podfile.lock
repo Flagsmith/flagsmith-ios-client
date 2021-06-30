@@ -1,5 +1,5 @@
 PODS:
-  - BulletTrainClient (0.1.0)
+  - BulletTrainClient (1.0.1)
 
 DEPENDENCIES:
   - BulletTrainClient (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BulletTrainClient: 9e55475a502f93657de849220749c7558b879925
+  BulletTrainClient: c21ea61bd2a7da9292404e5f45903e3a7ad78d2f
 
 PODFILE CHECKSUM: be7a2446bc362d87dab4e909a6d3abf808921b04
 
-COCOAPODS: 1.6.2
+COCOAPODS: 1.10.0

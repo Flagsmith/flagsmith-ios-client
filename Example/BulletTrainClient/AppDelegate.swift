@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     BulletTrain.shared.hasFeatureFlag(withID: "freeze_delinquent_accounts") { (result) in
         print(result)
     }
+    //BulletTrain.shared.setTrait(Trait(key: "<my_key>", value: "<my_value>"), forIdentity: "<my_identity>") { (result) in print(result) }
     return true
   }
   
