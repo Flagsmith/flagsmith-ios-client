@@ -18,6 +18,7 @@
 		D24AF278DBB3DA55EB0FD454F1621DB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		D90218D7669B12B592A7DB68E99CE2E0 /* Pods-BulletTrainClient_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 189E0D276AE4150E882A6CF9CBDA3613 /* Pods-BulletTrainClient_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D93F999D264F3C88E68473D4401F118B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		DAED1E6D268CB72700F91DBC /* UnknownTypeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAED1E6C268CB72700F91DBC /* UnknownTypeValue.swift */; };
 		F00CC35648FD996F727602361D02E576 /* BulletTrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002287D278C469E089E3CF5130354179 /* BulletTrain.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,16 +40,16 @@
 		353A492A05591228EB00E5D7A8FFAD54 /* BulletTrainClient-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "BulletTrainClient-dummy.m"; sourceTree = "<group>"; };
 		46F8253395A4BD55CF7BEF41908FEE37 /* Pods-BulletTrainClient_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BulletTrainClient_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		47FAE157E6DA2E578B12401076C7D871 /* Feature.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Feature.swift; path = BulletTrainClient/Classes/Feature.swift; sourceTree = "<group>"; };
-		5546E2304F42A708D94C365AEAE778D3 /* BulletTrainClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = BulletTrainClient.framework; path = BulletTrainClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5546E2304F42A708D94C365AEAE778D3 /* BulletTrainClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BulletTrainClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		574DAEC4A7EDC2523FD4B6B132C9411D /* Pods-BulletTrainClient_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BulletTrainClient_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		5F41418BD47825C18F134AB431ADD93C /* BulletTrainClient-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "BulletTrainClient-Info.plist"; sourceTree = "<group>"; };
 		6339D209B8E42B431C26D3DB1D0F9ED4 /* BulletTrainClient-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BulletTrainClient-umbrella.h"; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7BDA95A6360829173ED9A47EEF55E8A3 /* BulletTrainClient.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = BulletTrainClient.modulemap; sourceTree = "<group>"; };
-		80B10FE479AA2333348713B89F9CA0DB /* BulletTrainClient.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = BulletTrainClient.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		80B10FE479AA2333348713B89F9CA0DB /* BulletTrainClient.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = BulletTrainClient.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A2B283142B0C3636EFC8A00C7465C862 /* Pods-BulletTrainClient_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BulletTrainClient_Example-dummy.m"; sourceTree = "<group>"; };
-		B1C8A414F07FF8C5A25333C9EE5B4896 /* Pods_BulletTrainClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_BulletTrainClient_Example.framework; path = "Pods-BulletTrainClient_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1C8A414F07FF8C5A25333C9EE5B4896 /* Pods_BulletTrainClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BulletTrainClient_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD1AD14DE2C8C9B4A9C4D7DB73681367 /* BulletTrainClient.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BulletTrainClient.release.xcconfig; sourceTree = "<group>"; };
 		C0D86530765A625A2076354A25D6B6B2 /* BulletTrainClient.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BulletTrainClient.debug.xcconfig; sourceTree = "<group>"; };
 		C31FA07BF13DE8D2261774922AD8B4C9 /* Pods-BulletTrainClient_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BulletTrainClient_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -57,10 +58,11 @@
 		C7FB85EC88983D664926B4FF7877DF39 /* Identity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Identity.swift; path = BulletTrainClient/Classes/Identity.swift; sourceTree = "<group>"; };
 		C9A96334992E2103B531CDBD462F677D /* Pods-BulletTrainClient_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BulletTrainClient_Example-Info.plist"; sourceTree = "<group>"; };
 		D4698EE4D1046FA80D51440033D9B230 /* BulletTrainClient-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BulletTrainClient-prefix.pch"; sourceTree = "<group>"; };
-		D9D73AEA416777C6F1A3E0E14C7F6EA4 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		D9D73AEA416777C6F1A3E0E14C7F6EA4 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		DAED1E6C268CB72700F91DBC /* UnknownTypeValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnknownTypeValue.swift; sourceTree = "<group>"; };
 		E086B7E6FC2695796956C1B3F47F1E67 /* APIManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIManager.swift; path = BulletTrainClient/Classes/APIManager.swift; sourceTree = "<group>"; };
 		E2F01A9818AEECDAF6F77E715E07D6C7 /* Pods-BulletTrainClient_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BulletTrainClient_Example.modulemap"; sourceTree = "<group>"; };
-		E9DD2ABCB2DF50ECA32D3EFEA9ED7670 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		E9DD2ABCB2DF50ECA32D3EFEA9ED7670 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 				077681B59A7CF96150CA7710C7E2C783 /* Flag.swift */,
 				C7FB85EC88983D664926B4FF7877DF39 /* Identity.swift */,
 				C55F9AE8540D4CC68BF43B43D159EB8C /* Trait.swift */,
+				DAED1E6C268CB72700F91DBC /* UnknownTypeValue.swift */,
 				83BF3ECD4EF2A1C8C343353CD41D6199 /* Pod */,
 				B385D17D0EF805454D3A6615067C33F2 /* Support Files */,
 			);
@@ -315,6 +318,7 @@
 				65F699425A9210CEE75F861EF439FC48 /* BulletTrainClient-dummy.m in Sources */,
 				8B627B596A8FCAFBF85165CC3CF59116 /* Feature.swift in Sources */,
 				21A409155FEF75928E99F1E40DF4001A /* Flag.swift in Sources */,
+				DAED1E6D268CB72700F91DBC /* UnknownTypeValue.swift in Sources */,
 				CCCB3E5F400DF3D922BEE0F8D7301803 /* Identity.swift in Sources */,
 				42DA188BEF50F27654A2AFBAE0FB3B92 /* Trait.swift in Sources */,
 			);
@@ -419,8 +423,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};

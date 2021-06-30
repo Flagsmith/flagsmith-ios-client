@@ -18,6 +18,6 @@ public struct Flag: Decodable {
   }
   
   public let feature: Feature
-  public let value: String?
+  let value: UnknownTypeValue?
   public let enabled: Bool
 }

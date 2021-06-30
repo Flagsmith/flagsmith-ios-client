@@ -90,7 +90,7 @@ public class BulletTrain {
       switch result {
       case .success(let flags):
         let value = flags.first(where: {$0.feature.name == id})?.value
-        completion(.success(value))
+        completion(.success(value?.stringValue))
       case .failure(let error):
         completion(.failure(error))
       }
