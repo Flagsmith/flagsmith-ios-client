@@ -1,22 +1,24 @@
 {
   "name": "BulletTrainClient",
-  "version": "0.1.0",
-  "summary": "A short description of BulletTrainClient.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/Tomash Tsiupiak/BulletTrainClient",
+  "version": "1.0.1",
+  "summary": "iOS Client written in Swift for Flagsmith. Ship features with confidence using feature flags and remote config.",
+  "homepage": "https://github.com/Flagsmith/flagsmith-ios-client",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "Tomash Tsiupiak": "tomash.tsiupiak@gmail.com"
+    "Kyle Johnson": "Kyle.johnson@flagsmith.com"
   },
   "source": {
-    "git": "https://github.com/Tomash Tsiupiak/BulletTrainClient.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/Flagsmith/flagsmith-ios-client.git",
+    "tag": "1.0.1"
   },
+  "social_media_url": "https://twitter.com/getflagsmith",
   "platforms": {
     "ios": "8.0"
   },
-  "source_files": "BulletTrainClient/Classes/**/*"
+  "source_files": "BulletTrainClient/Classes/**/*",
+  "swift_versions": "4.0",
+  "swift_version": "4.0"
 }

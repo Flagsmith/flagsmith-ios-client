@@ -31,9 +31,9 @@ enum Router {
     case .getFlags:
       return "flags/"
     case .getIdentity(let identity):
-      return "identities/\(identity)/"
-    case .postTrait(let trait, let identity):
-      return "identities/\(identity)/traits/\(trait.key)"
+      return "identities/?identifier=\(identity)"
+    case .postTrait(let _, let _):
+      return "traits/"
     }
   }
   
@@ -41,9 +41,11 @@ enum Router {
     switch self {
     case .getFlags, .getIdentity:
       return .success(nil)
-    case .postTrait(let trait, _):
+    case .postTrait(let trait, let identifier):
       do {
-        return .success(try JSONEncoder().encode(trait))
+        let postTraitStruct = PostTrait(key:trait.key, value:trait.value, identifier:identifier)
+        let json = try JSONEncoder().encode(postTraitStruct)
+        return .success(json)
       } catch {
         return .failure(error)
       }
