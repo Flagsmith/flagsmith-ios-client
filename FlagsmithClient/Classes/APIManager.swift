@@ -32,7 +32,7 @@ enum Router {
       return "flags/"
     case .getIdentity(let identity):
       return "identities/?identifier=\(identity)"
-    case .postTrait(let _, let _):
+    case .postTrait( _, _):
       return "traits/"
     }
   }
