@@ -1,5 +1,5 @@
 use_frameworks!
 
-target 'BulletTrainClient_Example' do
-  pod 'BulletTrainClient', :path => '../'
+target 'FlagsmithClient_Example' do
+  pod 'FlagsmithClient', :path => '../'
 end

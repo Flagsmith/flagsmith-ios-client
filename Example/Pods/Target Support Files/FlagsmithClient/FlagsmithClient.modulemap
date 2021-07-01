@@ -1,0 +1,6 @@
+framework module FlagsmithClient {
+  umbrella header "FlagsmithClient-umbrella.h"
+
+  export *
+  module * { export * }
+}
