@@ -1,16 +1,16 @@
 PODS:
-  - BulletTrainClient (1.0.1)
+  - FlagsmithClient (1.0.1)
 
 DEPENDENCIES:
-  - BulletTrainClient (from `../`)
+  - FlagsmithClient (from `../`)
 
 EXTERNAL SOURCES:
-  BulletTrainClient:
+  FlagsmithClient:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BulletTrainClient: c21ea61bd2a7da9292404e5f45903e3a7ad78d2f
+  FlagsmithClient: 01cd05463f73c9ec832599666cac03cfabb857fa
 
-PODFILE CHECKSUM: be7a2446bc362d87dab4e909a6d3abf808921b04
+PODFILE CHECKSUM: 9fc876dee0cf031cae843156b0740a94b4994d8c
 
 COCOAPODS: 1.10.0

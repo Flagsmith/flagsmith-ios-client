@@ -1,5 +1,5 @@
 #
-# Be sure to run `pod lib lint BulletTrainClient.podspec' to ensure this is a
+# Be sure to run `pod lib lint FlagsmithClient.podspec' to ensure this is a
 # valid spec before submitting.
 #
 # Any lines starting with a # are optional, but their use is encouraged
@@ -7,7 +7,7 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'BulletTrainClient'
+  s.name             = 'FlagsmithClient'
   s.version          = '1.0.1'
   s.summary          = 'iOS Client written in Swift for Flagsmith. Ship features with confidence using feature flags and remote config.'
   s.homepage         = 'https://github.com/Flagsmith/flagsmith-ios-client'
@@ -18,6 +18,6 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'BulletTrainClient/Classes/**/*'
+  s.source_files = 'FlagsmithClient/Classes/**/*'
   s.swift_versions = '4.0'
 end

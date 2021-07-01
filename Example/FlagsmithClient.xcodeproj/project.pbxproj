@@ -7,28 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
-		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
-		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
-		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
-		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		B5A1AE983F312F6DA965979E /* Pods_FlagSmithClient_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10059D0327A3F5574B0B51AA /* Pods_FlagSmithClient_Example.framework */; };
+		C87CA15C7294632245730C64 /* Pods_FlagsmithClient_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F7BEB767BE008D76723DD6 /* Pods_FlagsmithClient_Example.framework */; };
+		DAED1E94268DBF9100F91DBC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAED1E8C268DBF9100F91DBC /* ViewController.swift */; };
+		DAED1E95268DBF9100F91DBC /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAED1E8D268DBF9100F91DBC /* LaunchScreen.xib */; };
+		DAED1E96268DBF9100F91DBC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DAED1E8F268DBF9100F91DBC /* Main.storyboard */; };
+		DAED1E97268DBF9100F91DBC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DAED1E91268DBF9100F91DBC /* Images.xcassets */; };
+		DAED1E98268DBF9100F91DBC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAED1E92268DBF9100F91DBC /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		10059D0327A3F5574B0B51AA /* Pods_FlagSmithClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlagSmithClient_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		607FACD01AFB9204008FA782 /* FlagSmithClient_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlagSmithClient_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		905064CD44372C46F6B96F81 /* Pods-FlagSmithClient_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlagSmithClient_Example.release.xcconfig"; path = "Target Support Files/Pods-BulletTrainClient_Example/Pods-FlagSmithClient_Example.release.xcconfig"; sourceTree = "<group>"; };
-		92F9BF2F3FBF0BA38ADE6566 /* Pods-FlagSmithClient_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlagSmithClient_Example.debug.xcconfig"; path = "Target Support Files/Pods-BulletTrainClient_Example/Pods-FlagSmithClient_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		5357A0EF6DA00FB7B1E84F8C /* Pods-FlagsmithClient_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlagsmithClient_Example.release.xcconfig"; path = "Target Support Files/Pods-FlagsmithClient_Example/Pods-FlagsmithClient_Example.release.xcconfig"; sourceTree = "<group>"; };
+		607FACD01AFB9204008FA782 /* FlagsmithClient_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlagsmithClient_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DFD4B33E10902546A38D90F /* Pods-FlagsmithClient_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlagsmithClient_Example.debug.xcconfig"; path = "Target Support Files/Pods-FlagsmithClient_Example/Pods-FlagsmithClient_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		C4197E729B096AA93F72A537 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		D55EA28CF157EB88CEE632E8 /* FlagSmithClient.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = FlagSmithClient.podspec; path = ../FlagSmithClient.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		C9F7BEB767BE008D76723DD6 /* Pods_FlagsmithClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlagsmithClient_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D55EA28CF157EB88CEE632E8 /* FlagsmithClient.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = FlagsmithClient.podspec; path = ../FlagsmithClient.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		DA1D4A76E760141741612CE0 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		DAED1E8C268DBF9100F91DBC /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DAED1E8E268DBF9100F91DBC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		DAED1E90268DBF9100F91DBC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DAED1E91268DBF9100F91DBC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		DAED1E92268DBF9100F91DBC /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5A1AE983F312F6DA965979E /* Pods_FlagSmithClient_Example.framework in Frameworks */,
+				C87CA15C7294632245730C64 /* Pods_FlagsmithClient_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,8 +45,8 @@
 		29F8631FCA14FA3231676147 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				92F9BF2F3FBF0BA38ADE6566 /* Pods-FlagSmithClient_Example.debug.xcconfig */,
-				905064CD44372C46F6B96F81 /* Pods-FlagSmithClient_Example.release.xcconfig */,
+				9DFD4B33E10902546A38D90F /* Pods-FlagsmithClient_Example.debug.xcconfig */,
+				5357A0EF6DA00FB7B1E84F8C /* Pods-FlagsmithClient_Example.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -55,82 +54,72 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				DAED1E8B268DBF9100F91DBC /* FlagsmithClient */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
-				607FACD21AFB9204008FA782 /* Example for FlagSmithClient */,
 				607FACD11AFB9204008FA782 /* Products */,
 				29F8631FCA14FA3231676147 /* Pods */,
-				AA95DCA95ABC152C951B0BFF /* Frameworks */,
+				754F1C4D5457988E4283F761 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		607FACD11AFB9204008FA782 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				607FACD01AFB9204008FA782 /* FlagSmithClient_Example.app */,
+				607FACD01AFB9204008FA782 /* FlagsmithClient_Example.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		607FACD21AFB9204008FA782 /* Example for FlagSmithClient */ = {
-			isa = PBXGroup;
-			children = (
-				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
-				607FACD71AFB9204008FA782 /* ViewController.swift */,
-				607FACD91AFB9204008FA782 /* Main.storyboard */,
-				607FACDC1AFB9204008FA782 /* Images.xcassets */,
-				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
-				607FACD31AFB9204008FA782 /* Supporting Files */,
-			);
-			name = "Example for FlagSmithClient";
-			path = BulletTrainClient;
-			sourceTree = "<group>";
-		};
-		607FACD31AFB9204008FA782 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				607FACD41AFB9204008FA782 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				D55EA28CF157EB88CEE632E8 /* FlagSmithClient.podspec */,
+				D55EA28CF157EB88CEE632E8 /* FlagsmithClient.podspec */,
 				DA1D4A76E760141741612CE0 /* README.md */,
 				C4197E729B096AA93F72A537 /* LICENSE */,
 			);
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
-		AA95DCA95ABC152C951B0BFF /* Frameworks */ = {
+		754F1C4D5457988E4283F761 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				10059D0327A3F5574B0B51AA /* Pods_FlagSmithClient_Example.framework */,
+				C9F7BEB767BE008D76723DD6 /* Pods_FlagsmithClient_Example.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DAED1E8B268DBF9100F91DBC /* FlagsmithClient */ = {
+			isa = PBXGroup;
+			children = (
+				DAED1E8C268DBF9100F91DBC /* ViewController.swift */,
+				DAED1E8D268DBF9100F91DBC /* LaunchScreen.xib */,
+				DAED1E8F268DBF9100F91DBC /* Main.storyboard */,
+				DAED1E91268DBF9100F91DBC /* Images.xcassets */,
+				DAED1E92268DBF9100F91DBC /* AppDelegate.swift */,
+			);
+			path = FlagsmithClient;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		607FACCF1AFB9204008FA782 /* FlagSmithClient_Example */ = {
+		607FACCF1AFB9204008FA782 /* FlagsmithClient_Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "FlagSmithClient_Example" */;
+			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "FlagsmithClient_Example" */;
 			buildPhases = (
-				37C14137FFB05D1C6C6DE134 /* [CP] Check Pods Manifest.lock */,
+				27D3555FA5A06938AB295278 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				A5982B649135635A2E5AD2D8 /* [CP] Embed Pods Frameworks */,
+				E11BF19C32D8B6AE324F3B14 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = FlagSmithClient_Example;
+			name = FlagsmithClient_Example;
 			productName = BulletTrainClient;
-			productReference = 607FACD01AFB9204008FA782 /* FlagSmithClient_Example.app */;
+			productReference = 607FACD01AFB9204008FA782 /* FlagsmithClient_Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -149,7 +138,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "FlagSmithClient" */;
+			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "FlagsmithClient" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -162,7 +151,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				607FACCF1AFB9204008FA782 /* FlagSmithClient_Example */,
+				607FACCF1AFB9204008FA782 /* FlagsmithClient_Example */,
 			);
 		};
 /* End PBXProject section */
@@ -172,16 +161,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
-				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
-				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				DAED1E95268DBF9100F91DBC /* LaunchScreen.xib in Resources */,
+				DAED1E96268DBF9100F91DBC /* Main.storyboard in Resources */,
+				DAED1E97268DBF9100F91DBC /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		37C14137FFB05D1C6C6DE134 /* [CP] Check Pods Manifest.lock */ = {
+		27D3555FA5A06938AB295278 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -196,29 +185,29 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BulletTrainClient_Example-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-FlagsmithClient_Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A5982B649135635A2E5AD2D8 /* [CP] Embed Pods Frameworks */ = {
+		E11BF19C32D8B6AE324F3B14 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BulletTrainClient_Example/Pods-BulletTrainClient_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/BulletTrainClient/BulletTrainClient.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-FlagsmithClient_Example/Pods-FlagsmithClient_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FlagsmithClient/FlagsmithClient.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BulletTrainClient.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FlagsmithClient.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BulletTrainClient_Example/Pods-BulletTrainClient_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FlagsmithClient_Example/Pods-FlagsmithClient_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -228,28 +217,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
-				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				DAED1E98268DBF9100F91DBC /* AppDelegate.swift in Sources */,
+				DAED1E94268DBF9100F91DBC /* ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		607FACD91AFB9204008FA782 /* Main.storyboard */ = {
+		DAED1E8D268DBF9100F91DBC /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				607FACDA1AFB9204008FA782 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		607FACDE1AFB9204008FA782 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				607FACDF1AFB9204008FA782 /* Base */,
+				DAED1E8E268DBF9100F91DBC /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		DAED1E8F268DBF9100F91DBC /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DAED1E90268DBF9100F91DBC /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -360,10 +349,10 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 92F9BF2F3FBF0BA38ADE6566 /* Pods-FlagSmithClient_Example.debug.xcconfig */;
+			baseConfigurationReference = 9DFD4B33E10902546A38D90F /* Pods-FlagsmithClient_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = BulletTrainClient/Info.plist;
+				INFOPLIST_FILE = FlagsmithClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -374,10 +363,10 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 905064CD44372C46F6B96F81 /* Pods-FlagSmithClient_Example.release.xcconfig */;
+			baseConfigurationReference = 5357A0EF6DA00FB7B1E84F8C /* Pods-FlagsmithClient_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = BulletTrainClient/Info.plist;
+				INFOPLIST_FILE = FlagsmithClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -389,7 +378,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "FlagSmithClient" */ = {
+		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "FlagsmithClient" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACED1AFB9204008FA782 /* Debug */,
@@ -398,7 +387,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "FlagSmithClient_Example" */ = {
+		607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "FlagsmithClient_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACF01AFB9204008FA782 /* Debug */,

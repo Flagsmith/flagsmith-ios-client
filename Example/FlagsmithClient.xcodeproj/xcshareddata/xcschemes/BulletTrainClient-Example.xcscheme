@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "BulletTrainClient_Example.app"
-               BlueprintName = "BulletTrainClient_Example"
-               ReferencedContainer = "container:FlagSmithClient.xcodeproj">
+               BuildableName = "FlagsmithClient_Example.app"
+               BlueprintName = "FlagsmithClient_Example"
+               ReferencedContainer = "container:FlagsmithClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,7 +31,7 @@
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
                BuildableName = "BulletTrainClient_Tests.xctest"
                BlueprintName = "BulletTrainClient_Tests"
-               ReferencedContainer = "container:FlagSmithClient.xcodeproj">
+               ReferencedContainer = "container:FlagsmithClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "BulletTrainClient_Example.app"
-            BlueprintName = "BulletTrainClient_Example"
-            ReferencedContainer = "container:FlagSmithClient.xcodeproj">
+            BuildableName = "FlagsmithClient_Example.app"
+            BlueprintName = "FlagsmithClient_Example"
+            ReferencedContainer = "container:FlagsmithClient.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -58,7 +58,7 @@
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
                BuildableName = "BulletTrainClient_Tests.xctest"
                BlueprintName = "BulletTrainClient_Tests"
-               ReferencedContainer = "container:FlagSmithClient.xcodeproj">
+               ReferencedContainer = "container:FlagsmithClient.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -78,9 +78,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "BulletTrainClient_Example.app"
-            BlueprintName = "BulletTrainClient_Example"
-            ReferencedContainer = "container:FlagSmithClient.xcodeproj">
+            BuildableName = "FlagsmithClient_Example.app"
+            BlueprintName = "FlagsmithClient_Example"
+            ReferencedContainer = "container:FlagsmithClient.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "BulletTrainClient_Example.app"
-            BlueprintName = "BulletTrainClient_Example"
-            ReferencedContainer = "container:FlagSmithClient.xcodeproj">
+            BuildableName = "FlagsmithClient_Example.app"
+            BlueprintName = "FlagsmithClient_Example"
+            ReferencedContainer = "container:FlagsmithClient.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
