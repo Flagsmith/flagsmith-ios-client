@@ -10,11 +10,11 @@ import Foundation
 /**
 An UnknownTypeValue represents a value which can have a variable type
 */
-enum UnknownTypeValue: Decodable {
+public enum UnknownTypeValue: Decodable {
     
     case int(Int), string(String), float(Float)
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         if let int = try? decoder.singleValueContainer().decode(Int.self) {
             self = .int(int)
             return
@@ -33,11 +33,11 @@ enum UnknownTypeValue: Decodable {
         throw UnknownTypeError.missingValue
     }
     
-    enum UnknownTypeError:Error {
+    public enum UnknownTypeError:Error {
         case missingValue
     }
     
-    var intValue: Int? {
+    public var intValue: Int? {
         switch self {
         case .int(let value): return value
         case .string(let value): return Int(value)
@@ -45,7 +45,7 @@ enum UnknownTypeValue: Decodable {
         }
     }
 
-    var stringValue: String? {
+    public var stringValue: String? {
         switch self {
         case .int(let value): return String(value)
         case .string(let value): return value
@@ -53,7 +53,7 @@ enum UnknownTypeValue: Decodable {
         }
     }
 
-    var floatValue: Float? {
+    public var floatValue: Float? {
         switch self {
         case .int(let value): return Float(value)
         case .string(let value): return Float(value)

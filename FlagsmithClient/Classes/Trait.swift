@@ -37,14 +37,15 @@ public struct PostTrait: Codable {
   
   public let key: String
   public var value: String
-  var identity: IdentityStruct
+  public var identity: IdentityStruct
   
-  struct IdentityStruct: Codable {
-    var identifier: String
+  public struct IdentityStruct: Codable {
+    public var identifier: String
             
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case identifier = "identifier"
     }
+    
     public init(identifier: String) {
       self.identifier = identifier
     }
