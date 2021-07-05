@@ -37,16 +37,16 @@ enum Router {
     }
   }
 
-    private var parameters: [URLQueryItem] {
-      switch self {
-      case .getFlags:
-        return []
-      case .getIdentity(let identity):
-        return [URLQueryItem(name: "identifier", value: identity)]
-      case .postTrait( _, _):
-        return []
-      }
+  private var parameters: [URLQueryItem] {
+    switch self {
+    case .getFlags:
+      return []
+    case .getIdentity(let identity):
+      return [URLQueryItem(name: "identifier", value: identity)]
+    case .postTrait( _, _):
+      return []
     }
+  }
 
   private var body: Result<Data?, Error> {
     switch self {
