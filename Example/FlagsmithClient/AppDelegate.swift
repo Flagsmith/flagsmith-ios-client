@@ -25,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print(result)
     }
     //Flagsmith.shared.setTrait(Trait(key: "<my_key>", value: "<my_value>"), forIdentity: "<my_identity>") { (result) in print(result) }
+    //Flagsmith.shared.getIdentity("<my_key>") { (result) in print(result) }
     return true
   }
   
