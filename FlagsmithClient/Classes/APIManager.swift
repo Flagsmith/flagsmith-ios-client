@@ -30,7 +30,7 @@ enum Router {
     switch self {
     case .getFlags:
       return "flags/"
-    case .getIdentity(let _):
+    case .getIdentity( _):
       return "identities/"
     case .postTrait( _, _):
       return "traits/"
