@@ -30,13 +30,24 @@ enum Router {
     switch self {
     case .getFlags:
       return "flags/"
-    case .getIdentity(let identity):
-      return "identities/?identifier=\(identity)"
+    case .getIdentity(let _):
+      return "identities/"
     case .postTrait( _, _):
       return "traits/"
     }
   }
-  
+
+  private var parameters: [URLQueryItem] {
+    switch self {
+    case .getFlags:
+      return []
+    case .getIdentity(let identity):
+      return [URLQueryItem(name: "identifier", value: identity)]
+    case .postTrait( _, _):
+      return []
+    }
+  }
+
   private var body: Result<Data?, Error> {
     switch self {
     case .getFlags, .getIdentity:
@@ -53,7 +64,9 @@ enum Router {
   }
   
   func request(baseUrl: URL, apiKey: String) throws -> URLRequest {
-    var request = URLRequest(url: baseUrl.appendingPathComponent(path))
+    let urlComponents = NSURLComponents(string:baseUrl.appendingPathComponent(path).absoluteString)!
+    urlComponents.queryItems = parameters
+    var request = URLRequest(url: urlComponents.url!)
     request.httpMethod = method.rawValue
     
     switch body {
