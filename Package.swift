@@ -10,6 +10,7 @@ let package = Package(
     targets: [
         .target(
             name: "FlagsmithClient",
+            path: "FlagsmithClient/Classes",
             dependencies: []),
     ]
 )
