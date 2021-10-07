@@ -182,9 +182,7 @@ public class Flagsmith {
     /// Post analytics
     ///
     /// - Parameters:
-    ///   - trait: Trait to be created or updated
-    ///   - identity: ID of the user
-    ///   - completion: Closure with Result which contains Trait in case of success or Error in case of failure
+    ///   - completion: Closure with Result which contains empty String in case of success or Error in case of failure
     func postAnalytics(completion: @escaping (Result<String, Error>) -> Void) {
         apiManager.request(.postAnalytics(events: FlagsmithAnalytics.shared.events), emptyResponse: true) { (result: Result<String, Error>) in
         completion(result)
