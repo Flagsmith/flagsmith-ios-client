@@ -19,7 +19,7 @@
 		A13560F4ED65CEDC1BBA0BC739AFB122 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		A691D674CCEDEA0AB4FBCA07667B0902 /* Identity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F6268CFD4D89E150C9ABDB1F607CAD /* Identity.swift */; };
 		AD4D2A64FD602F5BBED752E018568AD9 /* FlagsmithClient-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 136599A0544290B6A62DB0C19CB3254B /* FlagsmithClient-dummy.m */; };
-		DA903AD8270C4B08008D4D66 /* FlagsmithAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA903AD7270C4B08008D4D66 /* FlagsmithAnalytics.swift */; };
+		DACD4AF3271468A20083F8E0 /* FlagsmithAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACD4AF2271468A20083F8E0 /* FlagsmithAnalytics.swift */; };
 		E4CB26F5ACEB4B5517669393F86435DA /* Pods-FlagsmithClient_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 02E4DC32B2FC713ED935462DA9F1CBF9 /* Pods-FlagsmithClient_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -57,7 +57,7 @@
 		B5A1957B45BB7F8F083A81729F240048 /* Flag.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Flag.swift; path = FlagsmithClient/Classes/Flag.swift; sourceTree = "<group>"; };
 		B7528E5D2516E37BD5B3A5DC02010477 /* Pods-FlagsmithClient_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-FlagsmithClient_Example-frameworks.sh"; sourceTree = "<group>"; };
 		C1817E8624F31BD483479898AD8A9F9C /* Pods_FlagsmithClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlagsmithClient_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA903AD7270C4B08008D4D66 /* FlagsmithAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagsmithAnalytics.swift; sourceTree = "<group>"; };
+		DACD4AF2271468A20083F8E0 /* FlagsmithAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlagsmithAnalytics.swift; path = FlagsmithClient/Classes/FlagsmithAnalytics.swift; sourceTree = "<group>"; };
 		DEF253A1BFCB31C23A3625A74A04AD7C /* FlagsmithClient-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FlagsmithClient-umbrella.h"; sourceTree = "<group>"; };
 		E28010F1C58E656FC37588C8A00FEE38 /* Pods-FlagsmithClient_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FlagsmithClient_Example-Info.plist"; sourceTree = "<group>"; };
 		F21D11DBA32C17022A373E2CD568EE99 /* Flagsmith.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Flagsmith.swift; path = FlagsmithClient/Classes/Flagsmith.swift; sourceTree = "<group>"; };
@@ -106,6 +106,7 @@
 		70509BC80698CEEE4541284EFC43216D /* FlagsmithClient */ = {
 			isa = PBXGroup;
 			children = (
+				DACD4AF2271468A20083F8E0 /* FlagsmithAnalytics.swift */,
 				5413E397EF91F0A50E2B8CFD0A939A89 /* APIManager.swift */,
 				82273496CCBE069367B489145319FB9B /* Feature.swift */,
 				B5A1957B45BB7F8F083A81729F240048 /* Flag.swift */,
@@ -113,7 +114,6 @@
 				31F6268CFD4D89E150C9ABDB1F607CAD /* Identity.swift */,
 				F66C677FD5BFAA88AAB3811B280BE5DE /* Trait.swift */,
 				0E0EE7EA6CB644CF0B5ADA3408F3802C /* UnknownTypeValue.swift */,
-				DA903AD7270C4B08008D4D66 /* FlagsmithAnalytics.swift */,
 				787F1395C9DDF28AD108EFC0A040A989 /* Pod */,
 				8D998E04F379B8D3FEAC06450D0B8CA4 /* Support Files */,
 			);
@@ -315,7 +315,7 @@
 				AD4D2A64FD602F5BBED752E018568AD9 /* FlagsmithClient-dummy.m in Sources */,
 				A691D674CCEDEA0AB4FBCA07667B0902 /* Identity.swift in Sources */,
 				0DA8132DF2CED796AABFB3E3AB35DB41 /* Trait.swift in Sources */,
-				DA903AD8270C4B08008D4D66 /* FlagsmithAnalytics.swift in Sources */,
+				DACD4AF3271468A20083F8E0 /* FlagsmithAnalytics.swift in Sources */,
 				419966305DA08C786689763CC4ECCE86 /* UnknownTypeValue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
