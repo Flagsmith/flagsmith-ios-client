@@ -12,7 +12,7 @@ An UnknownTypeValue represents a value which can have a variable type
 */
 public enum UnknownTypeValue: Decodable {
     
-    case int(Int), string(String), float(Float)
+    case int(Int), string(String), float(Float), null()
     
     public init(from decoder: Decoder) throws {
         if let int = try? decoder.singleValueContainer().decode(Int.self) {
@@ -30,7 +30,7 @@ public enum UnknownTypeValue: Decodable {
             return
         }
 
-        throw UnknownTypeError.missingValue
+        self = .null()
     }
     
     public enum UnknownTypeError:Error {
@@ -42,6 +42,7 @@ public enum UnknownTypeValue: Decodable {
         case .int(let value): return value
         case .string(let value): return Int(value)
         case .float(let value): return Int(value)
+        case .null( _): return nil
         }
     }
 
@@ -50,6 +51,7 @@ public enum UnknownTypeValue: Decodable {
         case .int(let value): return String(value)
         case .string(let value): return value
         case .float(let value): return String(value)
+        case .null( _): return nil
         }
     }
 
@@ -58,6 +60,7 @@ public enum UnknownTypeValue: Decodable {
         case .int(let value): return Float(value)
         case .string(let value): return Float(value)
         case .float(let value): return value
+        case .null( _): return nil
         }
     }
 }
