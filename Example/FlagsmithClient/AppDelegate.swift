@@ -18,6 +18,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     Flagsmith.shared.apiKey = "<add your API key from the Flagsmith settings page>"
+    
+    // set analytics on or off
+    Flagsmith.shared.enableAnalytics = true
+    
+    // set the analytics flush period in seconds
+    Flagsmith.shared.analyticsFlushPeriod = 10
+    
     Flagsmith.shared.getFeatureFlags() { (result) in
         print(result)
     }

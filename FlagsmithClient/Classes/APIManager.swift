@@ -16,12 +16,13 @@ enum Router {
   case getFlags
   case getIdentity(identity: String)
   case postTrait(trait: Trait, identity: String)
+  case postAnalytics(events: [String:Int])
   
   private var method: HTTPMethod {
     switch self {
     case .getFlags, .getIdentity:
       return .get
-    case .postTrait:
+    case .postTrait, .postAnalytics:
       return .post
     }
   }
@@ -34,6 +35,8 @@ enum Router {
       return "identities/"
     case .postTrait( _, _):
       return "traits/"
+    case .postAnalytics( _):
+      return "analytics/flags/"
     }
   }
 
@@ -44,6 +47,8 @@ enum Router {
     case .getIdentity(let identity):
       return [URLQueryItem(name: "identifier", value: identity)]
     case .postTrait( _, _):
+      return []
+    case .postAnalytics( _):
       return []
     }
   }
@@ -56,6 +61,13 @@ enum Router {
       do {
         let postTraitStruct = PostTrait(key:trait.key, value:trait.value, identifier:identifier)
         let json = try JSONEncoder().encode(postTraitStruct)
+        return .success(json)
+      } catch {
+        return .failure(error)
+      }
+    case .postAnalytics(let events):
+      do {
+        let json = try JSONEncoder().encode(events)
         return .success(json)
       } catch {
         return .failure(error)
@@ -86,12 +98,15 @@ enum Router {
 class APIManager {
   enum NetworkError: Error {
     case noResponseBody
+    case emptyResponseExpectsString
     case defaultError
     
     var localizedDescription: String {
       switch self {
       case .noResponseBody:
         return NSLocalizedString("Response has no message body", comment: "No response body network error")
+      case .emptyResponseExpectsString:
+        return NSLocalizedString("Empty response expects a String type", comment: "Please ensure this method is called with a String Result type")
       case .defaultError:
         return NSLocalizedString("Some error occurred", comment: "Default network error")
       }
@@ -108,7 +123,7 @@ class APIManager {
     self.session = URLSession(configuration: configuration)
   }
   
-  func request<T: Decodable>(_ router: Router, completion: @escaping (Result<T, Error>) -> Void) {
+    func request<T: Decodable>(_ router: Router, emptyResponse:Bool = false, completion: @escaping (Result<T, Error>) -> Void) {
     guard let apiKey = apiKey else {
       fatalError("API Key is missing")
     }
@@ -134,10 +149,20 @@ class APIManager {
           completion(.failure(error))
           return
         }
-        
+                
         do {
-          let result = try JSONDecoder().decode(T.self, from: data)
-          completion(.success(result))
+            if emptyResponse {
+                if let result = "" as? T {
+                    completion(.success(result))
+                }
+                else {
+                    completion(.failure(NetworkError.emptyResponseExpectsString))
+                }
+            }
+            else {
+                let result = try JSONDecoder().decode(T.self, from: data)
+                completion(.success(result))
+            }
         } catch {
           print("JSON Decoding Failed: %@", error.localizedDescription)
           completion(.failure(error))

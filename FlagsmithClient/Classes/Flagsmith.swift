@@ -31,7 +31,17 @@ public class Flagsmith {
       return apiManager.apiKey
     }
   }
-  
+
+  /// Is flag analytics enabled?
+  public var enableAnalytics: Bool = true
+
+  /// How often to send the flag analytics, in seconds
+  public var analyticsFlushPeriod: Int = 10 {
+    didSet {
+        FlagsmithAnalytics.shared.setupTimer()
+    }
+  }
+
   private init() {}
   
   /// Get all feature flags (flags and remote config) optionally for a specific identity
@@ -66,6 +76,7 @@ public class Flagsmith {
   public func hasFeatureFlag(withID id: String,
                              forIdentity identity: String? = nil,
                              completion: @escaping (Result<Bool, Error>) -> Void) {
+    FlagsmithAnalytics.shared.trackEvent(flagName: id)
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
@@ -86,6 +97,7 @@ public class Flagsmith {
   public func getFeatureValue(withID id: String,
                               forIdentity identity: String? = nil,
                               completion: @escaping (Result<String?, Error>) -> Void) {
+    FlagsmithAnalytics.shared.trackEvent(flagName: id)
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
@@ -167,4 +179,14 @@ public class Flagsmith {
     }
   }
   
+    /// Post analytics
+    ///
+    /// - Parameters:
+    ///   - completion: Closure with Result which contains empty String in case of success or Error in case of failure
+    func postAnalytics(completion: @escaping (Result<String, Error>) -> Void) {
+        apiManager.request(.postAnalytics(events: FlagsmithAnalytics.shared.events), emptyResponse: true) { (result: Result<String, Error>) in
+        completion(result)
+      }
+    }
+
 }
