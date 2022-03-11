@@ -58,4 +58,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
   
+  #if swift(>=5.5.2)
+  /// (Example) Setup the app based on the available feature flags.
+  ///
+  /// **Flagsmith** supports the Swift Concurrency feature `async`/`await`.
+  /// Requests and logic can be handled in a streamlined order,
+  /// eliminating the need to nest multiple completion handlers.
+  @available(iOS 13.0, *)
+  func determineAppConfiguration() async {
+    let flagsmith = Flagsmith.shared
+  
+    do {
+      if try await flagsmith.hasFeatureFlag(withID: "ab_test_enabled") {
+        if let theme = try await flagsmith.getFeatureValue(withID: "app_theme") {
+          setTheme(theme)
+        } else {
+          let flags = try await flagsmith.getFeatureFlags()
+          processFlags(flags)
+        }
+      } else {
+        let trait = Trait(key: "selected_tint_color", value: "orange")
+        let identity = "4DDBFBCA-3B6E-4C59-B107-954F84FD7F6D"
+        try await flagsmith.setTrait(trait, forIdentity: identity)
+      }
+    } catch {
+        print(error)
+    }
+  }
+  
+  func setTheme(_ theme: String) {}
+  func processFlags(_ flags: [Flag]) {}
+  #endif
 }
