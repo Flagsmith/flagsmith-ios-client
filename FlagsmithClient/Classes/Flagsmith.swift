@@ -103,7 +103,7 @@ public class Flagsmith {
       switch result {
       case .success(let flags):
         let value = flags.first(where: {$0.feature.name == id})?.value
-        completion(.success(value?.description))
+        completion(.success(value?.stringValue))
       case .failure(let error):
         completion(.failure(error))
       }

@@ -35,7 +35,7 @@ public struct Trait: Codable {
   
   /// Initializes a `Trait` with an identifier.
   ///
-  /// When a `identifier` is provided, the resulting _encoded_ for of the `Trait`
+  /// When a `identifier` is provided, the resulting _encoded_ form of the `Trait`
   /// will contain a `identity` key.
   internal init(trait: Trait, identifier: String) {
     self.key = trait.key
