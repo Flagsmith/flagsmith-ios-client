@@ -10,10 +10,22 @@ import Foundation
 /**
 An UnknownTypeValue represents a value which can have a variable type
 */
-public enum UnknownTypeValue: Decodable {
+public enum UnknownTypeValue: Codable {
     
     case int(Int), string(String), float(Float), null
-    
+
+    public init(value:Int) {
+        self = .int(value)
+    }
+
+    public init(value:String) {
+        self = .string(value)
+    }
+
+    public init(value:Float) {
+        self = .float(value)
+    }
+
     public init(from decoder: Decoder) throws {
         if let int = try? decoder.singleValueContainer().decode(Int.self) {
             self = .int(int)

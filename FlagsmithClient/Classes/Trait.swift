@@ -17,12 +17,44 @@ public struct Trait: Codable {
   }
   
   public let key: String
-  public var value: String
+  public var value: UnknownTypeValue?
   
-  public init(key: String, value: String) {
+  public init(key: String, value: UnknownTypeValue?) {
     self.key = key
     self.value = value
   }
+
+    public init(key: String, value: Int) {
+      self.key = key
+      self.value = UnknownTypeValue(value: value)
+    }
+
+    public init(key: String, value: String) {
+      self.key = key
+      self.value = UnknownTypeValue(value: value)
+    }
+
+    public init(key: String, value: Float) {
+      self.key = key
+      self.value = UnknownTypeValue(value: value)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(key, forKey: .key)
+        switch value {
+        case .int(let value):
+            try container.encode(value, forKey: .value)
+        case .string(let value):
+            try container.encode(value, forKey: .value)
+        case .float(let value):
+            try container.encode(value, forKey: .value)
+        case .null:
+            break
+        case .none:
+            break
+        }        
+    }
 }
 
 /**
@@ -36,7 +68,7 @@ public struct PostTrait: Codable {
   }
   
   public let key: String
-  public var value: String
+  public var value: UnknownTypeValue?
   public var identity: IdentityStruct
   
   public struct IdentityStruct: Codable {
@@ -51,9 +83,27 @@ public struct PostTrait: Codable {
     }
   }
     
-  public init(key: String, value: String, identifier:String) {
+  public init(key: String, value: UnknownTypeValue?, identifier:String) {
     self.key = key
     self.value = value
     self.identity = IdentityStruct(identifier: identifier)
   }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(key, forKey: .key)
+        try container.encode(identity, forKey: .identity)
+        switch value {
+        case .int(let value):
+            try container.encode(value, forKey: .value)
+        case .string(let value):
+            try container.encode(value, forKey: .value)
+        case .float(let value):
+            try container.encode(value, forKey: .value)
+        case .null:
+            break
+        case .none:
+            break
+        }
+    }
 }
