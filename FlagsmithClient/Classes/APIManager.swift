@@ -59,7 +59,7 @@ enum Router {
       return .success(nil)
     case .postTrait(let trait, let identifier):
       do {
-        let postTraitStruct = PostTrait(key:trait.key, value:trait.value, identifier:identifier)
+          let postTraitStruct = Trait(trait: trait, identifier: identifier)
         let json = try JSONEncoder().encode(postTraitStruct)
         return .success(json)
       } catch {
