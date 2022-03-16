@@ -16,7 +16,7 @@ public struct Flag: Decodable {
     case value = "feature_state_value"
     case enabled
   }
-    
+  
   public let feature: Feature
   public let value: TypedValue
   public let enabled: Bool

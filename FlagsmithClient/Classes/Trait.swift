@@ -24,13 +24,8 @@ public struct Trait: Codable {
   /// - note: In the future, this can be renamed back to 'value' as major/feature-breaking
   ///         updates are released.
   public var typedValue: TypedValue
+  /// The identity of the `Trait` when creating.
   internal let identifier: String?
-  
-  public init(key: String, value: String) {
-    self.key = key
-    self.typedValue = .string(value)
-    self.identifier = nil
-  }
   
   public init(key: String, value: TypedValue) {
     self.key = key
@@ -67,6 +62,34 @@ public struct Trait: Codable {
   }
 }
 
+// MARK: - Convenience Initializers
+public extension Trait {
+  init(key: String, value: Bool) {
+    self.key = key
+    self.typedValue = .bool(value)
+    self.identifier = nil
+  }
+  
+  init(key: String, value: Float) {
+    self.key = key
+    self.typedValue = .float(value)
+    self.identifier = nil
+  }
+  
+  init(key: String, value: Int) {
+    self.key = key
+    self.typedValue = .int(value)
+    self.identifier = nil
+  }
+  
+  init(key: String, value: String) {
+    self.key = key
+    self.typedValue = .string(value)
+    self.identifier = nil
+  }
+}
+
+// MARK: - Deprecations
 public extension Trait {
   @available(*, deprecated, renamed: "typedValue")
   var value: String {

@@ -53,8 +53,8 @@ public extension Flagsmith {
   ///   - id: ID of the feature
   ///   - identity: ID of the user (optional)
   /// - returns: String value of the feature if available
-    @available(*, deprecated, renamed: "getValueForFeature(withID:forIdentity:)")
-    func getFeatureValue(withID id: String, forIdentity identity: String? = nil) async throws -> String? {
+  @available(*, deprecated, renamed: "getValueForFeature(withID:forIdentity:)")
+  func getFeatureValue(withID id: String, forIdentity identity: String? = nil) async throws -> String? {
     try await withCheckedThrowingContinuation({ continuation in
       getFeatureValue(withID: id, forIdentity: identity) { result in
         switch result {

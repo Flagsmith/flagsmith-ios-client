@@ -80,3 +80,40 @@ extension TypedValue: CustomStringConvertible {
     }
   }
 }
+
+// Provides backwards compatible API for `UnknownTypeValue`
+// (eg: `Flag.value.intValue?`, `Flag.value.stringValue?`, `Flag.value.floatValue?`)
+public extension TypedValue {
+  /// Attempts to cast the associated value as an `Int`
+  @available(*, deprecated, message: "Switch on `TypedValue` to retrieve the associated data type.")
+  var intValue: Int? {
+    switch self {
+    case .bool(let value): return (value) ? 1 : 0
+    case .float(let value): return Int(value)
+    case .int(let value): return value
+    case .string(let value): return Int(value)
+    case .null: return nil
+    }
+  }
+    
+  /// Attempts to cast the associated value as an `Float`
+  @available(*, deprecated, message: "Switch on `TypedValue` to retrieve the associated data type.")
+  var floatValue: Float? {
+    switch self {
+    case .bool(let value): return (value) ? 1.0 : 0.0
+    case .float(let value): return value
+    case .int(let value): return Float(value)
+    case .string(let value): return Float(value)
+    case .null: return nil
+    }
+  }
+  
+  /// Attempts to cast the associated value as an `String`
+  @available(*, deprecated, message: "Switch on `TypedValue` to retrieve the associated data type.")
+  var stringValue: String? {
+      switch self {
+      case .null: return nil
+      default: return description
+    }
+  }
+}

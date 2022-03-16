@@ -10,7 +10,6 @@ import XCTest
 
 final class FlagTests: FlagsmithClientTestCase {
     
-    
     func testDecodeFlags() throws {
         let json = """
         [
