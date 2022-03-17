@@ -1,29 +1,28 @@
 name: Pull Request Build and Test
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 
 jobs:
-  macos-build:
-    runs-on: macos-latest
+    macos-build:
+        runs-on: macos-latest
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build (macOS)
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+        steps:
+            - uses: actions/checkout@v2
+            - name: Build (macOS)
+              run: swift build -v
+            - name: Run tests
+              run: swift test -v
 
-  ubuntu-build:
+    ubuntu-build:
+        runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build (Ubuntu)
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+        steps:
+            - uses: actions/checkout@v2
+            - name: Build (Ubuntu)
+              run: swift build -v
+            - name: Run tests
+              run: swift test -v
