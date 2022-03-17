@@ -11,35 +11,30 @@ public class Flagsmith {
   /// Shared singleton client object
   public static let shared = Flagsmith()
   private let apiManager = APIManager()
+  private lazy var analytics = FlagsmithAnalytics(apiManager: apiManager)
   
   /// Base URL
   public var baseURL: URL {
-    set {
-      apiManager.baseURL = newValue
-    }
-    get {
-      return apiManager.baseURL
-    }
+    set { apiManager.baseURL = newValue }
+    get { apiManager.baseURL }
   }
   
   /// API Key
   public var apiKey: String? {
-    set {
-      apiManager.apiKey = newValue
-    }
-    get {
-      return apiManager.apiKey
-    }
+    set { apiManager.apiKey = newValue }
+    get { apiManager.apiKey }
   }
 
   /// Is flag analytics enabled?
-  public var enableAnalytics: Bool = true
+  public var enableAnalytics: Bool {
+    set { analytics.enableAnalytics = newValue }
+    get { analytics.enableAnalytics }
+  }
 
   /// How often to send the flag analytics, in seconds
-  public var analyticsFlushPeriod: Int = 10 {
-    didSet {
-        FlagsmithAnalytics.shared.setupTimer()
-    }
+  public var analyticsFlushPeriod: Int {
+    set { analytics.flushPeriod = newValue }
+    get { analytics.flushPeriod }
   }
 
   private init() {}
@@ -76,7 +71,7 @@ public class Flagsmith {
   public func hasFeatureFlag(withID id: String,
                              forIdentity identity: String? = nil,
                              completion: @escaping (Result<Bool, Error>) -> Void) {
-    FlagsmithAnalytics.shared.trackEvent(flagName: id)
+    analytics.trackEvent(flagName: id)
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
@@ -98,7 +93,7 @@ public class Flagsmith {
   public func getFeatureValue(withID id: String,
                               forIdentity identity: String? = nil,
                               completion: @escaping (Result<String?, Error>) -> Void) {
-    FlagsmithAnalytics.shared.trackEvent(flagName: id)
+    analytics.trackEvent(flagName: id)
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
@@ -119,7 +114,7 @@ public class Flagsmith {
   public func getValueForFeature(withID id: String,
                                  forIdentity identity: String? = nil,
                                  completion: @escaping (Result<TypedValue?, Error>) -> Void) {
-    FlagsmithAnalytics.shared.trackEvent(flagName: id)
+    analytics.trackEvent(flagName: id)
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
@@ -197,16 +192,6 @@ public class Flagsmith {
   public func getIdentity(_ identity: String,
                           completion: @escaping (Result<Identity, Error>) -> Void) {
     apiManager.request(.getIdentity(identity: identity)) { (result: Result<Identity, Error>) in
-      completion(result)
-    }
-  }
-  
-  /// Post analytics
-  ///
-  /// - Parameters:
-  ///   - completion: Closure with Result which contains empty String in case of success or Error in case of failure
-  func postAnalytics(completion: @escaping (Result<String, Error>) -> Void) {
-    apiManager.request(.postAnalytics(events: FlagsmithAnalytics.shared.events), emptyResponse: true) { (result: Result<String, Error>) in
       completion(result)
     }
   }
