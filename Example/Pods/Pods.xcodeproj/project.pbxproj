@@ -21,6 +21,7 @@
 		9F21DA4355FE6A2AEDDDFFF891DF93B0 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EFB71AA5556DD77A4882DCEB418E2C /* APIManager.swift */; };
 		B7C44FEAEB3099494B79EA35B9F71DE0 /* FlagsmithClient-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A4CB83310920D7A2F76B1F4F715BA5 /* FlagsmithClient-dummy.m */; };
 		C5344C505516395035EAB8B9FC111FE2 /* Pods-FlagsmithClient_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F66D3EFFD8615AE149DCEEE155C049F /* Pods-FlagsmithClient_Example-dummy.m */; };
+		E190202E27E24E7600C5EE2C /* TypedValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E190202D27E24E7600C5EE2C /* TypedValue.swift */; };
 		EE4568DD2E22CD3A570CAB24968F9BE7 /* UnknownTypeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 772F9BEA66F23FD7DB187ACBEB72BA93 /* UnknownTypeValue.swift */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +65,7 @@
 		C1CEBBBF5F9F986FB033B56D22422A4A /* Trait.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Trait.swift; path = FlagsmithClient/Classes/Trait.swift; sourceTree = "<group>"; };
 		C55271DDAE55BE2BA1AFA657FA24971A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C7A4CB83310920D7A2F76B1F4F715BA5 /* FlagsmithClient-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FlagsmithClient-dummy.m"; sourceTree = "<group>"; };
+		E190202D27E24E7600C5EE2C /* TypedValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypedValue.swift; path = FlagsmithClient/Classes/TypedValue.swift; sourceTree = "<group>"; };
 		E28010F1C58E656FC37588C8A00FEE38 /* Pods-FlagsmithClient_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FlagsmithClient_Example-Info.plist"; sourceTree = "<group>"; };
 		ED741D6F7C10EB042045149B0E9347C9 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		F69C872C8FED92D20AC2B23547F34B35 /* FlagsmithAnalytics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlagsmithAnalytics.swift; path = FlagsmithClient/Classes/FlagsmithAnalytics.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				F69C872C8FED92D20AC2B23547F34B35 /* FlagsmithAnalytics.swift */,
 				9B3C161B19E351C1591E2039D787AD7C /* Identity.swift */,
 				C1CEBBBF5F9F986FB033B56D22422A4A /* Trait.swift */,
+				E190202D27E24E7600C5EE2C /* TypedValue.swift */,
 				772F9BEA66F23FD7DB187ACBEB72BA93 /* UnknownTypeValue.swift */,
 				6990B5B456D0DD19FB8DF9BFCBB4A363 /* Pod */,
 				126C2805424EF94E7A836D869A03013D /* Support Files */,
@@ -319,6 +322,7 @@
 				9F21DA4355FE6A2AEDDDFFF891DF93B0 /* APIManager.swift in Sources */,
 				0A2426C7E3721ED5AEADF4CC344F6642 /* Feature.swift in Sources */,
 				4A510C0AE712CD782D25F2276904F827 /* Flag.swift in Sources */,
+				E190202E27E24E7600C5EE2C /* TypedValue.swift in Sources */,
 				1845D603B597C651F0EE6080EF459DBB /* Flagsmith.swift in Sources */,
 				2C55F74AE43F34E4F3952F5B86AADBF5 /* Flagsmith+Concurrency.swift in Sources */,
 				7191FDB6E8F195E826AE8D6C713F25DE /* FlagsmithAnalytics.swift in Sources */,

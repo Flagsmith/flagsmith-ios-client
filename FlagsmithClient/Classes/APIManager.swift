@@ -59,7 +59,7 @@ enum Router {
       return .success(nil)
     case .postTrait(let trait, let identifier):
       do {
-        let postTraitStruct = PostTrait(key:trait.key, value:trait.value, identifier:identifier)
+        let postTraitStruct = Trait(trait: trait, identifier: identifier)
         let json = try JSONEncoder().encode(postTraitStruct)
         return .success(json)
       } catch {
@@ -123,7 +123,7 @@ class APIManager {
     self.session = URLSession(configuration: configuration)
   }
   
-    func request<T: Decodable>(_ router: Router, emptyResponse:Bool = false, completion: @escaping (Result<T, Error>) -> Void) {
+  func request<T: Decodable>(_ router: Router, emptyResponse:Bool = false, completion: @escaping (Result<T, Error>) -> Void) {
     guard let apiKey = apiKey else {
       fatalError("API Key is missing")
     }

@@ -12,5 +12,9 @@ let package = Package(
             name: "FlagsmithClient",
             dependencies: [],
             path: "FlagsmithClient/Classes"),
+        .testTarget(
+            name: "FlagsmitClientTests",
+            dependencies: ["FlagsmithClient"],
+            path: "FlagsmithClient/Tests"),
     ]
 )

@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
     do {
       if try await flagsmith.hasFeatureFlag(withID: "ab_test_enabled") {
-        if let theme = try await flagsmith.getFeatureValue(withID: "app_theme") {
+        if let theme = try await flagsmith.getValueForFeature(withID: "app_theme") {
           setTheme(theme)
         } else {
           let flags = try await flagsmith.getFeatureFlags()
@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
   }
   
-  func setTheme(_ theme: String) {}
+  func setTheme(_ theme: TypedValue) {}
   func processFlags(_ flags: [Flag]) {}
   #endif
 }

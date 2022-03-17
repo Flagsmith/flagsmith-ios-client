@@ -94,6 +94,7 @@ public class Flagsmith {
   ///   - id: ID of the feature
   ///   - identity: ID of the user (optional)
   ///   - completion: Closure with Result which String in case of success or Error in case of failure
+  @available(*, deprecated, renamed: "getValueForFeature(withID:forIdentity:completion:)")
   public func getFeatureValue(withID id: String,
                               forIdentity identity: String? = nil,
                               completion: @escaping (Result<String?, Error>) -> Void) {
@@ -103,6 +104,27 @@ public class Flagsmith {
       case .success(let flags):
         let value = flags.first(where: {$0.feature.name == id})?.value
         completion(.success(value?.stringValue))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+    
+  /// Get remote config value optionally for a specific identity
+  ///
+  /// - Parameters:
+  ///   - id: ID of the feature
+  ///   - identity: ID of the user (optional)
+  ///   - completion: Closure with Result of `TypedValue` in case of success or `Error` in case of failure
+  public func getValueForFeature(withID id: String,
+                                 forIdentity identity: String? = nil,
+                                 completion: @escaping (Result<TypedValue?, Error>) -> Void) {
+    FlagsmithAnalytics.shared.trackEvent(flagName: id)
+    getFeatureFlags(forIdentity: identity) { (result) in
+      switch result {
+      case .success(let flags):
+        let value = flags.first(where: {$0.feature.name == id})?.value
+        completion(.success(value))
       case .failure(let error):
         completion(.failure(error))
       }
@@ -179,14 +201,13 @@ public class Flagsmith {
     }
   }
   
-    /// Post analytics
-    ///
-    /// - Parameters:
-    ///   - completion: Closure with Result which contains empty String in case of success or Error in case of failure
-    func postAnalytics(completion: @escaping (Result<String, Error>) -> Void) {
-        apiManager.request(.postAnalytics(events: FlagsmithAnalytics.shared.events), emptyResponse: true) { (result: Result<String, Error>) in
-        completion(result)
-      }
+  /// Post analytics
+  ///
+  /// - Parameters:
+  ///   - completion: Closure with Result which contains empty String in case of success or Error in case of failure
+  func postAnalytics(completion: @escaping (Result<String, Error>) -> Void) {
+    apiManager.request(.postAnalytics(events: FlagsmithAnalytics.shared.events), emptyResponse: true) { (result: Result<String, Error>) in
+      completion(result)
     }
-
+  }
 }

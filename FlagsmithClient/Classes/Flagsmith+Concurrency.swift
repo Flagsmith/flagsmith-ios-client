@@ -53,9 +53,29 @@ public extension Flagsmith {
   ///   - id: ID of the feature
   ///   - identity: ID of the user (optional)
   /// - returns: String value of the feature if available
+  @available(*, deprecated, renamed: "getValueForFeature(withID:forIdentity:)")
   func getFeatureValue(withID id: String, forIdentity identity: String? = nil) async throws -> String? {
     try await withCheckedThrowingContinuation({ continuation in
       getFeatureValue(withID: id, forIdentity: identity) { result in
+        switch result {
+        case .failure(let error):
+          continuation.resume(throwing: error)
+        case .success(let value):
+          continuation.resume(returning: value)
+        }
+      }
+    })
+  }
+    
+  /// Get remote config value optionally for a specific identity
+  ///
+  /// - Parameters:
+  ///   - id: ID of the feature
+  ///   - identity: ID of the user (optional)
+  /// - returns: String value of the feature if available
+  func getValueForFeature(withID id: String, forIdentity identity: String? = nil) async throws -> TypedValue? {
+    try await withCheckedThrowingContinuation({ continuation in
+      getValueForFeature(withID: id, forIdentity: identity) { result in
         switch result {
         case .failure(let error):
           continuation.resume(throwing: error)
