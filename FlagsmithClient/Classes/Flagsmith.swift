@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Manage feature flags and remote config across multiple projects,
+/// environments and organisations.
 public class Flagsmith {
   /// Shared singleton client object
   public static let shared = Flagsmith()
@@ -14,12 +16,16 @@ public class Flagsmith {
   private lazy var analytics = FlagsmithAnalytics(apiManager: apiManager)
   
   /// Base URL
+  ///
+  /// The default implementation uses: `https://api.flagsmith.com/api/v1`.
   public var baseURL: URL {
     set { apiManager.baseURL = newValue }
     get { apiManager.baseURL }
   }
   
-  /// API Key
+  /// API Key unique to your organization.
+  ///
+  /// This value must be provided before any request can succeed.
   public var apiKey: String? {
     set { apiManager.apiKey = newValue }
     get { apiManager.apiKey }

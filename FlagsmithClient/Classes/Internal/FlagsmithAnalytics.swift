@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Internal analytics for the **FlagsmithClient**
 class FlagsmithAnalytics {
   
   /// Indicates if analytics are enabled.
@@ -69,10 +70,7 @@ class FlagsmithAnalytics {
       return
     }
   
-    apiManager.request(
-      .postAnalytics(events: events),
-      emptyResponse: true
-    ) { [weak self] (result: Result<String, Error>) in
+    apiManager.request(.postAnalytics(events: events)) { [weak self] (result: Result<Void, Error>) in
       switch result {
       case .failure:
         print("Upload analytics failed")
