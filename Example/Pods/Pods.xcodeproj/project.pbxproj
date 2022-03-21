@@ -15,12 +15,14 @@
 		3CB1981582BED249B73F39640A046EC6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		3E267A21653D98B77234CDD42A3A1D59 /* Identity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3C161B19E351C1591E2039D787AD7C /* Identity.swift */; };
 		4A510C0AE712CD782D25F2276904F827 /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDEFBF90EE0DCCBEE1F3D989919BC4A /* Flag.swift */; };
-		7191FDB6E8F195E826AE8D6C713F25DE /* FlagsmithAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C872C8FED92D20AC2B23547F34B35 /* FlagsmithAnalytics.swift */; };
 		7219F5929D0335018EE8AB89735695D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		83D44370DA79D1E1C2C20ABD98D13475 /* FlagsmithClient-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EF53626DB8E67CE608BFEEB08DF2A5C /* FlagsmithClient-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9F21DA4355FE6A2AEDDDFFF891DF93B0 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EFB71AA5556DD77A4882DCEB418E2C /* APIManager.swift */; };
 		B7C44FEAEB3099494B79EA35B9F71DE0 /* FlagsmithClient-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A4CB83310920D7A2F76B1F4F715BA5 /* FlagsmithClient-dummy.m */; };
 		C5344C505516395035EAB8B9FC111FE2 /* Pods-FlagsmithClient_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F66D3EFFD8615AE149DCEEE155C049F /* Pods-FlagsmithClient_Example-dummy.m */; };
+		E119200D27E4E5CE00820B87 /* FlagsmithError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E119200827E4E5CE00820B87 /* FlagsmithError.swift */; };
+		E119200E27E4E5CE00820B87 /* FlagsmithAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E119200A27E4E5CE00820B87 /* FlagsmithAnalytics.swift */; };
+		E119200F27E4E5CE00820B87 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E119200B27E4E5CE00820B87 /* APIManager.swift */; };
+		E119201027E4E5CE00820B87 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = E119200C27E4E5CE00820B87 /* Router.swift */; };
 		E190202E27E24E7600C5EE2C /* TypedValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E190202D27E24E7600C5EE2C /* TypedValue.swift */; };
 		EE4568DD2E22CD3A570CAB24968F9BE7 /* UnknownTypeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 772F9BEA66F23FD7DB187ACBEB72BA93 /* UnknownTypeValue.swift */; };
 /* End PBXBuildFile section */
@@ -53,7 +55,6 @@
 		772F9BEA66F23FD7DB187ACBEB72BA93 /* UnknownTypeValue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UnknownTypeValue.swift; path = FlagsmithClient/Classes/UnknownTypeValue.swift; sourceTree = "<group>"; };
 		7CB5FDC929BB21CB23FFC8143AF6322F /* FlagsmithClient.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = FlagsmithClient.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		81A815D8A0C28062CD4A8224C6883D5D /* Pods-FlagsmithClient_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-FlagsmithClient_Example.modulemap"; sourceTree = "<group>"; };
-		85EFB71AA5556DD77A4882DCEB418E2C /* APIManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIManager.swift; path = FlagsmithClient/Classes/APIManager.swift; sourceTree = "<group>"; };
 		9B3C161B19E351C1591E2039D787AD7C /* Identity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Identity.swift; path = FlagsmithClient/Classes/Identity.swift; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A7D159AFD71C50F45CAAD458140D8648 /* Pods-FlagsmithClient_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FlagsmithClient_Example-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -65,10 +66,13 @@
 		C1CEBBBF5F9F986FB033B56D22422A4A /* Trait.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Trait.swift; path = FlagsmithClient/Classes/Trait.swift; sourceTree = "<group>"; };
 		C55271DDAE55BE2BA1AFA657FA24971A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C7A4CB83310920D7A2F76B1F4F715BA5 /* FlagsmithClient-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FlagsmithClient-dummy.m"; sourceTree = "<group>"; };
+		E119200827E4E5CE00820B87 /* FlagsmithError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlagsmithError.swift; path = FlagsmithClient/Classes/FlagsmithError.swift; sourceTree = "<group>"; };
+		E119200A27E4E5CE00820B87 /* FlagsmithAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlagsmithAnalytics.swift; sourceTree = "<group>"; };
+		E119200B27E4E5CE00820B87 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		E119200C27E4E5CE00820B87 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		E190202D27E24E7600C5EE2C /* TypedValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypedValue.swift; path = FlagsmithClient/Classes/TypedValue.swift; sourceTree = "<group>"; };
 		E28010F1C58E656FC37588C8A00FEE38 /* Pods-FlagsmithClient_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FlagsmithClient_Example-Info.plist"; sourceTree = "<group>"; };
 		ED741D6F7C10EB042045149B0E9347C9 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		F69C872C8FED92D20AC2B23547F34B35 /* FlagsmithAnalytics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlagsmithAnalytics.swift; path = FlagsmithClient/Classes/FlagsmithAnalytics.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,16 +122,16 @@
 		1A94E973B95A4D1E5D88FED450500C7B /* FlagsmithClient */ = {
 			isa = PBXGroup;
 			children = (
-				85EFB71AA5556DD77A4882DCEB418E2C /* APIManager.swift */,
 				A8A7BD53895AF16384B78CB7116DEBD7 /* Feature.swift */,
 				2DDEFBF90EE0DCCBEE1F3D989919BC4A /* Flag.swift */,
 				757CB2DED75CA13C202204D5B88B7B9A /* Flagsmith.swift */,
+				E119200827E4E5CE00820B87 /* FlagsmithError.swift */,
 				287971AEF04B8BFE50BA6B4E9CB5A76E /* Flagsmith+Concurrency.swift */,
-				F69C872C8FED92D20AC2B23547F34B35 /* FlagsmithAnalytics.swift */,
 				9B3C161B19E351C1591E2039D787AD7C /* Identity.swift */,
 				C1CEBBBF5F9F986FB033B56D22422A4A /* Trait.swift */,
 				E190202D27E24E7600C5EE2C /* TypedValue.swift */,
 				772F9BEA66F23FD7DB187ACBEB72BA93 /* UnknownTypeValue.swift */,
+				E119200927E4E5CE00820B87 /* Internal */,
 				6990B5B456D0DD19FB8DF9BFCBB4A363 /* Pod */,
 				126C2805424EF94E7A836D869A03013D /* Support Files */,
 			);
@@ -203,6 +207,17 @@
 				578452D2E740E91742655AC8F1636D1F /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E119200927E4E5CE00820B87 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				E119200A27E4E5CE00820B87 /* FlagsmithAnalytics.swift */,
+				E119200B27E4E5CE00820B87 /* APIManager.swift */,
+				E119200C27E4E5CE00820B87 /* Router.swift */,
+			);
+			name = Internal;
+			path = FlagsmithClient/Classes/Internal;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -319,14 +334,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F21DA4355FE6A2AEDDDFFF891DF93B0 /* APIManager.swift in Sources */,
 				0A2426C7E3721ED5AEADF4CC344F6642 /* Feature.swift in Sources */,
 				4A510C0AE712CD782D25F2276904F827 /* Flag.swift in Sources */,
 				E190202E27E24E7600C5EE2C /* TypedValue.swift in Sources */,
 				1845D603B597C651F0EE6080EF459DBB /* Flagsmith.swift in Sources */,
 				2C55F74AE43F34E4F3952F5B86AADBF5 /* Flagsmith+Concurrency.swift in Sources */,
-				7191FDB6E8F195E826AE8D6C713F25DE /* FlagsmithAnalytics.swift in Sources */,
+				E119200F27E4E5CE00820B87 /* APIManager.swift in Sources */,
+				E119201027E4E5CE00820B87 /* Router.swift in Sources */,
 				B7C44FEAEB3099494B79EA35B9F71DE0 /* FlagsmithClient-dummy.m in Sources */,
+				E119200E27E4E5CE00820B87 /* FlagsmithAnalytics.swift in Sources */,
+				E119200D27E4E5CE00820B87 /* FlagsmithError.swift in Sources */,
 				3E267A21653D98B77234CDD42A3A1D59 /* Identity.swift in Sources */,
 				36B29445E454DBDF1CD394B9155A9170 /* Trait.swift in Sources */,
 				EE4568DD2E22CD3A570CAB24968F9BE7 /* UnknownTypeValue.swift in Sources */,
