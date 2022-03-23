@@ -38,15 +38,33 @@ class FlagsmithAnalytics {
   }
   
   /// Invalidate and re-schedule timer for processing events
+  ///
+  /// On Apple (Darwin) platforms, this uses the Objective-C based
+  /// target/selector message sending API.
+  ///
+  /// Non-Darwin systems will use the corelibs Foundation block-based
+  /// api. Both platforms could use this approach, but the podspec
+  /// declares iOS 8.0 as a minimum target, and that api is only
+  /// available on 10+. (12.0 would be a good base in the future).
   private func setupTimer() {
     timer?.invalidate()
+    #if canImport(ObjectiveC)
     timer = Timer.scheduledTimer(
       timeInterval: TimeInterval(flushPeriod),
       target: self,
-      selector: #selector(postAnalytics(_:)),
+      selector: #selector(postAnalyticsWhenEnabled(_:)),
       userInfo: nil,
       repeats: true
     )
+    #else
+    timer = Timer.scheduledTimer(
+      withTimeInterval: TimeInterval(flushPeriod),
+      repeats: true,
+      block: { [weak self] _ in
+        self?.postAnalytics()
+      }
+    )
+    #endif
   }
   
   /// Reset events after successful processing.
@@ -61,15 +79,15 @@ class FlagsmithAnalytics {
   }
   
   /// Send analytics to the api when enabled.
-  @objc private func postAnalytics(_ timer: Timer) {
+  private func postAnalytics() {
     guard enableAnalytics else {
       return
     }
-  
+    
     guard !events.isEmpty else {
       return
     }
-  
+    
     apiManager.request(.postAnalytics(events: events)) { [weak self] (result: Result<Void, Error>) in
       switch result {
       case .failure:
@@ -79,4 +97,13 @@ class FlagsmithAnalytics {
       }
     }
   }
+  
+  #if canImport(ObjectiveC)
+  /// Event triggered when timer fired.
+  ///
+  /// Exposed on Apple platforms to relay selector-based events
+  @objc private func postAnalyticsWhenEnabled(_ timer: Timer) {
+    postAnalytics()
+  }
+  #endif
 }
