@@ -16,7 +16,7 @@ class APIManager {
   private let session: URLSession
   
   /// Base `URL` used for requests.
-  var baseURL = URL(string: "https://api.flagsmith.com/api/v1/")!
+  var baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
   /// API Key unique to an organization.
   var apiKey: String?
   
