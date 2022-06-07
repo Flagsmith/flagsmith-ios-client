@@ -10,7 +10,7 @@ import XCTest
 
 final class RouterTests: FlagsmithClientTestCase {
     
-    let baseUrl = URL(string: "https://api.flagsmith.com/api/v1")
+    let baseUrl = URL(string: "https://edge.api.flagsmith.com/api/v1")
     let apiKey = "E71DC632-82BA-4522-82F3-D39FB6DC90AC"
     
     func testGetFlagsRequest() throws {
@@ -18,7 +18,7 @@ final class RouterTests: FlagsmithClientTestCase {
         let route = Router.getFlags
         let request = try route.request(baseUrl: url, apiKey: apiKey)
         XCTAssertEqual(request.httpMethod, "GET")
-        XCTAssertEqual(request.url?.absoluteString, "https://api.flagsmith.com/api/v1/flags/")
+        XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/flags/")
         XCTAssertTrue(request.allHTTPHeaderFields?.contains(where: { $0.key == "X-Environment-Key" }) ?? false)
         XCTAssertNil(request.httpBody)
     }
@@ -28,7 +28,7 @@ final class RouterTests: FlagsmithClientTestCase {
         let route = Router.getIdentity(identity: "6056BCBF")
         let request = try route.request(baseUrl: url, apiKey: apiKey)
         XCTAssertEqual(request.httpMethod, "GET")
-        XCTAssertEqual(request.url?.absoluteString, "https://api.flagsmith.com/api/v1/identities/?identifier=6056BCBF")
+        XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/identities/?identifier=6056BCBF")
         XCTAssertTrue(request.allHTTPHeaderFields?.contains(where: { $0.key == "X-Environment-Key" }) ?? false)
         XCTAssertNil(request.httpBody)
     }
@@ -39,7 +39,7 @@ final class RouterTests: FlagsmithClientTestCase {
         let route = Router.postTrait(trait: trait, identity: "CFF8D9CA")
         let request = try route.request(baseUrl: url, apiKey: apiKey, using: encoder)
         XCTAssertEqual(request.httpMethod, "POST")
-        XCTAssertEqual(request.url?.absoluteString, "https://api.flagsmith.com/api/v1/traits/")
+        XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/traits/")
         
         let json = """
         {
@@ -66,7 +66,7 @@ final class RouterTests: FlagsmithClientTestCase {
         let request = try route.request(baseUrl: url, apiKey: apiKey, using: encoder)
         
         XCTAssertEqual(request.httpMethod, "POST")
-        XCTAssertEqual(request.url?.absoluteString, "https://api.flagsmith.com/api/v1/analytics/flags/")
+        XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/analytics/flags/")
         
         let json = """
         {

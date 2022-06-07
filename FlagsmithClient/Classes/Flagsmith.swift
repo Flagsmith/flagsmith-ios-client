@@ -17,7 +17,7 @@ public class Flagsmith {
   
   /// Base URL
   ///
-  /// The default implementation uses: `https://api.flagsmith.com/api/v1`.
+  /// The default implementation uses: `https://edge.api.flagsmith.com/api/v1`.
   public var baseURL: URL {
     set { apiManager.baseURL = newValue }
     get { apiManager.baseURL }
