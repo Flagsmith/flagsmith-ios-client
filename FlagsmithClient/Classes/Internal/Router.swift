@@ -19,13 +19,14 @@ enum Router {
   case getFlags
   case getIdentity(identity: String)
   case postTrait(trait: Trait, identity: String)
+  case postTraits(identity: String, traits: [Trait])
   case postAnalytics(events: [String:Int])
   
   private var method: HTTPMethod {
     switch self {
     case .getFlags, .getIdentity:
       return .get
-    case .postTrait, .postAnalytics:
+    case .postTrait, .postTraits, .postAnalytics:
       return .post
     }
   }
@@ -34,7 +35,7 @@ enum Router {
     switch self {
     case .getFlags:
       return "flags/"
-    case .getIdentity:
+    case .getIdentity, .postTraits:
       return "identities/"
     case .postTrait:
       return "traits/"
@@ -45,7 +46,7 @@ enum Router {
 
   private var parameters: [URLQueryItem]? {
     switch self {
-    case .getIdentity(let identity):
+    case .getIdentity(let identity), .postTraits(let identity, _):
       return [URLQueryItem(name: "identifier", value: identity)]
     default:
       return nil
@@ -59,6 +60,9 @@ enum Router {
     case .postTrait(let trait, let identifier):
       let traitWithIdentity = Trait(trait: trait, identifier: identifier)
       return try encoder.encode(traitWithIdentity)
+    case .postTraits(let identifier, let traits):
+      let traitsWithIdentity = Traits(traits: traits, identifier: identifier)
+      return try encoder.encode(traitsWithIdentity)
     case .postAnalytics(let events):
       return try encoder.encode(events)
     }

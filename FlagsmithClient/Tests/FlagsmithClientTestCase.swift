@@ -10,11 +10,6 @@ import XCTest
 
 class FlagsmithClientTestCase: XCTestCase {
     
-    let encoder: JSONEncoder = {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        return encoder
-    }()
-    
+    let encoder: JSONEncoder = .init()
     let decoder: JSONDecoder = .init()
 }

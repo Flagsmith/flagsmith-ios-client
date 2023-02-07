@@ -61,8 +61,7 @@ final class TraitTests: FlagsmithClientTestCase {
         let wrappedTrait = Trait(key: "dark_mode", value: .bool(true))
         let trait = Trait(trait: wrappedTrait, identifier: "theme_settings")
         let data = try encoder.encode(trait)
-        let json = try XCTUnwrap(String(data: data, encoding: .utf8))
-        XCTAssertEqual(json, """
+        let json = try """
         {
           "identity" : {
             "identifier" : "theme_settings"
@@ -70,6 +69,7 @@ final class TraitTests: FlagsmithClientTestCase {
           "trait_key" : "dark_mode",
           "trait_value" : true
         }
-        """)
+        """.json(using: .utf8)
+        XCTAssertEqual(try data.json(), json)
     }
 }
