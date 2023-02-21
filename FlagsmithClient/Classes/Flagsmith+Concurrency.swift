@@ -142,6 +142,25 @@ public extension Flagsmith {
       }
     })
   }
+
+  /// Set user traits in bulk for provided identity
+  ///
+  /// - Parameters:
+  ///   - trait: Traits to be created or updated
+  ///   - identity: ID of the user
+  /// - returns: The Traits requested to be set.
+  @discardableResult func setTraits(_ traits: [Trait], forIdentity identity: String) async throws -> [Trait] {
+      try await withCheckedThrowingContinuation({ continuation in
+          setTraits(traits, forIdentity: identity) { result in
+              switch result {
+              case .failure(let error):
+                  continuation.resume(throwing: error)
+              case .success(let value):
+                  continuation.resume(returning: value)
+              }
+          }
+      })
+  }
   
   /// Get both feature flags and user traits for the provided identity
   ///
