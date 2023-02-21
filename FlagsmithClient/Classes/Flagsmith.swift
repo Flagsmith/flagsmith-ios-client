@@ -189,6 +189,20 @@ public class Flagsmith {
       completion(result)
     }
   }
+
+  /// Set user traits in bulk for provided identity
+  ///
+  /// - Parameters:
+  ///   - traits: Traits to be created or updated
+  ///   - identity: ID of the user
+  ///   - completion: Closure with Result which contains Traits in case of success or Error in case of failure
+  public func setTraits(_ traits: [Trait],
+                        forIdentity identity: String,
+                        completion: @escaping (Result<[Trait], Error>) -> Void) {
+    apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<[Trait], Error>) in
+      completion(result)
+    }
+  }
   
   /// Get both feature flags and user traits for the provided identity
   ///
