@@ -199,8 +199,8 @@ public class Flagsmith {
   public func setTraits(_ traits: [Trait],
                         forIdentity identity: String,
                         completion: @escaping (Result<[Trait], Error>) -> Void) {
-    apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<[Trait], Error>) in
-      completion(result)
+    apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
+        completion(result.map(\.traits))
     }
   }
   
