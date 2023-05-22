@@ -18,6 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     Flagsmith.shared.apiKey = "<add your API key from the Flagsmith settings page>"
+      
+    // set default flags
+    Flagsmith.shared.defaultFlags = [Flag(featureName: "feature_a", enabled: false),
+                                     Flag(featureName: "font_size", intValue:12, enabled: true),
+                                     Flag(featureName: "my_name", stringValue:"Testing", enabled: true)]
+    
+    // set cache on / off (defaults to on)
+    Flagsmith.shared.useCache = true
     
     // set analytics on or off
     Flagsmith.shared.enableAnalytics = true

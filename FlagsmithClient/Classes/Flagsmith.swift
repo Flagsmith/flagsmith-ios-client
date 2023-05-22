@@ -42,6 +42,15 @@ public class Flagsmith {
     set { analytics.flushPeriod = newValue }
     get { analytics.flushPeriod }
   }
+  
+  /// Default flags to fall back on if an API call fails
+  public var defaultFlags: [Flag] = []
+
+  /// Cached flags to fall back on if an API call fails, by identity
+  private var cachedFlags: [String:[Flag]] = [:]
+    
+  /// Use cached values?
+  public var useCache: Bool = true
 
   private init() {}
   
@@ -56,6 +65,7 @@ public class Flagsmith {
       getIdentity(identity) { (result) in
         switch result {
         case .success(let identity):
+          self.updateCache(flags: identity.flags)
           completion(.success(identity.flags))
         case .failure(let error):
           completion(.failure(error))
@@ -82,6 +92,8 @@ public class Flagsmith {
       switch result {
       case .success(let flags):
         let hasFlag = flags.contains(where: {$0.feature.name == id && $0.enabled})
+        || (self.useCache && self.getCache(forIdentity: identity).contains(where: {$0.feature.name == id && $0.enabled}))
+        || self.defaultFlags.contains(where: {$0.feature.name == id && $0.enabled})
         completion(.success(hasFlag))
       case .failure(let error):
         completion(.failure(error))
@@ -103,12 +115,31 @@ public class Flagsmith {
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
-        let value = flags.first(where: {$0.feature.name == id})?.value
+        var value = flags.first(where: {$0.feature.name == id})?.value
+        if value == nil && self.useCache {
+          value = self.getCache(forIdentity: identity).first(where: {$0.feature.name == id})?.value
+        }
+        if value == nil {
+          value = self.defaultFlags.first(where: {$0.feature.name == id})?.value
+        }
         completion(.success(value?.stringValue))
       case .failure(let error):
         completion(.failure(error))
       }
     }
+  }
+  
+  private func updateCache(flags:[Flag], forIdentity identity: String? = nil) {
+    for flag in flags {
+      var identityCachedFlags = getCache(forIdentity: identity)
+      identityCachedFlags.removeAll(where: {$0.feature.name == flag.feature.name})
+      identityCachedFlags.append(flag)
+      self.cachedFlags[identity ?? "nil-identity"] = identityCachedFlags
+    }
+  }
+  
+  private func getCache(forIdentity identity: String? = nil) -> [Flag] {
+    return self.cachedFlags[identity ?? "nil-identity"] ?? []
   }
     
   /// Get remote config value optionally for a specific identity
@@ -124,7 +155,13 @@ public class Flagsmith {
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
-        let value = flags.first(where: {$0.feature.name == id})?.value
+        var value = flags.first(where: {$0.feature.name == id})?.value
+        if value == nil && self.useCache {
+          value = self.getCache(forIdentity: identity).first(where: {$0.feature.name == id})?.value
+        }
+        if value == nil {
+          value = self.defaultFlags.first(where: {$0.feature.name == id})?.value
+        }
         completion(.success(value))
       case .failure(let error):
         completion(.failure(error))

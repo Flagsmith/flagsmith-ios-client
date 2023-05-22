@@ -21,4 +21,10 @@ public struct Feature: Decodable {
   public let name: String
   public let type: String?
   public let description: String?
+  
+  init(name: String, type: String?, description: String?) {
+    self.name = name
+    self.type = type
+    self.description = description
+  }
 }
