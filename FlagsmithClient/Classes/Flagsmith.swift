@@ -46,13 +46,22 @@ public class Flagsmith {
   /// Default flags to fall back on if an API call fails
   public var defaultFlags: [Flag] = []
 
+  private let CACHED_FLAGS_KEY = "cachedFlags"
+  private let NIL_IDENTITY_KEY = "nil-identity"
+  
   /// Cached flags to fall back on if an API call fails, by identity
   private var cachedFlags: [String:[Flag]] = [:]
     
-  /// Use cached values?
+  /// Use cached flags as a fallback?
   public var useCache: Bool = true
 
-  private init() {}
+  private init() {
+    if let data = UserDefaults.standard.value(forKey: CACHED_FLAGS_KEY) as? Data {
+      if let cachedFlagsObject = try? JSONDecoder().decode([String:[Flag]].self, from: data) {
+        self.cachedFlags = cachedFlagsObject
+      }
+    }
+  }
   
   /// Get all feature flags (flags and remote config) optionally for a specific identity
   ///
@@ -64,16 +73,34 @@ public class Flagsmith {
     if let identity = identity {
       getIdentity(identity) { (result) in
         switch result {
-        case .success(let identity):
-          self.updateCache(flags: identity.flags)
-          completion(.success(identity.flags))
+        case .success(let thisIdentity):
+          self.updateCache(flags: thisIdentity.flags, forIdentity: identity)
+          completion(.success(self.getFlagsUsingCacheAndDefaults(flags: thisIdentity.flags, forIdentity: identity)))
         case .failure(let error):
-          completion(.failure(error))
+          let fallbackFlags = self.getFlagsUsingCacheAndDefaults(flags: [], forIdentity: identity)
+          if fallbackFlags.isEmpty {
+            completion(.failure(error))
+          }
+          else {
+            completion(.success(fallbackFlags))
+          }
         }
       }
     } else {
       apiManager.request(.getFlags) { (result: Result<[Flag], Error>) in
-        completion(result)
+        switch result {
+        case .success(let flags):
+          self.updateCache(flags: flags, forIdentity: identity)
+          completion(.success(self.getFlagsUsingCacheAndDefaults(flags: flags, forIdentity: identity)))
+        case .failure(let error):
+          let fallbackFlags = self.getFlagsUsingCacheAndDefaults(flags: [], forIdentity: identity)
+          if fallbackFlags.isEmpty {
+            completion(.failure(error))
+          }
+          else {
+            completion(.success(fallbackFlags))
+          }
+        }
       }
     }
   }
@@ -115,31 +142,14 @@ public class Flagsmith {
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
-        var value = flags.first(where: {$0.feature.name == id})?.value
-        if value == nil && self.useCache {
-          value = self.getCache(forIdentity: identity).first(where: {$0.feature.name == id})?.value
-        }
-        if value == nil {
-          value = self.defaultFlags.first(where: {$0.feature.name == id})?.value
-        }
-        completion(.success(value?.stringValue))
+        var flag = flags.first(where: {$0.feature.name == id})
+        flag = self.getFlagUsingCacheAndDefaults(withID: id, flag: flag, forIdentity: identity)
+
+        completion(.success(flag?.value.stringValue))
       case .failure(let error):
         completion(.failure(error))
       }
     }
-  }
-  
-  private func updateCache(flags:[Flag], forIdentity identity: String? = nil) {
-    for flag in flags {
-      var identityCachedFlags = getCache(forIdentity: identity)
-      identityCachedFlags.removeAll(where: {$0.feature.name == flag.feature.name})
-      identityCachedFlags.append(flag)
-      self.cachedFlags[identity ?? "nil-identity"] = identityCachedFlags
-    }
-  }
-  
-  private func getCache(forIdentity identity: String? = nil) -> [Flag] {
-    return self.cachedFlags[identity ?? "nil-identity"] ?? []
   }
     
   /// Get remote config value optionally for a specific identity
@@ -155,14 +165,9 @@ public class Flagsmith {
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
-        var value = flags.first(where: {$0.feature.name == id})?.value
-        if value == nil && self.useCache {
-          value = self.getCache(forIdentity: identity).first(where: {$0.feature.name == id})?.value
-        }
-        if value == nil {
-          value = self.defaultFlags.first(where: {$0.feature.name == id})?.value
-        }
-        completion(.success(value))
+        var flag = flags.first(where: {$0.feature.name == id})
+        flag = self.getFlagUsingCacheAndDefaults(withID: id, flag: flag, forIdentity: identity)
+        completion(.success(flag?.value))
       case .failure(let error):
         completion(.failure(error))
       }
@@ -251,5 +256,63 @@ public class Flagsmith {
     apiManager.request(.getIdentity(identity: identity)) { (result: Result<Identity, Error>) in
       completion(result)
     }
+  }
+  
+  /// Return a flag for a flag ID and identity, using either the cache (if enabled) or the default flag when the passed flag is nil
+  private func getFlagUsingCacheAndDefaults(withID id: String, flag:Flag?, forIdentity identity: String? = nil) -> Flag? {
+    var returnFlag = flag
+    if returnFlag == nil && self.useCache {
+      returnFlag = self.getCache(forIdentity: identity).first(where: {$0.feature.name == id})
+    }
+    if returnFlag == nil {
+      returnFlag = self.defaultFlags.first(where: {$0.feature.name == id})
+    }
+    
+    return returnFlag
+  }
+
+  /// Return an array of flag for an identity, including the cached flags (if enabled) and the default flags when they are not already present in the passed array
+  private func getFlagsUsingCacheAndDefaults(flags:[Flag], forIdentity identity: String? = nil) -> [Flag] {
+    var returnFlags:[Flag] = []
+    returnFlags.append(contentsOf: flags)
+    
+    if useCache {
+      for flag in getCache(forIdentity: identity) {
+        if !returnFlags.contains(where: { $0.feature.name == flag.feature.name }) {
+          if flag.value != .null {
+            returnFlags.append(flag)
+          }
+        }
+      }
+    }
+
+    for flag in defaultFlags {
+      if !returnFlags.contains(where: { $0.feature.name == flag.feature.name }) {
+        if flag.value != .null {
+          returnFlags.append(flag)
+        }
+      }
+    }
+    
+    return returnFlags
+  }
+
+  /// Update the cache for an identity for a set of flags, and store
+  private func updateCache(flags:[Flag], forIdentity identity: String? = nil) {
+    for flag in flags {
+      var identityCachedFlags = getCache(forIdentity: identity)
+      identityCachedFlags.removeAll(where: {$0.feature.name == flag.feature.name})
+      identityCachedFlags.append(flag)
+      self.cachedFlags[identity ?? NIL_IDENTITY_KEY] = identityCachedFlags
+    }
+      
+    if let data = try? JSONEncoder().encode(cachedFlags) {
+        UserDefaults.standard.set(data, forKey: CACHED_FLAGS_KEY)
+    }
+  }
+  
+  /// Get the cached flags for an identity
+  private func getCache(forIdentity identity: String? = nil) -> [Flag] {
+    return self.cachedFlags[identity ?? NIL_IDENTITY_KEY] ?? []
   }
 }

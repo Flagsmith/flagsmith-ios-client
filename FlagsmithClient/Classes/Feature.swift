@@ -10,7 +10,7 @@ import Foundation
 /**
  A Feature represents a flag or remote configuration value on the server.
  */
-public struct Feature: Decodable {
+public struct Feature: Codable {
   enum CodingKeys: String, CodingKey {
     case name
     case type
@@ -26,5 +26,12 @@ public struct Feature: Decodable {
     self.name = name
     self.type = type
     self.description = description
+  }
+  
+  public func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(self.name, forKey: .name)
+      try container.encodeIfPresent(self.type, forKey: .type)
+      try container.encodeIfPresent(self.description, forKey: .description)
   }
 }
