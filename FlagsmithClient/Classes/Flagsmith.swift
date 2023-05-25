@@ -56,7 +56,7 @@ public class Flagsmith {
   public var useCache: Bool = true
 
   private init() {
-    if let data = UserDefaults.standard.value(forKey: CACHED_FLAGS_KEY) as? Data {
+    if let data = UserDefaults.standard.object(forKey: CACHED_FLAGS_KEY) as? Data {
       if let cachedFlagsObject = try? JSONDecoder().decode([String:[Flag]].self, from: data) {
         self.cachedFlags = cachedFlagsObject
       }
