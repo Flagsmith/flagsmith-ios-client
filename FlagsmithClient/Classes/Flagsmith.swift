@@ -143,7 +143,9 @@ public class Flagsmith {
       switch result {
       case .success(let flags):
         var flag = flags.first(where: {$0.feature.name == id})
-        flag = self.getFlagUsingCacheAndDefaults(withID: id, flag: flag, forIdentity: identity)
+        if flag == nil {
+          flag = self.getFlagUsingCacheAndDefaults(withID: id, forIdentity: identity)
+        }
 
         completion(.success(flag?.value.stringValue))
       case .failure(let error):
@@ -166,7 +168,9 @@ public class Flagsmith {
       switch result {
       case .success(let flags):
         var flag = flags.first(where: {$0.feature.name == id})
-        flag = self.getFlagUsingCacheAndDefaults(withID: id, flag: flag, forIdentity: identity)
+        if flag == nil {
+          flag = self.getFlagUsingCacheAndDefaults(withID: id, forIdentity: identity)
+        }
         completion(.success(flag?.value))
       case .failure(let error):
         completion(.failure(error))
@@ -258,17 +262,17 @@ public class Flagsmith {
     }
   }
   
-  /// Return a flag for a flag ID and identity, using either the cache (if enabled) or the default flag when the passed flag is nil
-  private func getFlagUsingCacheAndDefaults(withID id: String, flag:Flag?, forIdentity identity: String? = nil) -> Flag? {
-    var returnFlag = flag
-    if returnFlag == nil && self.useCache {
-      returnFlag = self.getCache(forIdentity: identity).first(where: {$0.feature.name == id})
+  /// Return a flag for a flag ID and identity, using either the cache (if enabled) or the default flags
+  private func getFlagUsingCacheAndDefaults(withID id: String, forIdentity identity: String? = nil) -> Flag? {
+    var flag:Flag?
+    if useCache {
+      flag = self.getCache(forIdentity: identity).first(where: {$0.feature.name == id})
     }
-    if returnFlag == nil {
-      returnFlag = self.defaultFlags.first(where: {$0.feature.name == id})
+    if flag == nil {
+      flag = self.defaultFlags.first(where: {$0.feature.name == id})
     }
     
-    return returnFlag
+    return flag
   }
 
   /// Return an array of flag for an identity, including the cached flags (if enabled) and the default flags when they are not already present in the passed array
