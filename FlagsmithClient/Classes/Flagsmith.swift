@@ -83,6 +83,7 @@ public class Flagsmith {
     // Skip the API call if the skipAPI boolean is true, and we have an in-date cache
     if useCache && skipAPI && !getCache(forIdentity: identity).isEmpty {
       completion(.success(self.getFlagsUsingCacheAndDefaults(flags: [], forIdentity: identity)))
+      return
     }
     
     if let identity = identity {
@@ -161,7 +162,7 @@ public class Flagsmith {
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
-        var flag = flags.first(where: {$0.feature.name == id})
+        let flag = flags.first(where: {$0.feature.name == id})
         completion(.success(flag?.value.stringValue))
       case .failure(let error):
         if let flag = self.getFlagUsingCacheAndDefaults(withID: id, forIdentity: identity) {
@@ -297,7 +298,7 @@ public class Flagsmith {
     return flag
   }
 
-  /// Return an array of flag for an identity, including the cached flags (if enabled) and the default flags when they are not already present in the passed array
+  /// Return an array of flags for an identity, including the cached flags (if enabled) and the default flags when they are not already present in the passed array
   private func getFlagsUsingCacheAndDefaults(flags:[Flag], forIdentity identity: String? = nil) -> [Flag] {
     var returnFlags:[Flag] = []
     returnFlags.append(contentsOf: flags)
