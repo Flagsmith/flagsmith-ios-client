@@ -26,7 +26,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // set cache on / off (defaults to on)
     Flagsmith.shared.useCache = true
-    
+
+    // set skip API on / off (defaults to off)
+    Flagsmith.shared.skipAPI = false
+
+    // set cache TTL in seconds (defaults to 0, i.e. infinite)
+    Flagsmith.shared.cacheTTL = 0
+
     // set analytics on or off
     Flagsmith.shared.enableAnalytics = true
     

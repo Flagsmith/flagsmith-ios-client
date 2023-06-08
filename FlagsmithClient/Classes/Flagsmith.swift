@@ -81,7 +81,7 @@ public class Flagsmith {
                               completion: @escaping (Result<[Flag], Error>) -> Void) {
     
     // Skip the API call if the skipAPI boolean is true, and we have an in-date cache
-    if useCache && skipAPI && !cachedFlags.isEmpty && (cacheTTL == 0 || (Date.timeIntervalSinceReferenceDate - cacheLastPopulated) < cacheTTL) {
+    if useCache && skipAPI && !getCache(forIdentity: identity).isEmpty {
       completion(.success(self.getFlagsUsingCacheAndDefaults(flags: [], forIdentity: identity)))
     }
     
@@ -342,6 +342,9 @@ public class Flagsmith {
   
   /// Get the cached flags for an identity
   private func getCache(forIdentity identity: String? = nil) -> [Flag] {
-    return self.cachedFlags[identity ?? NIL_IDENTITY_KEY] ?? []
+    if cacheTTL == 0 || (Date.timeIntervalSinceReferenceDate - cacheLastPopulated) < cacheTTL {
+      return self.cachedFlags[identity ?? NIL_IDENTITY_KEY] ?? []
+    }
+    return []
   }
 }
