@@ -47,13 +47,21 @@ public class Flagsmith {
   public var defaultFlags: [Flag] = []
 
   private let CACHED_FLAGS_KEY = "cachedFlags"
+  private let CACHE_LAST_POPULATED_KEY = "cacheLastPopulated"
   private let NIL_IDENTITY_KEY = "nil-identity"
   
   /// Cached flags to fall back on if an API call fails, by identity
   private var cachedFlags: [String:[Flag]] = [:]
+  private var cacheLastPopulated:Double = 0.0
     
   /// Use cached flags as a fallback?
   public var useCache: Bool = true
+
+  /// TTL for the cache in seconds, default of 0 means infinite
+  public var cacheTTL: Double = 0
+
+  /// Skip API if there is a cache available
+  public var skipAPI: Bool = false
 
   private init() {
     if let data = UserDefaults.standard.object(forKey: CACHED_FLAGS_KEY) as? Data {
@@ -61,6 +69,7 @@ public class Flagsmith {
         self.cachedFlags = cachedFlagsObject
       }
     }
+    self.cacheLastPopulated = UserDefaults.standard.double(forKey: CACHE_LAST_POPULATED_KEY)
   }
   
   /// Get all feature flags (flags and remote config) optionally for a specific identity
@@ -70,12 +79,18 @@ public class Flagsmith {
   ///   - completion: Closure with Result which contains array of Flag objects in case of success or Error in case of failure
   public func getFeatureFlags(forIdentity identity: String? = nil,
                               completion: @escaping (Result<[Flag], Error>) -> Void) {
+    
+    // Skip the API call if the skipAPI boolean is true, and we have an in-date cache
+    if useCache && skipAPI && !cachedFlags.isEmpty && (cacheTTL == 0 || (Date.timeIntervalSinceReferenceDate - cacheLastPopulated) < cacheTTL) {
+      completion(.success(self.getFlagsUsingCacheAndDefaults(flags: [], forIdentity: identity)))
+    }
+    
     if let identity = identity {
       getIdentity(identity) { (result) in
         switch result {
         case .success(let thisIdentity):
           self.updateCache(flags: thisIdentity.flags, forIdentity: identity)
-          completion(.success(self.getFlagsUsingCacheAndDefaults(flags: thisIdentity.flags, forIdentity: identity)))
+          completion(.success(thisIdentity.flags))
         case .failure(let error):
           let fallbackFlags = self.getFlagsUsingCacheAndDefaults(flags: [], forIdentity: identity)
           if fallbackFlags.isEmpty {
@@ -90,8 +105,8 @@ public class Flagsmith {
       apiManager.request(.getFlags) { (result: Result<[Flag], Error>) in
         switch result {
         case .success(let flags):
-          self.updateCache(flags: flags, forIdentity: identity)
-          completion(.success(self.getFlagsUsingCacheAndDefaults(flags: flags, forIdentity: identity)))
+          self.updateCache(flags: flags)
+          completion(.success(flags))
         case .failure(let error):
           let fallbackFlags = self.getFlagsUsingCacheAndDefaults(flags: [], forIdentity: identity)
           if fallbackFlags.isEmpty {
@@ -119,11 +134,15 @@ public class Flagsmith {
       switch result {
       case .success(let flags):
         let hasFlag = flags.contains(where: {$0.feature.name == id && $0.enabled})
-        || (self.useCache && self.getCache(forIdentity: identity).contains(where: {$0.feature.name == id && $0.enabled}))
-        || self.defaultFlags.contains(where: {$0.feature.name == id && $0.enabled})
         completion(.success(hasFlag))
       case .failure(let error):
-        completion(.failure(error))
+        if (self.useCache && self.getCache(forIdentity: identity).contains(where: {$0.feature.name == id && $0.enabled}))
+            || self.defaultFlags.contains(where: {$0.feature.name == id && $0.enabled}) {
+          completion(.success(true))
+        }
+        else {
+          completion(.failure(error))
+        }
       }
     }
   }
@@ -143,13 +162,14 @@ public class Flagsmith {
       switch result {
       case .success(let flags):
         var flag = flags.first(where: {$0.feature.name == id})
-        if flag == nil {
-          flag = self.getFlagUsingCacheAndDefaults(withID: id, forIdentity: identity)
-        }
-
         completion(.success(flag?.value.stringValue))
       case .failure(let error):
-        completion(.failure(error))
+        if let flag = self.getFlagUsingCacheAndDefaults(withID: id, forIdentity: identity) {
+          completion(.success(flag.value.stringValue))
+        }
+        else {
+          completion(.failure(error))
+        }
       }
     }
   }
@@ -168,12 +188,14 @@ public class Flagsmith {
       switch result {
       case .success(let flags):
         var flag = flags.first(where: {$0.feature.name == id})
-        if flag == nil {
-          flag = self.getFlagUsingCacheAndDefaults(withID: id, forIdentity: identity)
-        }
         completion(.success(flag?.value))
       case .failure(let error):
-        completion(.failure(error))
+        if let flag = self.getFlagUsingCacheAndDefaults(withID: id, forIdentity: identity) {
+          completion(.success(flag.value))
+        }
+        else {
+          completion(.failure(error))
+        }
       }
     }
   }
@@ -311,8 +333,11 @@ public class Flagsmith {
     }
       
     if let data = try? JSONEncoder().encode(cachedFlags) {
-        UserDefaults.standard.set(data, forKey: CACHED_FLAGS_KEY)
+      UserDefaults.standard.set(data, forKey: CACHED_FLAGS_KEY)
     }
+
+    cacheLastPopulated = Date.timeIntervalSinceReferenceDate
+    UserDefaults.standard.set(cacheLastPopulated, forKey: CACHE_LAST_POPULATED_KEY)
   }
   
   /// Get the cached flags for an identity
