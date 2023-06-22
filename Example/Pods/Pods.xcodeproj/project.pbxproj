@@ -20,6 +20,7 @@
 		B7C44FEAEB3099494B79EA35B9F71DE0 /* FlagsmithClient-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A4CB83310920D7A2F76B1F4F715BA5 /* FlagsmithClient-dummy.m */; };
 		C5344C505516395035EAB8B9FC111FE2 /* Pods-FlagsmithClient_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F66D3EFFD8615AE149DCEEE155C049F /* Pods-FlagsmithClient_Example-dummy.m */; };
 		DA2D2B182A1BBFF200CD98D9 /* Traits.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2D2B172A1BBFF200CD98D9 /* Traits.swift */; };
+		DAB856122A4455B2000520DC /* CachedURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB856112A4455B2000520DC /* CachedURLResponse.swift */; };
 		E119200D27E4E5CE00820B87 /* FlagsmithError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E119200827E4E5CE00820B87 /* FlagsmithError.swift */; };
 		E119200E27E4E5CE00820B87 /* FlagsmithAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E119200A27E4E5CE00820B87 /* FlagsmithAnalytics.swift */; };
 		E119200F27E4E5CE00820B87 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E119200B27E4E5CE00820B87 /* APIManager.swift */; };
@@ -68,9 +69,10 @@
 		C55271DDAE55BE2BA1AFA657FA24971A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C7A4CB83310920D7A2F76B1F4F715BA5 /* FlagsmithClient-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FlagsmithClient-dummy.m"; sourceTree = "<group>"; };
 		DA2D2B172A1BBFF200CD98D9 /* Traits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Traits.swift; path = FlagsmithClient/Classes/Traits.swift; sourceTree = "<group>"; };
+		DAB856112A4455B2000520DC /* CachedURLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachedURLResponse.swift; sourceTree = "<group>"; };
 		E119200827E4E5CE00820B87 /* FlagsmithError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlagsmithError.swift; path = FlagsmithClient/Classes/FlagsmithError.swift; sourceTree = "<group>"; };
 		E119200A27E4E5CE00820B87 /* FlagsmithAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlagsmithAnalytics.swift; sourceTree = "<group>"; };
-		E119200B27E4E5CE00820B87 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		E119200B27E4E5CE00820B87 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; tabWidth = 2; };
 		E119200C27E4E5CE00820B87 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		E190202D27E24E7600C5EE2C /* TypedValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypedValue.swift; path = FlagsmithClient/Classes/TypedValue.swift; sourceTree = "<group>"; };
 		E28010F1C58E656FC37588C8A00FEE38 /* Pods-FlagsmithClient_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FlagsmithClient_Example-Info.plist"; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 		E119200927E4E5CE00820B87 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				DAB856112A4455B2000520DC /* CachedURLResponse.swift */,
 				E119200A27E4E5CE00820B87 /* FlagsmithAnalytics.swift */,
 				E119200B27E4E5CE00820B87 /* APIManager.swift */,
 				E119200C27E4E5CE00820B87 /* Router.swift */,
@@ -341,6 +344,7 @@
 				4A510C0AE712CD782D25F2276904F827 /* Flag.swift in Sources */,
 				E190202E27E24E7600C5EE2C /* TypedValue.swift in Sources */,
 				1845D603B597C651F0EE6080EF459DBB /* Flagsmith.swift in Sources */,
+				DAB856122A4455B2000520DC /* CachedURLResponse.swift in Sources */,
 				DA2D2B182A1BBFF200CD98D9 /* Traits.swift in Sources */,
 				2C55F74AE43F34E4F3952F5B86AADBF5 /* Flagsmith+Concurrency.swift in Sources */,
 				E119200F27E4E5CE00820B87 /* APIManager.swift in Sources */,

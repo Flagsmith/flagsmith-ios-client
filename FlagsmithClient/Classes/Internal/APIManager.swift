@@ -11,19 +11,61 @@ import FoundationNetworking
 #endif
 
 /// Handles interaction with a **Flagsmith** api.
-class APIManager {
+class APIManager : NSObject, URLSessionDataDelegate {
   
-  private let session: URLSession
+  private var session: URLSession!
   
   /// Base `URL` used for requests.
   var baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
   /// API Key unique to an organization.
   var apiKey: String?
+    
+  // store the completion handlers and accumulated data for each task
+  private var tasksToCompletionHandlers:[URLSessionDataTask:(Result<Data, Error>) -> Void] = [:]
+  private var tasksToData:[URLSessionDataTask:NSMutableData] = [:]
   
-  init() {
+  override init() {
+    super.init()
     let configuration = URLSessionConfiguration.default
-    self.session = URLSession(configuration: configuration)
+    self.session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
   }
+  
+  func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    if let dataTask = task as? URLSessionDataTask {
+      if let completion = tasksToCompletionHandlers[dataTask] {
+        if let error = error {
+          completion(.failure(FlagsmithError.unhandled(error)))
+        }
+        else {
+          let data = tasksToData[dataTask] ?? NSMutableData()
+          completion(.success(data as Data))
+        }
+      }
+      tasksToCompletionHandlers[dataTask] = nil
+      tasksToData[dataTask] = nil
+    }
+  }
+  
+  func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse, completionHandler: @escaping (CachedURLResponse?) -> Void) {
+    
+    // intercept and modify the cache settings for the response
+    if Flagsmith.shared.useCache {
+      let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheTTL))
+      completionHandler(newResponse)
+    } else {
+      completionHandler(proposedResponse)
+    }
+  }
+  
+  func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    let existingData = tasksToData[dataTask] ?? NSMutableData()
+    existingData.append(data)
+    tasksToData[dataTask] = existingData
+  }
+    
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        completionHandler(.allow)
+    }
   
   /// Base request method that handles creating a `URLRequest` and processing
   /// the `URLSession` response.
@@ -37,7 +79,7 @@ class APIManager {
       return
     }
     
-    let request: URLRequest
+    var request: URLRequest
     do {
       request = try router.request(baseUrl: baseURL, apiKey: apiKey)
     } catch {
@@ -45,23 +87,20 @@ class APIManager {
       return
     }
     
-    session.dataTask(with: request) { data, response, error in
-      guard error == nil else {
-        completion(.failure(FlagsmithError.unhandled(error!)))
-        return
+    // set the cache policy based on Flagsmith settings
+    request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+    session.configuration.urlCache = Flagsmith.shared.cache
+    if Flagsmith.shared.useCache {
+      request.cachePolicy = .useProtocolCachePolicy
+      if Flagsmith.shared.skipAPI {
+        request.cachePolicy = .returnCacheDataElseLoad
       }
-      
-      let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
-      guard (200...299).contains(statusCode) else {
-        completion(.failure(FlagsmithError.statusCode(statusCode)))
-        return
-      }
-      
-      // The documentation indicates the data should be provided
-      // since error was found to be nil at this point. Either way
-      // the 'Decodable' variation will handle any invalid `Data`.
-      completion(.success(data ?? Data()))
-    }.resume()
+    }
+    
+    // we must use the delegate form here, not the completion handler, to be able to modify the cache
+    let task = session.dataTask(with: request)
+    tasksToCompletionHandlers[task] = completion
+    task.resume()
   }
   
   /// Requests a api route and only relays success or failure of the action.

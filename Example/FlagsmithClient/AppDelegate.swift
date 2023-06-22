@@ -24,14 +24,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                      Flag(featureName: "font_size", intValue:12, enabled: true),
                                      Flag(featureName: "my_name", stringValue:"Testing", enabled: true)]
     
-    // set cache on / off (defaults to on)
+    // set cache on / off (defaults to off)
     Flagsmith.shared.useCache = true
+    
+    // set custom cache to use (defaults to shared URLCache)
+    //Flagsmith.shared.cache = <CUSTOM_CACHE>
 
     // set skip API on / off (defaults to off)
     Flagsmith.shared.skipAPI = false
 
     // set cache TTL in seconds (defaults to 0, i.e. infinite)
-    Flagsmith.shared.cacheTTL = 0
+    Flagsmith.shared.cacheTTL = 90
 
     // set analytics on or off
     Flagsmith.shared.enableAnalytics = true
@@ -40,10 +43,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Flagsmith.shared.analyticsFlushPeriod = 10
     
     Flagsmith.shared.getFeatureFlags() { (result) in
-        print(result)
+      print(result)
     }
     Flagsmith.shared.hasFeatureFlag(withID: "freeze_delinquent_accounts") { (result) in
-        print(result)
+      print(result)
     }
     //Flagsmith.shared.setTrait(Trait(key: "<my_key>", value: "<my_value>"), forIdentity: "<my_identity>") { (result) in print(result) }
     //Flagsmith.shared.getIdentity("<my_key>") { (result) in print(result) }
