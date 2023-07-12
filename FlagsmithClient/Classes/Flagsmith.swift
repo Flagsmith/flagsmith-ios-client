@@ -69,12 +69,11 @@ public class Flagsmith {
         case .success(let thisIdentity):
           completion(.success(thisIdentity.flags))
         case .failure(let error):
-          let fallbackFlags = self.getFlagsUsingDefaults(flags: [], forIdentity: identity)
-          if fallbackFlags.isEmpty {
+          if self.defaultFlags.isEmpty {
             completion(.failure(error))
           }
           else {
-            completion(.success(fallbackFlags))
+            completion(.success(self.defaultFlags))
           }
         }
       }
@@ -84,12 +83,11 @@ public class Flagsmith {
         case .success(let flags):
           completion(.success(flags))
         case .failure(let error):
-          let fallbackFlags = self.getFlagsUsingDefaults(flags: [], forIdentity: identity)
-          if fallbackFlags.isEmpty {
+          if self.defaultFlags.isEmpty {
             completion(.failure(error))
           }
           else {
-            completion(.success(fallbackFlags))
+            completion(.success(self.defaultFlags))
           }
         }
       }
@@ -259,25 +257,9 @@ public class Flagsmith {
     }
   }
   
-  /// Return a flag for a flag ID and identity, using either the cache (if enabled) or the default flags
+  /// Return a flag for a flag ID from the default flags.
   private func getFlagUsingDefaults(withID id: String, forIdentity identity: String? = nil) -> Flag? {
     return self.defaultFlags.first(where: {$0.feature.name == id})
-  }
-
-  /// Return an array of flags for an identity, including the cached flags (if enabled) and the default flags when they are not already present in the passed array
-  private func getFlagsUsingDefaults(flags:[Flag], forIdentity identity: String? = nil) -> [Flag] {
-    var returnFlags:[Flag] = []
-    returnFlags.append(contentsOf: flags)
-    
-    for flag in defaultFlags {
-      if !returnFlags.contains(where: { $0.feature.name == flag.feature.name }) {
-        if flag.value != .null {
-          returnFlags.append(flag)
-        }
-      }
-    }
-    
-    return returnFlags
   }
 }
 
