@@ -48,18 +48,9 @@ public class Flagsmith {
   
   /// Default flags to fall back on if an API call fails
   public var defaultFlags: [Flag] = []
-
-  /// Cache to use when enabled, defaults to the shared app cache
-  public var cache: URLCache = URLCache.shared
-
-  /// Use cached flags as a fallback?
-  public var useCache: Bool = false
-
-  /// TTL for the cache in seconds, default of 0 means infinite
-  public var cacheTTL: Double = 0
-
-  /// Skip API if there is a cache available
-  public var skipAPI: Bool = false
+  
+  /// Configuration class for the cache settings
+  public var cacheConfig:CacheConfig = CacheConfig()
 
   private init() {
   }
@@ -288,4 +279,20 @@ public class Flagsmith {
     
     return returnFlags
   }
+}
+
+public class CacheConfig {
+
+  /// Cache to use when enabled, defaults to the shared app cache
+  public var cache: URLCache = URLCache.shared
+
+  /// Use cached flags as a fallback?
+  public var useCache: Bool = false
+
+  /// TTL for the cache in seconds, default of 0 means infinite
+  public var cacheTTL: Double = 0
+
+  /// Skip API if there is a cache available
+  public var skipAPI: Bool = false
+  
 }

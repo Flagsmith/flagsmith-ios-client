@@ -49,8 +49,8 @@ class APIManager : NSObject, URLSessionDataDelegate {
   func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse, completionHandler: @escaping (CachedURLResponse?) -> Void) {
     
     // intercept and modify the cache settings for the response
-    if Flagsmith.shared.useCache {
-      let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheTTL))
+    if Flagsmith.shared.cacheConfig.useCache {
+      let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheConfig.cacheTTL))
       completionHandler(newResponse)
     } else {
       completionHandler(proposedResponse)
@@ -89,10 +89,10 @@ class APIManager : NSObject, URLSessionDataDelegate {
     
     // set the cache policy based on Flagsmith settings
     request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-    session.configuration.urlCache = Flagsmith.shared.cache
-    if Flagsmith.shared.useCache {
+    session.configuration.urlCache = Flagsmith.shared.cacheConfig.cache
+    if Flagsmith.shared.cacheConfig.useCache {
       request.cachePolicy = .useProtocolCachePolicy
-      if Flagsmith.shared.skipAPI {
+      if Flagsmith.shared.cacheConfig.skipAPI {
         request.cachePolicy = .returnCacheDataElseLoad
       }
     }

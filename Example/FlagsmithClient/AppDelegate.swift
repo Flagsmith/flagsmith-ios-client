@@ -25,16 +25,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                      Flag(featureName: "my_name", stringValue:"Testing", enabled: true)]
     
     // set cache on / off (defaults to off)
-    Flagsmith.shared.useCache = true
+    Flagsmith.shared.cacheConfig.useCache = true
     
     // set custom cache to use (defaults to shared URLCache)
-    //Flagsmith.shared.cache = <CUSTOM_CACHE>
+    //Flagsmith.shared.cacheConfig.cache = <CUSTOM_CACHE>
 
     // set skip API on / off (defaults to off)
-    Flagsmith.shared.skipAPI = false
+    Flagsmith.shared.cacheConfig.skipAPI = false
 
     // set cache TTL in seconds (defaults to 0, i.e. infinite)
-    Flagsmith.shared.cacheTTL = 90
+    Flagsmith.shared.cacheConfig.cacheTTL = 90
 
     // set analytics on or off
     Flagsmith.shared.enableAnalytics = true
