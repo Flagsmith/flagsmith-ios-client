@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// Manage feature flags and remote config across multiple projects,
 /// environments and organisations.
@@ -42,8 +45,15 @@ public class Flagsmith {
     set { analytics.flushPeriod = newValue }
     get { analytics.flushPeriod }
   }
+  
+  /// Default flags to fall back on if an API call fails
+  public var defaultFlags: [Flag] = []
+  
+  /// Configuration class for the cache settings
+  public var cacheConfig:CacheConfig = CacheConfig()
 
-  private init() {}
+  private init() {
+  }
   
   /// Get all feature flags (flags and remote config) optionally for a specific identity
   ///
@@ -52,18 +62,34 @@ public class Flagsmith {
   ///   - completion: Closure with Result which contains array of Flag objects in case of success or Error in case of failure
   public func getFeatureFlags(forIdentity identity: String? = nil,
                               completion: @escaping (Result<[Flag], Error>) -> Void) {
+    
     if let identity = identity {
       getIdentity(identity) { (result) in
         switch result {
-        case .success(let identity):
-          completion(.success(identity.flags))
+        case .success(let thisIdentity):
+          completion(.success(thisIdentity.flags))
         case .failure(let error):
-          completion(.failure(error))
+          if self.defaultFlags.isEmpty {
+            completion(.failure(error))
+          }
+          else {
+            completion(.success(self.defaultFlags))
+          }
         }
       }
     } else {
       apiManager.request(.getFlags) { (result: Result<[Flag], Error>) in
-        completion(result)
+        switch result {
+        case .success(let flags):
+          completion(.success(flags))
+        case .failure(let error):
+          if self.defaultFlags.isEmpty {
+            completion(.failure(error))
+          }
+          else {
+            completion(.success(self.defaultFlags))
+          }
+        }
       }
     }
   }
@@ -84,7 +110,12 @@ public class Flagsmith {
         let hasFlag = flags.contains(where: {$0.feature.name == id && $0.enabled})
         completion(.success(hasFlag))
       case .failure(let error):
-        completion(.failure(error))
+        if self.defaultFlags.contains(where: {$0.feature.name == id && $0.enabled}) {
+          completion(.success(true))
+        }
+        else {
+          completion(.failure(error))
+        }
       }
     }
   }
@@ -103,10 +134,15 @@ public class Flagsmith {
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
-        let value = flags.first(where: {$0.feature.name == id})?.value
-        completion(.success(value?.stringValue))
+        let flag = flags.first(where: {$0.feature.name == id})
+        completion(.success(flag?.value.stringValue))
       case .failure(let error):
-        completion(.failure(error))
+        if let flag = self.getFlagUsingDefaults(withID: id, forIdentity: identity) {
+          completion(.success(flag.value.stringValue))
+        }
+        else {
+          completion(.failure(error))
+        }
       }
     }
   }
@@ -124,10 +160,15 @@ public class Flagsmith {
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
-        let value = flags.first(where: {$0.feature.name == id})?.value
-        completion(.success(value))
+        var flag = flags.first(where: {$0.feature.name == id})
+        completion(.success(flag?.value))
       case .failure(let error):
-        completion(.failure(error))
+        if let flag = self.getFlagUsingDefaults(withID: id, forIdentity: identity) {
+          completion(.success(flag.value))
+        }
+        else {
+          completion(.failure(error))
+        }
       }
     }
   }
@@ -215,4 +256,25 @@ public class Flagsmith {
       completion(result)
     }
   }
+  
+  /// Return a flag for a flag ID from the default flags.
+  private func getFlagUsingDefaults(withID id: String, forIdentity identity: String? = nil) -> Flag? {
+    return self.defaultFlags.first(where: {$0.feature.name == id})
+  }
+}
+
+public class CacheConfig {
+
+  /// Cache to use when enabled, defaults to the shared app cache
+  public var cache: URLCache = URLCache.shared
+
+  /// Use cached flags as a fallback?
+  public var useCache: Bool = false
+
+  /// TTL for the cache in seconds, default of 0 means infinite
+  public var cacheTTL: Double = 0
+
+  /// Skip API if there is a cache available
+  public var skipAPI: Bool = false
+  
 }
