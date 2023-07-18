@@ -160,7 +160,7 @@ public class Flagsmith {
     getFeatureFlags(forIdentity: identity) { (result) in
       switch result {
       case .success(let flags):
-        var flag = flags.first(where: {$0.feature.name == id})
+        let flag = flags.first(where: {$0.feature.name == id})
         completion(.success(flag?.value))
       case .failure(let error):
         if let flag = self.getFlagUsingDefaults(withID: id, forIdentity: identity) {
