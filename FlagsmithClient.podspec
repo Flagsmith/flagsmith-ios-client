@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/Flagsmith/flagsmith-ios-client.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/getflagsmith'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '12.0'
 
   s.source_files = 'FlagsmithClient/Classes/**/*'
   s.swift_versions = '4.0'
