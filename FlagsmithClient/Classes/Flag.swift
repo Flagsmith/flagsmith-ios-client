@@ -10,7 +10,7 @@ import Foundation
 /**
 A Flag represents a feature flag on the server.
 */
-public struct Flag: Codable {
+public struct Flag: Codable, Sendable {
   enum CodingKeys: String, CodingKey {
     case feature
     case value = "feature_state_value"

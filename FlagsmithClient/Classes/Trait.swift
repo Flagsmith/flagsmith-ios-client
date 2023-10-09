@@ -10,7 +10,7 @@ import Foundation
 /**
 A Trait represents a value stored against an Identity (user) on the server.
 */
-public struct Trait: Codable {
+public struct Trait: Codable, Sendable {
   enum CodingKeys: String, CodingKey {
     case key = "trait_key"
     case value = "trait_value"

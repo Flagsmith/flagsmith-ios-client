@@ -11,7 +11,7 @@ import Foundation
 An UnknownTypeValue represents a value which can have a variable type
 */
 @available(*, deprecated, renamed: "TypedValue")
-public enum UnknownTypeValue: Decodable {
+public enum UnknownTypeValue: Decodable, Sendable {
     
     case int(Int), string(String), float(Float), null
     
