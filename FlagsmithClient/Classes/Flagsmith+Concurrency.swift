@@ -7,7 +7,6 @@
 
 import Foundation
 
-#if swift(>=5.5)
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *)
 public extension Flagsmith {
   /// Get all feature flags (flags and remote config) optionally for a specific identity
@@ -180,4 +179,3 @@ public extension Flagsmith {
     })
   }
 }
-#endif

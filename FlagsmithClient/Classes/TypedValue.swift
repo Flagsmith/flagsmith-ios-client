@@ -8,7 +8,7 @@
 import Foundation
 
 /// A value associated to a `Flag` or `Trait`
-public enum TypedValue: Equatable {
+public enum TypedValue: Equatable, Sendable {
   case bool(Bool)
   case float(Float)
   case int(Int)

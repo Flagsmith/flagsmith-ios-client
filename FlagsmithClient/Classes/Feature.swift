@@ -10,7 +10,7 @@ import Foundation
 /**
  A Feature represents a flag or remote configuration value on the server.
  */
-public struct Feature: Codable {
+public struct Feature: Codable, Sendable {
   enum CodingKeys: String, CodingKey {
     case name
     case type

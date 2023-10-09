@@ -8,7 +8,7 @@
 import Foundation
 
 /// All errors that can be encountered while using the **FlagsmithClient**
-public enum FlagsmithError: LocalizedError {
+public enum FlagsmithError: LocalizedError, Sendable {
     /// API Key was not provided or invalid.
     case apiKey
     /// API URL was invalid.
