@@ -11,8 +11,8 @@ import FoundationNetworking
 #endif
 
 /// Handles interaction with a **Flagsmith** api.
-class APIManager : NSObject, URLSessionDataDelegate {
-  
+final class APIManager : NSObject, URLSessionDataDelegate {
+
   private var session: URLSession!
   
   /// Base `URL` used for requests.
@@ -22,7 +22,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
     
   // store the completion handlers and accumulated data for each task
   private var tasksToCompletionHandlers:[URLSessionDataTask:(Result<Data, Error>) -> Void] = [:]
-  private var tasksToData:[URLSessionDataTask:NSMutableData] = [:]
+  private var tasksToData:[URLSessionDataTask:Data] = [:]
   
   override init() {
     super.init()
@@ -37,7 +37,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
           completion(.failure(FlagsmithError.unhandled(error)))
         }
         else {
-          let data = tasksToData[dataTask] ?? NSMutableData()
+          let data = tasksToData[dataTask] ?? Data()
           completion(.success(data as Data))
         }
       }
@@ -58,7 +58,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
   }
   
   func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-    let existingData = tasksToData[dataTask] ?? NSMutableData()
+    var existingData = tasksToData[dataTask] ?? Data()
     existingData.append(data)
     tasksToData[dataTask] = existingData
   }
