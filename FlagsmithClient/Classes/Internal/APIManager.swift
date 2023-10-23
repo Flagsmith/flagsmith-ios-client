@@ -14,6 +14,7 @@ import FoundationNetworking
 final class APIManager : NSObject, URLSessionDataDelegate {
 
   private var session: URLSession!
+  private let lock: NSLock = NSLock()
   
   /// Base `URL` used for requests.
   var baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
@@ -32,6 +33,8 @@ final class APIManager : NSObject, URLSessionDataDelegate {
   
   func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
     if let dataTask = task as? URLSessionDataTask {
+      lock.lock()
+      defer { lock.unlock() }
       if let completion = tasksToCompletionHandlers[dataTask] {
         if let error = error {
           completion(.failure(FlagsmithError.unhandled(error)))
@@ -47,7 +50,6 @@ final class APIManager : NSObject, URLSessionDataDelegate {
   }
   
   func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse, completionHandler: @escaping (CachedURLResponse?) -> Void) {
-    
     // intercept and modify the cache settings for the response
     if Flagsmith.shared.cacheConfig.useCache {
       let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheConfig.cacheTTL))
@@ -58,6 +60,9 @@ final class APIManager : NSObject, URLSessionDataDelegate {
   }
   
   func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    lock.lock()
+    defer { lock.unlock() }
+
     var existingData = tasksToData[dataTask] ?? Data()
     existingData.append(data)
     tasksToData[dataTask] = existingData
@@ -98,8 +103,10 @@ final class APIManager : NSObject, URLSessionDataDelegate {
     }
     
     // we must use the delegate form here, not the completion handler, to be able to modify the cache
+    lock.lock()
     let task = session.dataTask(with: request)
     tasksToCompletionHandlers[task] = completion
+    lock.unlock()
     task.resume()
   }
   
