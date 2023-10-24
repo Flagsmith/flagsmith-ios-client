@@ -15,6 +15,7 @@ final class APIManager : NSObject, URLSessionDataDelegate {
 
   private var session: URLSession!
   private let lock: NSLock = NSLock()
+  private let delegateQueue: OperationQueue = OperationQueue()
   
   /// Base `URL` used for requests.
   var baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
@@ -28,7 +29,8 @@ final class APIManager : NSObject, URLSessionDataDelegate {
   override init() {
     super.init()
     let configuration = URLSessionConfiguration.default
-    self.session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
+    delegateQueue.maxConcurrentOperationCount = 1
+    self.session = URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
   }
   
   func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
