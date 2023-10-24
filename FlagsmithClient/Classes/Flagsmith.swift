@@ -12,7 +12,7 @@ import FoundationNetworking
 
 /// Manage feature flags and remote config across multiple projects,
 /// environments and organisations.
-public class Flagsmith {
+public final class Flagsmith {
   /// Shared singleton client object
   public static let shared = Flagsmith()
   private let apiManager = APIManager()
@@ -263,7 +263,7 @@ public class Flagsmith {
   }
 }
 
-public class CacheConfig {
+public final class CacheConfig {
 
   /// Cache to use when enabled, defaults to the shared app cache
   public var cache: URLCache = URLCache.shared

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Internal analytics for the **FlagsmithClient**
-class FlagsmithAnalytics {
+final class FlagsmithAnalytics {
   
   /// Indicates if analytics are enabled.
   var enableAnalytics: Bool = true

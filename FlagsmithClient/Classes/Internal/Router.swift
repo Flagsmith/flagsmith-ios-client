@@ -10,7 +10,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
-enum Router {
+enum Router: Sendable {
   private enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
