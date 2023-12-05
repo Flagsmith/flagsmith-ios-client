@@ -21,6 +21,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
   var apiKey: String?
     
   // store the completion handlers and accumulated data for each task
+  //TODO: Use URLSessionDataTask.taskIdentifier instead here as we're leaking a URLSessionDataTask for each call (or just delete the item from the map)
   private var tasksToCompletionHandlers:[URLSessionDataTask:(Result<Data, Error>) -> Void] = [:]
   private var tasksToData:[URLSessionDataTask:NSMutableData] = [:]
   
