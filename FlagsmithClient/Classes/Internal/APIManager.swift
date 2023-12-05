@@ -21,9 +21,8 @@ class APIManager : NSObject, URLSessionDataDelegate {
   var apiKey: String?
     
   // store the completion handlers and accumulated data for each task
-  //TODO: Use URLSessionDataTask.taskIdentifier instead here as we're leaking a URLSessionDataTask for each call (or just delete the item from the map)
-  private var tasksToCompletionHandlers:[URLSessionDataTask:(Result<Data, Error>) -> Void] = [:]
-  private var tasksToData:[URLSessionDataTask:NSMutableData] = [:]
+  private var tasksToCompletionHandlers:[Int:(Result<Data, Error>) -> Void] = [:]
+  private var tasksToData:[Int:NSMutableData] = [:]
     private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue")
   
   override init() {
@@ -35,17 +34,17 @@ class APIManager : NSObject, URLSessionDataDelegate {
   func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
     serialAccessQueue.sync {
       if let dataTask = task as? URLSessionDataTask {
-        if let completion = tasksToCompletionHandlers[dataTask] {
+        if let completion = tasksToCompletionHandlers[dataTask.taskIdentifier] {
           if let error = error {
             DispatchQueue.main.async { completion(.failure(FlagsmithError.unhandled(error))) }
           }
           else {
-            let data = tasksToData[dataTask] ?? NSMutableData()
+            let data = tasksToData[dataTask.taskIdentifier] ?? NSMutableData()
             DispatchQueue.main.async { completion(.success(data as Data)) }
           }
         }
-        tasksToCompletionHandlers[dataTask] = nil
-        tasksToData[dataTask] = nil
+        tasksToCompletionHandlers[dataTask.taskIdentifier] = nil
+        tasksToData[dataTask.taskIdentifier] = nil
       }
     }
   }
@@ -65,9 +64,9 @@ class APIManager : NSObject, URLSessionDataDelegate {
   
   func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
     serialAccessQueue.sync {
-      let existingData = tasksToData[dataTask] ?? NSMutableData()
+      let existingData = tasksToData[dataTask.taskIdentifier] ?? NSMutableData()
       existingData.append(data)
-      tasksToData[dataTask] = existingData
+      tasksToData[dataTask.taskIdentifier] = existingData
     }
   }
     
@@ -108,7 +107,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
     // we must use the delegate form here, not the completion handler, to be able to modify the cache
     serialAccessQueue.sync {
       let task = session.dataTask(with: request)
-      tasksToCompletionHandlers[task] = completion
+      tasksToCompletionHandlers[task.taskIdentifier] = completion
       task.resume()
     }
   }
