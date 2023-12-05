@@ -24,6 +24,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
   //TODO: Use URLSessionDataTask.taskIdentifier instead here as we're leaking a URLSessionDataTask for each call (or just delete the item from the map)
   private var tasksToCompletionHandlers:[URLSessionDataTask:(Result<Data, Error>) -> Void] = [:]
   private var tasksToData:[URLSessionDataTask:NSMutableData] = [:]
+    private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue")
   
   override init() {
     super.init()
@@ -32,36 +33,42 @@ class APIManager : NSObject, URLSessionDataDelegate {
   }
   
   func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-    if let dataTask = task as? URLSessionDataTask {
-      if let completion = tasksToCompletionHandlers[dataTask] {
-        if let error = error {
-          completion(.failure(FlagsmithError.unhandled(error)))
+    serialAccessQueue.sync {
+      if let dataTask = task as? URLSessionDataTask {
+        if let completion = tasksToCompletionHandlers[dataTask] {
+          if let error = error {
+            DispatchQueue.main.async { completion(.failure(FlagsmithError.unhandled(error))) }
+          }
+          else {
+            let data = tasksToData[dataTask] ?? NSMutableData()
+            DispatchQueue.main.async { completion(.success(data as Data)) }
+          }
         }
-        else {
-          let data = tasksToData[dataTask] ?? NSMutableData()
-          completion(.success(data as Data))
-        }
+        tasksToCompletionHandlers[dataTask] = nil
+        tasksToData[dataTask] = nil
       }
-      tasksToCompletionHandlers[dataTask] = nil
-      tasksToData[dataTask] = nil
     }
   }
   
-  func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse, completionHandler: @escaping (CachedURLResponse?) -> Void) {
-    
-    // intercept and modify the cache settings for the response
-    if Flagsmith.shared.cacheConfig.useCache {
-      let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheConfig.cacheTTL))
-      completionHandler(newResponse)
-    } else {
-      completionHandler(proposedResponse)
+  func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse, 
+                  completionHandler: @escaping (CachedURLResponse?) -> Void) {
+    serialAccessQueue.sync {
+      // intercept and modify the cache settings for the response
+      if Flagsmith.shared.cacheConfig.useCache {
+        let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheConfig.cacheTTL))
+        DispatchQueue.main.async { completionHandler(newResponse) }
+      } else {
+        DispatchQueue.main.async { completionHandler(proposedResponse) }
+      }
     }
   }
   
   func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-    let existingData = tasksToData[dataTask] ?? NSMutableData()
-    existingData.append(data)
-    tasksToData[dataTask] = existingData
+    serialAccessQueue.sync {
+      let existingData = tasksToData[dataTask] ?? NSMutableData()
+      existingData.append(data)
+      tasksToData[dataTask] = existingData
+    }
   }
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
@@ -99,9 +106,11 @@ class APIManager : NSObject, URLSessionDataDelegate {
     }
     
     // we must use the delegate form here, not the completion handler, to be able to modify the cache
-    let task = session.dataTask(with: request)
-    tasksToCompletionHandlers[task] = completion
-    task.resume()
+    serialAccessQueue.sync {
+      let task = session.dataTask(with: request)
+      tasksToCompletionHandlers[task] = completion
+      task.resume()
+    }
   }
   
   /// Requests a api route and only relays success or failure of the action.

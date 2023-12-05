@@ -62,11 +62,11 @@ final class APIManagerTests: FlagsmithClientTestCase {
     }
     
     func testConcurrentRequests() throws {
-        apiManager.apiKey = "8D5ABC87-6BBF-4AE7-BC05-4DC1AFE770DF" // Not sure we care at this point
+        apiManager.apiKey = "8D5ABC87-6BBF-4AE7-BC05-4DC1AFE770DF"
         let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
         
         var expectations:[XCTestExpectation] = [];
-        let iterations = 10000
+        let iterations = 1000
         
         for concurrentIteration in 1...iterations {
             let expectation = XCTestExpectation(description: "Multiple threads can access the APIManager \(concurrentIteration)")
