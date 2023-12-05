@@ -22,7 +22,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
     
   // store the completion handlers and accumulated data for each task
   private var tasksToCompletionHandlers:[Int:(Result<Data, Error>) -> Void] = [:]
-  private var tasksToData:[Int:NSMutableData] = [:]
+  private var tasksToData:[Int:Data] = [:]
     private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue")
   
   override init() {
@@ -39,8 +39,8 @@ class APIManager : NSObject, URLSessionDataDelegate {
             DispatchQueue.main.async { completion(.failure(FlagsmithError.unhandled(error))) }
           }
           else {
-            let data = tasksToData[dataTask.taskIdentifier] ?? NSMutableData()
-            DispatchQueue.main.async { completion(.success(data as Data)) }
+            let data = tasksToData[dataTask.taskIdentifier] ?? Data()
+            DispatchQueue.main.async { completion(.success(data)) }
           }
         }
         tasksToCompletionHandlers[dataTask.taskIdentifier] = nil
@@ -64,7 +64,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
   
   func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
     serialAccessQueue.sync {
-      let existingData = tasksToData[dataTask.taskIdentifier] ?? NSMutableData()
+      var existingData = tasksToData[dataTask.taskIdentifier] ?? Data()
       existingData.append(data)
       tasksToData[dataTask.taskIdentifier] = existingData
     }
