@@ -67,19 +67,25 @@ final class APIManagerTests: FlagsmithClientTestCase {
         
         var expectations:[XCTestExpectation] = [];
         let iterations = 1000
+        var error: FlagsmithError?
         
         for concurrentIteration in 1...iterations {
             let expectation = XCTestExpectation(description: "Multiple threads can access the APIManager \(concurrentIteration)")
             expectations.append(expectation)
             concurrentQueue.async {
                 self.apiManager.request(.getFlags) { (result: Result<Void, Error>) in
-                    // We're not fussed at this point what the result is
+                  if case let .failure(e) = result {
+                    error = e as? FlagsmithError
+                  }
                     expectation.fulfill()
                 }
             }
         }
         
         wait(for: expectations, timeout: 5)
+        // Ensure that we didn't have any errors during the process
+        XCTAssertTrue(error == nil)
+      
         print("Finished!")
     }
 }
