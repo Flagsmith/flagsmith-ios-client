@@ -23,7 +23,7 @@ class APIManager : NSObject, URLSessionDataDelegate {
   // store the completion handlers and accumulated data for each task
   private var tasksToCompletionHandlers:[Int:(Result<Data, Error>) -> Void] = [:]
   private var tasksToData:[Int:Data] = [:]
-    private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue")
+  private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue")
   
   override init() {
     super.init()

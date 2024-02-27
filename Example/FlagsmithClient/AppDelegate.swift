@@ -53,13 +53,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       print(result)
     }
     
-    // Try getting the feature flags concurrently
-    for concurrentIteration in 1...20 {
-        concurrentQueue.async {
-          Flagsmith.shared.getFeatureFlags() { (result) in
-            print("Concurrent \(concurrentIteration) result success: \(isSuccess(result)) on \(Thread.current)")
-          }
+    // Try getting the feature flags concurrently to ensure that this does not cause any issues
+    // This was originally highlighted in https://github.com/Flagsmith/flagsmith-ios-client/pull/40
+    for _ in 1...20 {
+      concurrentQueue.async {
+        Flagsmith.shared.getFeatureFlags() { (result) in
         }
+      }
     }
     
     //Flagsmith.shared.setTrait(Trait(key: "<my_key>", value: "<my_value>"), forIdentity: "<my_identity>") { (result) in print(result) }
