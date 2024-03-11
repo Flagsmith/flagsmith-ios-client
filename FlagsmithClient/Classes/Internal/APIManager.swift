@@ -21,8 +21,9 @@ class APIManager : NSObject, URLSessionDataDelegate {
   var apiKey: String?
     
   // store the completion handlers and accumulated data for each task
-  private var tasksToCompletionHandlers:[URLSessionDataTask:(Result<Data, Error>) -> Void] = [:]
-  private var tasksToData:[URLSessionDataTask:NSMutableData] = [:]
+  private var tasksToCompletionHandlers:[Int:(Result<Data, Error>) -> Void] = [:]
+  private var tasksToData:[Int:Data] = [:]
+  private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue")
   
   override init() {
     super.init()
@@ -31,36 +32,42 @@ class APIManager : NSObject, URLSessionDataDelegate {
   }
   
   func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-    if let dataTask = task as? URLSessionDataTask {
-      if let completion = tasksToCompletionHandlers[dataTask] {
-        if let error = error {
-          completion(.failure(FlagsmithError.unhandled(error)))
+    serialAccessQueue.sync {
+      if let dataTask = task as? URLSessionDataTask {
+        if let completion = tasksToCompletionHandlers[dataTask.taskIdentifier] {
+          if let error = error {
+            DispatchQueue.main.async { completion(.failure(FlagsmithError.unhandled(error))) }
+          }
+          else {
+            let data = tasksToData[dataTask.taskIdentifier] ?? Data()
+            DispatchQueue.main.async { completion(.success(data)) }
+          }
         }
-        else {
-          let data = tasksToData[dataTask] ?? NSMutableData()
-          completion(.success(data as Data))
-        }
+        tasksToCompletionHandlers[dataTask.taskIdentifier] = nil
+        tasksToData[dataTask.taskIdentifier] = nil
       }
-      tasksToCompletionHandlers[dataTask] = nil
-      tasksToData[dataTask] = nil
     }
   }
   
-  func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse, completionHandler: @escaping (CachedURLResponse?) -> Void) {
-    
-    // intercept and modify the cache settings for the response
-    if Flagsmith.shared.cacheConfig.useCache {
-      let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheConfig.cacheTTL))
-      completionHandler(newResponse)
-    } else {
-      completionHandler(proposedResponse)
+  func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse, 
+                  completionHandler: @escaping (CachedURLResponse?) -> Void) {
+    serialAccessQueue.sync {
+      // intercept and modify the cache settings for the response
+      if Flagsmith.shared.cacheConfig.useCache {
+        let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheConfig.cacheTTL))
+        DispatchQueue.main.async { completionHandler(newResponse) }
+      } else {
+        DispatchQueue.main.async { completionHandler(proposedResponse) }
+      }
     }
   }
   
   func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-    let existingData = tasksToData[dataTask] ?? NSMutableData()
-    existingData.append(data)
-    tasksToData[dataTask] = existingData
+    serialAccessQueue.sync {
+      var existingData = tasksToData[dataTask.taskIdentifier] ?? Data()
+      existingData.append(data)
+      tasksToData[dataTask.taskIdentifier] = existingData
+    }
   }
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
@@ -98,9 +105,11 @@ class APIManager : NSObject, URLSessionDataDelegate {
     }
     
     // we must use the delegate form here, not the completion handler, to be able to modify the cache
-    let task = session.dataTask(with: request)
-    tasksToCompletionHandlers[task] = completion
-    task.resume()
+    serialAccessQueue.sync {
+      let task = session.dataTask(with: request)
+      tasksToCompletionHandlers[task.taskIdentifier] = completion
+      task.resume()
+    }
   }
   
   /// Requests a api route and only relays success or failure of the action.

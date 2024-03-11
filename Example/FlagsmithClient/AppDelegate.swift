@@ -9,11 +9,15 @@
 import UIKit
 import FlagsmithClient
 
+func isSuccess<T,F>(_ result: Result<T,F>) -> Bool {
+    if case .success = result { return true } else { return false }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
-  
+  let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
   
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
@@ -48,6 +52,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Flagsmith.shared.hasFeatureFlag(withID: "freeze_delinquent_accounts") { (result) in
       print(result)
     }
+    
+    // Try getting the feature flags concurrently to ensure that this does not cause any issues
+    // This was originally highlighted in https://github.com/Flagsmith/flagsmith-ios-client/pull/40
+    for _ in 1...20 {
+      concurrentQueue.async {
+        Flagsmith.shared.getFeatureFlags() { (result) in
+        }
+      }
+    }
+    
     //Flagsmith.shared.setTrait(Trait(key: "<my_key>", value: "<my_value>"), forIdentity: "<my_identity>") { (result) in print(result) }
     //Flagsmith.shared.getIdentity("<my_key>") { (result) in print(result) }
     return true

@@ -60,4 +60,32 @@ final class APIManagerTests: FlagsmithClientTestCase {
             return
         }
     }
+    
+    func testConcurrentRequests() throws {
+        apiManager.apiKey = "8D5ABC87-6BBF-4AE7-BC05-4DC1AFE770DF"
+        let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
+        
+        var expectations:[XCTestExpectation] = [];
+        let iterations = 1000
+        var error: FlagsmithError?
+        
+        for concurrentIteration in 1...iterations {
+            let expectation = XCTestExpectation(description: "Multiple threads can access the APIManager \(concurrentIteration)")
+            expectations.append(expectation)
+            concurrentQueue.async {
+                self.apiManager.request(.getFlags) { (result: Result<Void, Error>) in
+                  if case let .failure(e) = result {
+                    error = e as? FlagsmithError
+                  }
+                    expectation.fulfill()
+                }
+            }
+        }
+        
+        wait(for: expectations, timeout: 5)
+        // Ensure that we didn't have any errors during the process
+        XCTAssertTrue(error == nil)
+      
+        print("Finished!")
+    }
 }
