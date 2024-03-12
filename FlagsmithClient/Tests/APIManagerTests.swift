@@ -60,7 +60,6 @@ final class APIManagerTests: FlagsmithClientTestCase {
 
     }
 
-    @MainActor
     func testConcurrentRequests() throws {
         apiManager.apiKey = "8D5ABC87-6BBF-4AE7-BC05-4DC1AFE770DF"
         let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
