@@ -15,7 +15,7 @@ public enum UnknownTypeValue: Decodable, Sendable {
     
     case int(Int), string(String), float(Float), null
     
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         if let int = try? decoder.singleValueContainer().decode(Int.self) {
             self = .int(int)
             return

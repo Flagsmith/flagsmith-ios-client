@@ -28,7 +28,7 @@ public struct Feature: Codable, Sendable {
     self.description = description
   }
   
-  public func encode(to encoder: Encoder) throws {
+  public func encode(to encoder: any Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)
       try container.encode(self.name, forKey: .name)
       try container.encodeIfPresent(self.type, forKey: .type)

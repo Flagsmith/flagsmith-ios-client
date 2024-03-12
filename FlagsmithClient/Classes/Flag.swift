@@ -47,7 +47,7 @@ public struct Flag: Codable, Sendable {
     self.enabled = enabled
   }
   
-  public func encode(to encoder: Encoder) throws {
+  public func encode(to encoder: any Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(self.feature, forKey: .feature)
     try container.encode(self.value, forKey: .value)

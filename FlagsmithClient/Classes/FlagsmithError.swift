@@ -20,8 +20,8 @@ public enum FlagsmithError: LocalizedError, Sendable {
     /// API Response could not be decoded.
     case decoding(DecodingError)
     /// Unknown or unhandled error was encountered.
-    case unhandled(Error)
-    
+    case unhandled(any Error)
+
     public var errorDescription: String? {
         switch self {
         case .apiKey:
@@ -46,7 +46,7 @@ public enum FlagsmithError: LocalizedError, Sendable {
     /// * as `EncodingError`: `.encoding()` error will be created.
     /// * as `DecodingError`: `.decoding()` error will be created.
     /// * default: `.unhandled()` error will be created.
-    internal init(_ error: Error) {
+    internal init(_ error: any Error) {
         switch error {
         case let flagsmithError as FlagsmithError:
             self = flagsmithError
