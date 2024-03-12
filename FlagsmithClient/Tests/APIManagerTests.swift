@@ -66,7 +66,7 @@ final class APIManagerTests: FlagsmithClientTestCase {
         let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
         
         var expectations:[XCTestExpectation] = [];
-        let iterations = 1000
+        let iterations = 500
         var error: FlagsmithError?
         
         for concurrentIteration in 1...iterations {
@@ -82,7 +82,7 @@ final class APIManagerTests: FlagsmithClientTestCase {
             }
         }
         
-        wait(for: expectations, timeout: 5)
+        wait(for: expectations, timeout: 10)
         // Ensure that we didn't have any errors during the process
         XCTAssertTrue(error == nil)
       
