@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'FlagsmithClient'
-  s.version          = '3.5.0'
+  s.version          = '3.6.0'
   s.summary          = 'iOS Client written in Swift for Flagsmith. Ship features with confidence using feature flags and remote config.'
   s.homepage         = 'https://github.com/Flagsmith/flagsmith-ios-client'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
@@ -19,5 +19,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '12.0'
 
   s.source_files = 'FlagsmithClient/Classes/**/*'
-  s.swift_versions = '4.0'
+  s.swift_versions = '5.6'
 end
