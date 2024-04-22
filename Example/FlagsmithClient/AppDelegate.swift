@@ -17,7 +17,7 @@ func isSuccess<T,F>(_ result: Result<T,F>) -> Bool {
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
-  let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
+  let concurrentQueue = DispatchQueue(label: "concurrentQueue", qos: .default, attributes: .concurrent)
   
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
