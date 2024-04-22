@@ -15,6 +15,11 @@
     "tag": "3.6.0"
   },
   "social_media_url": "https://twitter.com/getflagsmith",
+  "resource_bundles": {
+    "FlagSmith_Privacy": [
+      "Classes/PrivacyInfo.xcprivacy"
+    ]
+  },
   "platforms": {
     "ios": "12.0"
   },
