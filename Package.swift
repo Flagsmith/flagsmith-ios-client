@@ -11,10 +11,15 @@ let package = Package(
         .target(
             name: "FlagsmithClient",
             dependencies: [],
-            path: "FlagsmithClient/Classes"),
+            path: "FlagsmithClient/Classes",
+            plugins: [
+                .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]),
         .testTarget(
             name: "FlagsmitClientTests",
             dependencies: ["FlagsmithClient"],
             path: "FlagsmithClient/Tests"),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/realm/SwiftLint.git", from: "0.54.0")
     ]
 )
