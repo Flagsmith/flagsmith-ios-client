@@ -8,14 +8,14 @@
 import Foundation
 
 /**
-An Identity represents a user stored on the server.
-*/
+ An Identity represents a user stored on the server.
+ */
 public struct Identity: Decodable, Sendable {
-  enum CodingKeys: String, CodingKey {
-    case flags
-    case traits
-  }
-  
-  public let flags: [Flag]
-  public let traits: [Trait]
+    enum CodingKeys: String, CodingKey {
+        case flags
+        case traits
+    }
+
+    public let flags: [Flag]
+    public let traits: [Trait]
 }

@@ -5,12 +5,11 @@
 //  Created by Richard Piazza on 3/16/22.
 //
 
-import XCTest
 @testable import FlagsmithClient
+import XCTest
 
 /// Tests `Trait`
 final class TraitTests: FlagsmithClientTestCase {
-    
     func testDecodeTraits() throws {
         let json = """
         [
@@ -36,27 +35,27 @@ final class TraitTests: FlagsmithClientTestCase {
             }
         ]
         """
-        
+
         let data = try XCTUnwrap(json.data(using: .utf8))
         let traits = try decoder.decode([Trait].self, from: data)
         XCTAssertEqual(traits.count, 5)
-        
+
         let boolTrait = try XCTUnwrap(traits.first(where: { $0.key == "is_orange" }))
         XCTAssertEqual(boolTrait.typedValue, .bool(false))
-        
+
         let floatTrait = try XCTUnwrap(traits.first(where: { $0.key == "pi" }))
         XCTAssertEqual(floatTrait.typedValue, .float(3.14))
-        
+
         let intTrait = try XCTUnwrap(traits.first(where: { $0.key == "miles_per_hour" }))
         XCTAssertEqual(intTrait.typedValue, .int(88))
-        
+
         let stringTrait = try XCTUnwrap(traits.first(where: { $0.key == "message" }))
         XCTAssertEqual(stringTrait.typedValue, .string("Welcome"))
-        
+
         let nullTrait = try XCTUnwrap(traits.first(where: { $0.key == "deprecated" }))
         XCTAssertEqual(nullTrait.typedValue, .null)
     }
-    
+
     func testEncodeTraits() throws {
         let wrappedTrait = Trait(key: "dark_mode", value: .bool(true))
         let trait = Trait(trait: wrappedTrait, identifier: "theme_settings")

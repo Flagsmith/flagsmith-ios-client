@@ -9,7 +9,7 @@ import XCTest
 
 extension String {
     func json(using encoding: String.Encoding) throws -> NSDictionary {
-        return try self.data(using: encoding).json()
+        return try data(using: encoding).json()
     }
 }
 
@@ -23,7 +23,7 @@ extension Optional where Wrapped == Data {
 extension Data {
     func json() throws -> NSDictionary {
         let json = try JSONSerialization.jsonObject(with: self)
-        let dict = json as! [String : Any]
+        let dict = json as! [String: Any]
         return NSDictionary(dictionary: dict)
     }
 }
