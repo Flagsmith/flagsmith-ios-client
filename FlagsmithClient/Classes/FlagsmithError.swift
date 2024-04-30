@@ -46,7 +46,7 @@ public enum FlagsmithError: LocalizedError, Sendable {
     /// * as `EncodingError`: `.encoding()` error will be created.
     /// * as `DecodingError`: `.decoding()` error will be created.
     /// * default: `.unhandled()` error will be created.
-    init(_ error: Error) {
+    internal init(_ error: Error) {
         switch error {
         case let flagsmithError as FlagsmithError:
             self = flagsmithError
