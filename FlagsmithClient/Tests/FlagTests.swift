@@ -5,11 +5,10 @@
 //  Created by Richard Piazza on 3/16/22.
 //
 
-import XCTest
 @testable import FlagsmithClient
+import XCTest
 
 final class FlagTests: FlagsmithClientTestCase {
-    
     func testDecodeFlags() throws {
         let json = """
         [
@@ -31,18 +30,17 @@ final class FlagTests: FlagsmithClientTestCase {
             }
         ]
         """
-        
+
         let data = try XCTUnwrap(json.data(using: .utf8))
         let flags = try decoder.decode([Flag].self, from: data)
         XCTAssertEqual(flags.count, 2)
-        
-        let enabledFlag = try XCTUnwrap(flags.first(where: { $0.enabled } ))
+
+        let enabledFlag = try XCTUnwrap(flags.first(where: { $0.enabled }))
         XCTAssertEqual(enabledFlag.feature.name, "app_theme")
         XCTAssertEqual(enabledFlag.value, .int(4))
-        
-        let disabledFlag = try XCTUnwrap(flags.first(where: { !$0.enabled } ))
+
+        let disabledFlag = try XCTUnwrap(flags.first(where: { !$0.enabled }))
         XCTAssertEqual(disabledFlag.feature.name, "realtime_diagnostics_level")
         XCTAssertEqual(disabledFlag.value, .string("debug"))
     }
-    
 }

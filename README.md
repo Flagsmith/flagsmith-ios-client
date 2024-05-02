@@ -12,7 +12,15 @@ For full documentation visit [https://docs.flagsmith.com/clients/ios/](https://d
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/kyle-ssg/c36a03aebe492e45cbd3eefb21cb0486) for details on our code of conduct, and the process for submitting pull requests
+Please read [CONTRIBUTING.md](https://gist.github.com/kyle-ssg/c36a03aebe492e45cbd3eefb21cb0486) for details on our code of conduct, and the process for submitting pull requests.
+
+We use [SwiftLint](https://github.com/realm/SwiftLint) and [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) to keep our code consistent.
+
+To run `swiftformat` on the project run the following command:
+
+    swift package plugin swiftformat
+
+To run `swiftlint` on the project please check out the documentation above to install the linter with your preferred method of integration. The linter will run on the project when the PR is raised, so it's worth checking beforehand.
 
 ## Getting Help
 

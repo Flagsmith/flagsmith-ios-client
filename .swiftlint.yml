@@ -1,0 +1,17 @@
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+    - Carthage
+    - .build
+
+disabled_rules: # rule identifiers to exclude from running
+    - nesting
+    - trailing_whitespace
+    - opening_brace
+    - trailing_comma
+
+line_length:
+    warning: 140
+    error: 160
+    ignores_comments: true
+    ignores_urls: true
+
+  
