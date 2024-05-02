@@ -42,8 +42,8 @@ final class APIManagerTests: FlagsmithClientTestCase {
         let requestFinished = expectation(description: "Request Finished")
 
         apiManager.request(.getFlags) { (result: Result<Void, any Error>) in
-            if case let .failure(e) = result {
-                let error = e as? FlagsmithError
+            if case let .failure(err) = result {
+                let error = err as? FlagsmithError
                 let flagsmithError: FlagsmithError? = try? XCTUnwrap(error)
                 guard let flagsmithError = flagsmithError, case .apiURL = flagsmithError else {
                     XCTFail("Wrong Error")
