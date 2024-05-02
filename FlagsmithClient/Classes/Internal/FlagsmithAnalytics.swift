@@ -9,10 +9,9 @@ import Foundation
 
 /// Internal analytics for the **FlagsmithClient**
 final class FlagsmithAnalytics: @unchecked Sendable {
-
     /// Indicates if analytics are enabled.
     private var _enableAnalytics: Bool = true
-    var enableAnalytics:Bool {
+    var enableAnalytics: Bool {
         get {
             apiManager.propertiesSerialAccessQueue.sync { _enableAnalytics }
         }
@@ -38,9 +37,9 @@ final class FlagsmithAnalytics: @unchecked Sendable {
     }
 
     private unowned let apiManager: APIManager
-    private let EVENTS_KEY = "events"
-    private var _events:[String:Int] = [:]
-    private var events:[String:Int] {
+    private let eventsKey = "events"
+    private var _events: [String: Int] = [:]
+    private var events: [String: Int] {
         get {
             apiManager.propertiesSerialAccessQueue.sync { _events }
         }
@@ -50,8 +49,9 @@ final class FlagsmithAnalytics: @unchecked Sendable {
             }
         }
     }
-    private var _timer:Timer?
-    private var timer:Timer? {
+
+    private var _timer: Timer?
+    private var timer: Timer? {
         get {
             apiManager.propertiesSerialAccessQueue.sync { _timer }
         }
@@ -64,12 +64,12 @@ final class FlagsmithAnalytics: @unchecked Sendable {
 
     init(apiManager: APIManager) {
         self.apiManager = apiManager
-        events = UserDefaults.standard.dictionary(forKey: EVENTS_KEY) as? [String:Int] ?? [:]
+        events = UserDefaults.standard.dictionary(forKey: eventsKey) as? [String: Int] ?? [:]
         setupTimer()
     }
 
     /// Counts the instances of a `Flag` being queried.
-    func trackEvent(flagName:String) {
+    func trackEvent(flagName: String) {
         let current = events[flagName] ?? 0
         events[flagName] = current + 1
         saveEvents()
@@ -86,23 +86,23 @@ final class FlagsmithAnalytics: @unchecked Sendable {
     /// available on 10+. (12.0 would be a good base in the future).
     private func setupTimer() {
         timer?.invalidate()
-#if canImport(ObjectiveC)
-        timer = Timer.scheduledTimer(
-            timeInterval: TimeInterval(flushPeriod),
-            target: self,
-            selector: #selector(postAnalyticsWhenEnabled(_:)),
-            userInfo: nil,
-            repeats: true
-        )
-#else
-        timer = Timer.scheduledTimer(
-            withTimeInterval: TimeInterval(flushPeriod),
-            repeats: true,
-            block: { [weak self] _ in
-                self?.postAnalytics()
-            }
-        )
-#endif
+        #if canImport(ObjectiveC)
+            timer = Timer.scheduledTimer(
+                timeInterval: TimeInterval(flushPeriod),
+                target: self,
+                selector: #selector(postAnalyticsWhenEnabled(_:)),
+                userInfo: nil,
+                repeats: true
+            )
+        #else
+            timer = Timer.scheduledTimer(
+                withTimeInterval: TimeInterval(flushPeriod),
+                repeats: true,
+                block: { [weak self] _ in
+                    self?.postAnalytics()
+                }
+            )
+        #endif
     }
 
     /// Reset events after successful processing.
@@ -113,7 +113,7 @@ final class FlagsmithAnalytics: @unchecked Sendable {
 
     /// Persist the events to storage.
     private func saveEvents() {
-        UserDefaults.standard.set(events, forKey: EVENTS_KEY)
+        UserDefaults.standard.set(events, forKey: eventsKey)
     }
 
     /// Send analytics to the api when enabled.
@@ -136,12 +136,12 @@ final class FlagsmithAnalytics: @unchecked Sendable {
         }
     }
 
-#if canImport(ObjectiveC)
-    /// Event triggered when timer fired.
-    ///
-    /// Exposed on Apple platforms to relay selector-based events
-    @objc private func postAnalyticsWhenEnabled(_ timer: Timer) {
-        postAnalytics()
-    }
-#endif
+    #if canImport(ObjectiveC)
+        /// Event triggered when timer fired.
+        ///
+        /// Exposed on Apple platforms to relay selector-based events
+        @objc private func postAnalyticsWhenEnabled(_: Timer) {
+            postAnalytics()
+        }
+    #endif
 }

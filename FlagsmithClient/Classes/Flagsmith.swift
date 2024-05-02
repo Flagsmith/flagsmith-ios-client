@@ -7,14 +7,14 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+    import FoundationNetworking
 #endif
 
 /// Manage feature flags and remote config across multiple projects,
 /// environments and organisations.
 public final class Flagsmith: @unchecked Sendable {
     /// Shared singleton client object
-    public static let shared: Flagsmith = Flagsmith()
+    public static let shared: Flagsmith = .init()
     private let apiManager: APIManager
     private let analytics: FlagsmithAnalytics
 
@@ -22,33 +22,33 @@ public final class Flagsmith: @unchecked Sendable {
     ///
     /// The default implementation uses: `https://edge.api.flagsmith.com/api/v1`.
     public var baseURL: URL {
-        set { apiManager.baseURL = newValue }
         get { apiManager.baseURL }
+        set { apiManager.baseURL = newValue }
     }
 
     /// API Key unique to your organization.
     ///
     /// This value must be provided before any request can succeed.
     public var apiKey: String? {
-        set { apiManager.apiKey = newValue }
         get { apiManager.apiKey }
+        set { apiManager.apiKey = newValue }
     }
 
     /// Is flag analytics enabled?
     public var enableAnalytics: Bool {
-        set { analytics.enableAnalytics = newValue }
         get { analytics.enableAnalytics }
+        set { analytics.enableAnalytics = newValue }
     }
 
     /// How often to send the flag analytics, in seconds
     public var analyticsFlushPeriod: Int {
-        set { analytics.flushPeriod = newValue }
         get { analytics.flushPeriod }
+        set { analytics.flushPeriod = newValue }
     }
 
     /// Default flags to fall back on if an API call fails
     private var _defaultFlags: [Flag] = []
-    public var defaultFlags: [Flag]  {
+    public var defaultFlags: [Flag] {
         get {
             apiManager.propertiesSerialAccessQueue.sync { _defaultFlags }
         }
@@ -60,8 +60,8 @@ public final class Flagsmith: @unchecked Sendable {
     }
 
     /// Configuration class for the cache settings
-    private var _cacheConfig: CacheConfig = CacheConfig()
-    public var cacheConfig: CacheConfig  {
+    private var _cacheConfig: CacheConfig = .init()
+    public var cacheConfig: CacheConfig {
         get {
             apiManager.propertiesSerialAccessQueue.sync { _cacheConfig }
         }
@@ -83,18 +83,17 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - identity: ID of the user (optional)
     ///   - completion: Closure with Result which contains array of Flag objects in case of success or Error in case of failure
     public func getFeatureFlags(forIdentity identity: String? = nil,
-                                completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void) {
-
+                                completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void)
+    {
         if let identity = identity {
-            getIdentity(identity) { (result) in
+            getIdentity(identity) { result in
                 switch result {
-                case .success(let thisIdentity):
+                case let .success(thisIdentity):
                     completion(.success(thisIdentity.flags))
-                case .failure(let error):
+                case let .failure(error):
                     if self.defaultFlags.isEmpty {
                         completion(.failure(error))
-                    }
-                    else {
+                    } else {
                         completion(.success(self.defaultFlags))
                     }
                 }
@@ -102,13 +101,12 @@ public final class Flagsmith: @unchecked Sendable {
         } else {
             apiManager.request(.getFlags) { (result: Result<[Flag], Error>) in
                 switch result {
-                case .success(let flags):
+                case let .success(flags):
                     completion(.success(flags))
-                case .failure(let error):
+                case let .failure(error):
                     if self.defaultFlags.isEmpty {
                         completion(.failure(error))
-                    }
-                    else {
+                    } else {
                         completion(.success(self.defaultFlags))
                     }
                 }
@@ -124,18 +122,18 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains Bool in case of success or Error in case of failure
     public func hasFeatureFlag(withID id: String,
                                forIdentity identity: String? = nil,
-                               completion: @Sendable @escaping (Result<Bool, any Error>) -> Void) {
+                               completion: @Sendable @escaping (Result<Bool, any Error>) -> Void)
+    {
         analytics.trackEvent(flagName: id)
-        getFeatureFlags(forIdentity: identity) { (result) in
+        getFeatureFlags(forIdentity: identity) { result in
             switch result {
-            case .success(let flags):
-                let hasFlag = flags.contains(where: {$0.feature.name == id && $0.enabled})
+            case let .success(flags):
+                let hasFlag = flags.contains(where: { $0.feature.name == id && $0.enabled })
                 completion(.success(hasFlag))
-            case .failure(let error):
-                if self.defaultFlags.contains(where: {$0.feature.name == id && $0.enabled}) {
+            case let .failure(error):
+                if self.defaultFlags.contains(where: { $0.feature.name == id && $0.enabled }) {
                     completion(.success(true))
-                }
-                else {
+                } else {
                     completion(.failure(error))
                 }
             }
@@ -151,18 +149,18 @@ public final class Flagsmith: @unchecked Sendable {
     @available(*, deprecated, renamed: "getValueForFeature(withID:forIdentity:completion:)")
     public func getFeatureValue(withID id: String,
                                 forIdentity identity: String? = nil,
-                                completion: @Sendable @escaping (Result<String?, any Error>) -> Void) {
+                                completion: @Sendable @escaping (Result<String?, any Error>) -> Void)
+    {
         analytics.trackEvent(flagName: id)
-        getFeatureFlags(forIdentity: identity) { (result) in
+        getFeatureFlags(forIdentity: identity) { result in
             switch result {
-            case .success(let flags):
-                let flag = flags.first(where: {$0.feature.name == id})
+            case let .success(flags):
+                let flag = flags.first(where: { $0.feature.name == id })
                 completion(.success(flag?.value.stringValue))
-            case .failure(let error):
+            case let .failure(error):
                 if let flag = self.getFlagUsingDefaults(withID: id, forIdentity: identity) {
                     completion(.success(flag.value.stringValue))
-                }
-                else {
+                } else {
                     completion(.failure(error))
                 }
             }
@@ -177,18 +175,18 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result of `TypedValue` in case of success or `Error` in case of failure
     public func getValueForFeature(withID id: String,
                                    forIdentity identity: String? = nil,
-                                   completion: @Sendable @escaping (Result<TypedValue?, any Error>) -> Void) {
+                                   completion: @Sendable @escaping (Result<TypedValue?, any Error>) -> Void)
+    {
         analytics.trackEvent(flagName: id)
-        getFeatureFlags(forIdentity: identity) { (result) in
+        getFeatureFlags(forIdentity: identity) { result in
             switch result {
-            case .success(let flags):
-                let flag = flags.first(where: {$0.feature.name == id})
+            case let .success(flags):
+                let flag = flags.first(where: { $0.feature.name == id })
                 completion(.success(flag?.value))
-            case .failure(let error):
+            case let .failure(error):
                 if let flag = self.getFlagUsingDefaults(withID: id, forIdentity: identity) {
                     completion(.success(flag.value))
-                }
-                else {
+                } else {
                     completion(.failure(error))
                 }
             }
@@ -203,17 +201,18 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains array of Trait objects in case of success or Error in case of failure
     public func getTraits(withIDS ids: [String]? = nil,
                           forIdentity identity: String,
-                          completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void) {
-        getIdentity(identity) { (result) in
+                          completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void)
+    {
+        getIdentity(identity) { result in
             switch result {
-            case .success(let identity):
+            case let .success(identity):
                 if let ids = ids {
-                    let traits = identity.traits.filter({ids.contains($0.key)})
+                    let traits = identity.traits.filter { ids.contains($0.key) }
                     completion(.success(traits))
                 } else {
                     completion(.success(identity.traits))
                 }
-            case .failure(let error):
+            case let .failure(error):
                 completion(.failure(error))
             }
         }
@@ -227,13 +226,14 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains Trait in case of success or Error in case of failure
     public func getTrait(withID id: String,
                          forIdentity identity: String,
-                         completion: @Sendable @escaping (Result<Trait?, any Error>) -> Void) {
-        getIdentity(identity) { (result) in
+                         completion: @Sendable @escaping (Result<Trait?, any Error>) -> Void)
+    {
+        getIdentity(identity) { result in
             switch result {
-            case .success(let identity):
-                let trait = identity.traits.first(where: {$0.key == id})
+            case let .success(identity):
+                let trait = identity.traits.first(where: { $0.key == id })
                 completion(.success(trait))
-            case .failure(let error):
+            case let .failure(error):
                 completion(.failure(error))
             }
         }
@@ -247,7 +247,8 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains Trait in case of success or Error in case of failure
     public func setTrait(_ trait: Trait,
                          forIdentity identity: String,
-                         completion: @Sendable @escaping (Result<Trait, any Error>) -> Void) {
+                         completion: @Sendable @escaping (Result<Trait, any Error>) -> Void)
+    {
         apiManager.request(.postTrait(trait: trait, identity: identity)) { (result: Result<Trait, Error>) in
             completion(result)
         }
@@ -261,7 +262,8 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains Traits in case of success or Error in case of failure
     public func setTraits(_ traits: [Trait],
                           forIdentity identity: String,
-                          completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void) {
+                          completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void)
+    {
         apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
             completion(result.map(\.traits))
         }
@@ -273,22 +275,22 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - identity: ID of the user
     ///   - completion: Closure with Result which contains Identity in case of success or Error in case of failure
     public func getIdentity(_ identity: String,
-                            completion: @Sendable @escaping (Result<Identity, any Error>) -> Void) {
+                            completion: @Sendable @escaping (Result<Identity, any Error>) -> Void)
+    {
         apiManager.request(.getIdentity(identity: identity)) { (result: Result<Identity, Error>) in
             completion(result)
         }
     }
 
     /// Return a flag for a flag ID from the default flags.
-    private func getFlagUsingDefaults(withID id: String, forIdentity identity: String? = nil) -> Flag? {
-        return self.defaultFlags.first(where: {$0.feature.name == id})
+    private func getFlagUsingDefaults(withID id: String, forIdentity _: String? = nil) -> Flag? {
+        return defaultFlags.first(where: { $0.feature.name == id })
     }
 }
 
 public final class CacheConfig {
-
     /// Cache to use when enabled, defaults to the shared app cache
-    public var cache: URLCache = URLCache.shared
+    public var cache: URLCache = .shared
 
     /// Use cached flags as a fallback?
     public var useCache: Bool = false
@@ -298,5 +300,4 @@ public final class CacheConfig {
 
     /// Skip API if there is a cache available
     public var skipAPI: Bool = false
-
 }
