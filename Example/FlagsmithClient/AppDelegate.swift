@@ -9,30 +9,31 @@
 import UIKit
 import FlagsmithClient
 
-func isSuccess<T,F>(_ result: Result<T,F>) -> Bool {
+func isSuccess<T, F>(_ result: Result<T, F>) -> Bool {
     if case .success = result { return true } else { return false }
 }
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-  
+
   var window: UIWindow?
   let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
-  
-  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+  func application(_ application: UIApplication,
+                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     Flagsmith.shared.apiKey = "<add your API key from the Flagsmith settings page>"
-      
+
     // set default flags
     Flagsmith.shared.defaultFlags = [Flag(featureName: "feature_a", enabled: false),
-                                     Flag(featureName: "font_size", intValue:12, enabled: true),
-                                     Flag(featureName: "my_name", stringValue:"Testing", enabled: true)]
-    
+                                     Flag(featureName: "font_size", intValue: 12, enabled: true),
+                                     Flag(featureName: "my_name", stringValue: "Testing", enabled: true)]
+
     // set cache on / off (defaults to off)
     Flagsmith.shared.cacheConfig.useCache = true
-    
+
     // set custom cache to use (defaults to shared URLCache)
-    //Flagsmith.shared.cacheConfig.cache = <CUSTOM_CACHE>
+    // Flagsmith.shared.cacheConfig.cache = <CUSTOM_CACHE>
 
     // set skip API on / off (defaults to off)
     Flagsmith.shared.cacheConfig.skipAPI = false
@@ -42,53 +43,53 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // set analytics on or off
     Flagsmith.shared.enableAnalytics = true
-    
+
     // set the analytics flush period in seconds
     Flagsmith.shared.analyticsFlushPeriod = 10
-    
-    Flagsmith.shared.getFeatureFlags() { (result) in
+
+    Flagsmith.shared.getFeatureFlags { (result) in
       print(result)
     }
     Flagsmith.shared.hasFeatureFlag(withID: "freeze_delinquent_accounts") { (result) in
       print(result)
     }
-    
+
     // Try getting the feature flags concurrently to ensure that this does not cause any issues
     // This was originally highlighted in https://github.com/Flagsmith/flagsmith-ios-client/pull/40
     for _ in 1...20 {
       concurrentQueue.async {
-        Flagsmith.shared.getFeatureFlags() { (result) in
+        Flagsmith.shared.getFeatureFlags { (_) in
         }
       }
     }
-    
-    //Flagsmith.shared.setTrait(Trait(key: "<my_key>", value: "<my_value>"), forIdentity: "<my_identity>") { (result) in print(result) }
-    //Flagsmith.shared.getIdentity("<my_key>") { (result) in print(result) }
+
+    // Flagsmith.shared.setTrait(Trait(key: "<my_key>", value: "<my_value>"), forIdentity: "<my_identity>") { (result) in print(result) }
+    // Flagsmith.shared.getIdentity("<my_key>") { (result) in print(result) }
     return true
   }
-  
+
   func applicationWillResignActive(_ application: UIApplication) {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
   }
-  
+
   func applicationDidEnterBackground(_ application: UIApplication) {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
   }
-  
+
   func applicationWillEnterForeground(_ application: UIApplication) {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
   }
-  
+
   func applicationDidBecomeActive(_ application: UIApplication) {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
   }
-  
+
   func applicationWillTerminate(_ application: UIApplication) {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
-  
+
   #if swift(>=5.5.2)
   /// (Example) Setup the app based on the available feature flags.
   ///
@@ -98,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   @available(iOS 13.0, *)
   func determineAppConfiguration() async {
     let flagsmith = Flagsmith.shared
-  
+
     do {
       if try await flagsmith.hasFeatureFlag(withID: "ab_test_enabled") {
         if let theme = try await flagsmith.getValueForFeature(withID: "app_theme") {
@@ -116,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print(error)
     }
   }
-  
+
   func setTheme(_ theme: TypedValue) {}
   func processFlags(_ flags: [Flag]) {}
   #endif

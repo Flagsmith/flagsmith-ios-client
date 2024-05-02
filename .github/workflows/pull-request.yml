@@ -27,3 +27,18 @@ jobs:
               run: swift build -v
             - name: Run tests
               run: swift test -v
+
+    swift-lint:
+
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Run SwiftLint
+              uses: norio-nomura/action-swiftlint@3.2.1
+              # TODO: enable these settings:
+              # env:
+              #     DIFF_BASE: ${{ github.base_ref }}
+              # with:
+              #     args: --strict
