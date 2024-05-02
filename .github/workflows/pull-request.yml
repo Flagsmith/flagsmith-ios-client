@@ -7,22 +7,37 @@ on:
         branches: [main]
 
 jobs:
-    macos-build:
-        runs-on: macos-latest
+    macos-build-14:
+        # macOS-latest images are not the most recent
+        # The macos-latest workflow label currently uses the macOS 12 runner image, which doesn't include the build-tools we need
+        # The vast majority of macOS developers would be using the latest version of macOS
+        # Current list here: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
+        runs-on: macOS-14 
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
+            - name: Build (macOS)
+              run: swift build -v
+            - name: Run tests
+              run: swift test -v
+
+    macos-build-13:
+        # Let's also check that the code builds on macOS 13
+        # At 23rd April 2023 the 'latest' macOS version is macOS 12
+        runs-on: macOS-13
+
+        steps:
+            - uses: actions/checkout@v4
             - name: Build (macOS)
               run: swift build -v
             - name: Run tests
               run: swift test -v
 
     ubuntu-build:
-
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Build (Ubuntu)
               run: swift build -v
             - name: Run tests

@@ -11,18 +11,50 @@ import Foundation
 #endif
 
 /// Handles interaction with a **Flagsmith** api.
-class APIManager: NSObject, URLSessionDataDelegate {
-    private var session: URLSession!
+final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
+    private var _session: URLSession!
+    private var session: URLSession {
+        get {
+            propertiesSerialAccessQueue.sync { _session }
+        }
+        set {
+            propertiesSerialAccessQueue.sync(flags: .barrier) {
+                _session = newValue
+            }
+        }
+    }
 
     /// Base `URL` used for requests.
-    var baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
+    private var _baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
+    var baseURL: URL {
+        get {
+            propertiesSerialAccessQueue.sync { _baseURL }
+        }
+        set {
+            propertiesSerialAccessQueue.sync {
+                _baseURL = newValue
+            }
+        }
+    }
+
     /// API Key unique to an organization.
-    var apiKey: String?
+    private var _apiKey: String?
+    var apiKey: String? {
+        get {
+            propertiesSerialAccessQueue.sync { _apiKey }
+        }
+        set {
+            propertiesSerialAccessQueue.sync {
+                _apiKey = newValue
+            }
+        }
+    }
 
     // store the completion handlers and accumulated data for each task
-    private var tasksToCompletionHandlers: [Int: (Result<Data, Error>) -> Void] = [:]
+    private var tasksToCompletionHandlers: [Int: @Sendable (Result<Data, any Error>) -> Void] = [:]
     private var tasksToData: [Int: Data] = [:]
-    private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue")
+    private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue", qos: .default)
+    let propertiesSerialAccessQueue = DispatchQueue(label: "propertiesSerialAccessQueue", qos: .default)
 
     override init() {
         super.init()
@@ -30,7 +62,7 @@ class APIManager: NSObject, URLSessionDataDelegate {
         session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
     }
 
-    func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         serialAccessQueue.sync {
             if let dataTask = task as? URLSessionDataTask {
                 if let completion = tasksToCompletionHandlers[dataTask.taskIdentifier] {
@@ -48,7 +80,7 @@ class APIManager: NSObject, URLSessionDataDelegate {
     }
 
     func urlSession(_: URLSession, dataTask _: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse,
-                    completionHandler: @escaping (CachedURLResponse?) -> Void)
+                    completionHandler: @Sendable @escaping (CachedURLResponse?) -> Void)
     {
         serialAccessQueue.sync {
             // intercept and modify the cache settings for the response
@@ -81,7 +113,7 @@ class APIManager: NSObject, URLSessionDataDelegate {
     /// - parameters:
     ///   - router: The path and parameters that should be requested.
     ///   - completion: Function block executed with the result of the request.
-    private func request(_ router: Router, completion: @escaping (Result<Data, Error>) -> Void) {
+    private func request(_ router: Router, completion: @Sendable @escaping (Result<Data, any Error>) -> Void) {
         guard let apiKey = apiKey, !apiKey.isEmpty else {
             completion(.failure(FlagsmithError.apiKey))
             return
@@ -118,7 +150,7 @@ class APIManager: NSObject, URLSessionDataDelegate {
     /// - parameters:
     ///   - router: The path and parameters that should be requested.
     ///   - completion: Function block executed with the result of the request.
-    func request(_ router: Router, completion: @escaping (Result<Void, Error>) -> Void) {
+    func request(_ router: Router, completion: @Sendable @escaping (Result<Void, any Error>) -> Void) {
         request(router) { (result: Result<Data, Error>) in
             switch result {
             case let .failure(error):
@@ -136,7 +168,7 @@ class APIManager: NSObject, URLSessionDataDelegate {
     ///   - decoder: `JSONDecoder` used to deserialize the response data.
     ///   - completion: Function block executed with the result of the request.
     func request<T: Decodable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(),
-                               completion: @escaping (Result<T, Error>) -> Void)
+                               completion: @Sendable @escaping (Result<T, any Error>) -> Void)
     {
         request(router) { (result: Result<Data, Error>) in
             switch result {

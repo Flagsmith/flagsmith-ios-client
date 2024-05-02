@@ -16,23 +16,22 @@ final class APIManagerTests: FlagsmithClientTestCase {
         apiManager.apiKey = nil
 
         let requestFinished = expectation(description: "Request Finished")
-        var error: FlagsmithError?
 
-        apiManager.request(.getFlags) { (result: Result<Void, Error>) in
+        apiManager.request(.getFlags) { (result: Result<Void, any Error>) in
             if case let .failure(err) = result {
-                error = err as? FlagsmithError
+                let error = err as? FlagsmithError
+
+                guard let flagsmithError = try? XCTUnwrap(error), case .apiKey = flagsmithError else {
+                    XCTFail("Wrong Error")
+                    requestFinished.fulfill()
+                    return
+                }
             }
 
             requestFinished.fulfill()
         }
 
         wait(for: [requestFinished], timeout: 1.0)
-
-        let flagsmithError = try XCTUnwrap(error)
-        guard case .apiKey = flagsmithError else {
-            XCTFail("Wrong Error")
-            return
-        }
     }
 
     /// Verify that an invalid API url produces the expected error.
@@ -41,23 +40,22 @@ final class APIManagerTests: FlagsmithClientTestCase {
         apiManager.baseURL = URL(fileURLWithPath: "/dev/null")
 
         let requestFinished = expectation(description: "Request Finished")
-        var error: FlagsmithError?
 
-        apiManager.request(.getFlags) { (result: Result<Void, Error>) in
+        apiManager.request(.getFlags) { (result: Result<Void, any Error>) in
             if case let .failure(err) = result {
-                error = err as? FlagsmithError
+                let error = err as? FlagsmithError
+                let flagsmithError: FlagsmithError? = try? XCTUnwrap(error)
+                guard let flagsmithError = flagsmithError, case .apiURL = flagsmithError else {
+                    XCTFail("Wrong Error")
+                    requestFinished.fulfill()
+                    return
+                }
             }
 
             requestFinished.fulfill()
         }
 
         wait(for: [requestFinished], timeout: 1.0)
-
-        let flagsmithError = try XCTUnwrap(error)
-        guard case .apiURL = flagsmithError else {
-            XCTFail("Wrong Error")
-            return
-        }
     }
 
     func testConcurrentRequests() throws {
@@ -66,15 +64,16 @@ final class APIManagerTests: FlagsmithClientTestCase {
 
         var expectations: [XCTestExpectation] = []
         let iterations = 500
-        var error: FlagsmithError?
 
         for concurrentIteration in 1 ... iterations {
             let expectation = XCTestExpectation(description: "Multiple threads can access the APIManager \(concurrentIteration)")
             expectations.append(expectation)
             concurrentQueue.async {
-                self.apiManager.request(.getFlags) { (result: Result<Void, Error>) in
+                self.apiManager.request(.getFlags) { (result: Result<Void, any Error>) in
                     if case let .failure(err) = result {
-                        error = err as? FlagsmithError
+                        let error = err as? FlagsmithError
+                        // Ensure that we didn't have any errors during the process
+                        XCTAssertTrue(error == nil)
                     }
                     expectation.fulfill()
                 }
@@ -82,8 +81,6 @@ final class APIManagerTests: FlagsmithClientTestCase {
         }
 
         wait(for: expectations, timeout: 10)
-        // Ensure that we didn't have any errors during the process
-        XCTAssertTrue(error == nil)
 
         print("Finished!")
     }

@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.9
 
 import PackageDescription
 
@@ -15,10 +15,11 @@ let package = Package(
         .target(
             name: "FlagsmithClient",
             dependencies: [],
-            path: "FlagsmithClient/Classes"
-            // plugins: [
-            //     .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
-            ),
+            path: "FlagsmithClient/Classes",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency=complete"),
+                .enableUpcomingFeature("ExistentialAny"), // https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
+            ]),
         .testTarget(
             name: "FlagsmitClientTests",
             dependencies: ["FlagsmithClient"],

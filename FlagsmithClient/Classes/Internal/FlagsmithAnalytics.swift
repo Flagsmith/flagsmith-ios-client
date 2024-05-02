@@ -8,21 +8,59 @@
 import Foundation
 
 /// Internal analytics for the **FlagsmithClient**
-class FlagsmithAnalytics {
+final class FlagsmithAnalytics: @unchecked Sendable {
     /// Indicates if analytics are enabled.
-    var enableAnalytics: Bool = true
+    private var _enableAnalytics: Bool = true
+    var enableAnalytics: Bool {
+        get {
+            apiManager.propertiesSerialAccessQueue.sync { _enableAnalytics }
+        }
+        set {
+            apiManager.propertiesSerialAccessQueue.sync {
+                _enableAnalytics = newValue
+            }
+        }
+    }
+
+    private var _flushPeriod: Int = 10
     /// How often analytics events are processed (in seconds).
-    var flushPeriod: Int = 10 {
-        didSet {
+    var flushPeriod: Int {
+        get {
+            apiManager.propertiesSerialAccessQueue.sync { _flushPeriod }
+        }
+        set {
+            apiManager.propertiesSerialAccessQueue.sync {
+                _flushPeriod = newValue
+            }
             setupTimer()
         }
     }
 
     private unowned let apiManager: APIManager
-
     private let eventsKey = "events"
-    private var events: [String: Int] = [:]
-    private var timer: Timer?
+    private var _events: [String: Int] = [:]
+    private var events: [String: Int] {
+        get {
+            apiManager.propertiesSerialAccessQueue.sync { _events }
+        }
+        set {
+            apiManager.propertiesSerialAccessQueue.sync {
+                _events = newValue
+            }
+        }
+    }
+
+    private var _timer: Timer?
+    private var timer: Timer? {
+        get {
+            apiManager.propertiesSerialAccessQueue.sync { _timer }
+        }
+        set {
+            apiManager.propertiesSerialAccessQueue.sync {
+                _timer = newValue
+            }
+        }
+    }
 
     init(apiManager: APIManager) {
         self.apiManager = apiManager
@@ -88,7 +126,7 @@ class FlagsmithAnalytics {
             return
         }
 
-        apiManager.request(.postAnalytics(events: events)) { [weak self] (result: Result<Void, Error>) in
+        apiManager.request(.postAnalytics(events: events)) { @Sendable [weak self] (result: Result<Void, Error>) in
             switch result {
             case .failure:
                 print("Upload analytics failed")
