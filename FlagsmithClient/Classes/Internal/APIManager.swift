@@ -68,7 +68,8 @@ class APIManager: NSObject, URLSessionDataDelegate {
         }
     }
 
-    func urlSession(_: URLSession, dataTask _: URLSessionDataTask, didReceive _: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+    func urlSession(_: URLSession, dataTask _: URLSessionDataTask, didReceive _: URLResponse,
+                    completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         completionHandler(.allow)
     }
 
@@ -132,7 +133,8 @@ class APIManager: NSObject, URLSessionDataDelegate {
     ///   - router: The path and parameters that should be requested.
     ///   - decoder: `JSONDecoder` used to deserialize the response data.
     ///   - completion: Function block executed with the result of the request.
-    func request<T: Decodable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(), completion: @escaping (Result<T, Error>) -> Void) {
+    func request<T: Decodable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(),
+                               completion: @escaping (Result<T, Error>) -> Void) {
         request(router) { (result: Result<Data, Error>) in
             switch result {
             case let .failure(error):

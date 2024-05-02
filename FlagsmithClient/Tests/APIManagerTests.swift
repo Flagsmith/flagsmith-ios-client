@@ -19,8 +19,8 @@ final class APIManagerTests: FlagsmithClientTestCase {
         var error: FlagsmithError?
 
         apiManager.request(.getFlags) { (result: Result<Void, Error>) in
-            if case let .failure(e) = result {
-                error = e as? FlagsmithError
+            if case let .failure(err) = result {
+                error = err as? FlagsmithError
             }
 
             requestFinished.fulfill()
@@ -44,8 +44,8 @@ final class APIManagerTests: FlagsmithClientTestCase {
         var error: FlagsmithError?
 
         apiManager.request(.getFlags) { (result: Result<Void, Error>) in
-            if case let .failure(e) = result {
-                error = e as? FlagsmithError
+            if case let .failure(err) = result {
+                error = err as? FlagsmithError
             }
 
             requestFinished.fulfill()
@@ -73,8 +73,8 @@ final class APIManagerTests: FlagsmithClientTestCase {
             expectations.append(expectation)
             concurrentQueue.async {
                 self.apiManager.request(.getFlags) { (result: Result<Void, Error>) in
-                    if case let .failure(e) = result {
-                        error = e as? FlagsmithError
+                    if case let .failure(err) = result {
+                        error = err as? FlagsmithError
                     }
                     expectation.fulfill()
                 }

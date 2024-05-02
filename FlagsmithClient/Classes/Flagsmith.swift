@@ -22,28 +22,28 @@ public class Flagsmith {
     ///
     /// The default implementation uses: `https://edge.api.flagsmith.com/api/v1`.
     public var baseURL: URL {
-        set { apiManager.baseURL = newValue }
         get { apiManager.baseURL }
+        set { apiManager.baseURL = newValue }
     }
 
     /// API Key unique to your organization.
     ///
     /// This value must be provided before any request can succeed.
     public var apiKey: String? {
-        set { apiManager.apiKey = newValue }
         get { apiManager.apiKey }
+        set { apiManager.apiKey = newValue }
     }
 
     /// Is flag analytics enabled?
     public var enableAnalytics: Bool {
-        set { analytics.enableAnalytics = newValue }
         get { analytics.enableAnalytics }
+        set { analytics.enableAnalytics = newValue }
     }
 
     /// How often to send the flag analytics, in seconds
     public var analyticsFlushPeriod: Int {
-        set { analytics.flushPeriod = newValue }
         get { analytics.flushPeriod }
+        set { analytics.flushPeriod = newValue }
     }
 
     /// Default flags to fall back on if an API call fails

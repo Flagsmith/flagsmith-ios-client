@@ -27,7 +27,8 @@ final class RouterTests: FlagsmithClientTestCase {
         let route = Router.getIdentity(identity: "6056BCBF")
         let request = try route.request(baseUrl: url, apiKey: apiKey)
         XCTAssertEqual(request.httpMethod, "GET")
-        XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/identities/?identifier=6056BCBF")
+        XCTAssertEqual(request.url?.absoluteString,
+          "https://edge.api.flagsmith.com/api/v1/identities/?identifier=6056BCBF")
         XCTAssertTrue(request.allHTTPHeaderFields?.contains(where: { $0.key == "X-Environment-Key" }) ?? false)
         XCTAssertNil(request.httpBody)
     }

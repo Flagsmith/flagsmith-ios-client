@@ -19,13 +19,14 @@ class FlagsmithAnalytics {
     }
 
     private unowned let apiManager: APIManager
-    private let EVENTS_KEY = "events"
+
+    private let eventsKey = "events"
     private var events: [String: Int] = [:]
     private var timer: Timer?
 
     init(apiManager: APIManager) {
         self.apiManager = apiManager
-        events = UserDefaults.standard.dictionary(forKey: EVENTS_KEY) as? [String: Int] ?? [:]
+        events = UserDefaults.standard.dictionary(forKey: eventsKey) as? [String: Int] ?? [:]
         setupTimer()
     }
 
@@ -74,7 +75,7 @@ class FlagsmithAnalytics {
 
     /// Persist the events to storage.
     private func saveEvents() {
-        UserDefaults.standard.set(events, forKey: EVENTS_KEY)
+        UserDefaults.standard.set(events, forKey: eventsKey)
     }
 
     /// Send analytics to the api when enabled.

@@ -23,7 +23,10 @@ extension Optional where Wrapped == Data {
 extension Data {
     func json() throws -> NSDictionary {
         let json = try JSONSerialization.jsonObject(with: self)
-        let dict = json as! [String: Any]
-        return NSDictionary(dictionary: dict)
+        if let dict = json as? [String: Any] {
+            return NSDictionary(dictionary: dict)
+        } else {
+            return NSDictionary()
+        }
     }
 }
