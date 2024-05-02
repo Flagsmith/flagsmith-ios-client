@@ -76,8 +76,7 @@ enum Router: Sendable {
     ///  - encoder: `JSONEncoder` used to encode the request body.
     func request(baseUrl: URL,
                  apiKey: String,
-                 using encoder: JSONEncoder = JSONEncoder()) throws -> URLRequest
-    {
+                 using encoder: JSONEncoder = JSONEncoder()) throws -> URLRequest {
         let urlString = baseUrl.appendingPathComponent(path).absoluteString
         var urlComponents = URLComponents(string: urlString)
         urlComponents?.queryItems = parameters

@@ -22,12 +22,6 @@ public struct Feature: Codable, Sendable {
     public let type: String?
     public let description: String?
 
-    init(name: String, type: String?, description: String?) {
-        self.name = name
-        self.type = type
-        self.description = description
-    }
-
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)

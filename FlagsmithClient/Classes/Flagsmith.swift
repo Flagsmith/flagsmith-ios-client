@@ -60,8 +60,7 @@ public class Flagsmith {
     ///   - identity: ID of the user (optional)
     ///   - completion: Closure with Result which contains array of Flag objects in case of success or Error in case of failure
     public func getFeatureFlags(forIdentity identity: String? = nil,
-                                completion: @escaping (Result<[Flag], Error>) -> Void)
-    {
+                                completion: @escaping (Result<[Flag], Error>) -> Void) {
         if let identity = identity {
             getIdentity(identity) { result in
                 switch result {
@@ -99,8 +98,7 @@ public class Flagsmith {
     ///   - completion: Closure with Result which contains Bool in case of success or Error in case of failure
     public func hasFeatureFlag(withID id: String,
                                forIdentity identity: String? = nil,
-                               completion: @escaping (Result<Bool, Error>) -> Void)
-    {
+                               completion: @escaping (Result<Bool, Error>) -> Void) {
         analytics.trackEvent(flagName: id)
         getFeatureFlags(forIdentity: identity) { result in
             switch result {
@@ -126,8 +124,7 @@ public class Flagsmith {
     @available(*, deprecated, renamed: "getValueForFeature(withID:forIdentity:completion:)")
     public func getFeatureValue(withID id: String,
                                 forIdentity identity: String? = nil,
-                                completion: @escaping (Result<String?, Error>) -> Void)
-    {
+                                completion: @escaping (Result<String?, Error>) -> Void) {
         analytics.trackEvent(flagName: id)
         getFeatureFlags(forIdentity: identity) { result in
             switch result {
@@ -152,8 +149,7 @@ public class Flagsmith {
     ///   - completion: Closure with Result of `TypedValue` in case of success or `Error` in case of failure
     public func getValueForFeature(withID id: String,
                                    forIdentity identity: String? = nil,
-                                   completion: @escaping (Result<TypedValue?, Error>) -> Void)
-    {
+                                   completion: @escaping (Result<TypedValue?, Error>) -> Void) {
         analytics.trackEvent(flagName: id)
         getFeatureFlags(forIdentity: identity) { result in
             switch result {
@@ -178,8 +174,7 @@ public class Flagsmith {
     ///   - completion: Closure with Result which contains array of Trait objects in case of success or Error in case of failure
     public func getTraits(withIDS ids: [String]? = nil,
                           forIdentity identity: String,
-                          completion: @escaping (Result<[Trait], Error>) -> Void)
-    {
+                          completion: @escaping (Result<[Trait], Error>) -> Void) {
         getIdentity(identity) { result in
             switch result {
             case let .success(identity):
@@ -203,8 +198,7 @@ public class Flagsmith {
     ///   - completion: Closure with Result which contains Trait in case of success or Error in case of failure
     public func getTrait(withID id: String,
                          forIdentity identity: String,
-                         completion: @escaping (Result<Trait?, Error>) -> Void)
-    {
+                         completion: @escaping (Result<Trait?, Error>) -> Void) {
         getIdentity(identity) { result in
             switch result {
             case let .success(identity):
@@ -224,8 +218,7 @@ public class Flagsmith {
     ///   - completion: Closure with Result which contains Trait in case of success or Error in case of failure
     public func setTrait(_ trait: Trait,
                          forIdentity identity: String,
-                         completion: @escaping (Result<Trait, Error>) -> Void)
-    {
+                         completion: @escaping (Result<Trait, Error>) -> Void) {
         apiManager.request(.postTrait(trait: trait, identity: identity)) { (result: Result<Trait, Error>) in
             completion(result)
         }
@@ -239,8 +232,7 @@ public class Flagsmith {
     ///   - completion: Closure with Result which contains Traits in case of success or Error in case of failure
     public func setTraits(_ traits: [Trait],
                           forIdentity identity: String,
-                          completion: @escaping (Result<[Trait], Error>) -> Void)
-    {
+                          completion: @escaping (Result<[Trait], Error>) -> Void) {
         apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
             completion(result.map(\.traits))
         }
@@ -252,8 +244,7 @@ public class Flagsmith {
     ///   - identity: ID of the user
     ///   - completion: Closure with Result which contains Identity in case of success or Error in case of failure
     public func getIdentity(_ identity: String,
-                            completion: @escaping (Result<Identity, Error>) -> Void)
-    {
+                            completion: @escaping (Result<Identity, Error>) -> Void) {
         apiManager.request(.getIdentity(identity: identity)) { (result: Result<Identity, Error>) in
             completion(result)
         }

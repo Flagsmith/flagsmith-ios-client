@@ -21,8 +21,10 @@ public struct Flag: Codable, Sendable {
     public let value: TypedValue
     public let enabled: Bool
 
-    public init(featureName: String, boolValue: Bool, enabled: Bool, featureType: String? = nil, featureDescription: String? = nil) {
-        self.init(featureName: featureName, value: TypedValue.bool(boolValue), enabled: enabled, featureType: featureType, featureDescription: featureDescription)
+    public init(featureName: String, boolValue: Bool, enabled: Bool,
+        featureType: String? = nil, featureDescription: String? = nil) {
+        self.init(featureName: featureName, value: TypedValue.bool(boolValue), enabled: enabled,
+                    featureType: featureType, featureDescription: featureDescription)
     }
 
     public init(featureName: String, floatValue: Float, enabled: Bool, featureType: String? = nil, featureDescription: String? = nil) {

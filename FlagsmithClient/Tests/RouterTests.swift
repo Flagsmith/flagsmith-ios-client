@@ -85,7 +85,7 @@ final class RouterTests: FlagsmithClientTestCase {
     func testPostAnalyticsRequest() throws {
         let events: [String: Int] = [
             "one": 1,
-            "two": 2,
+            "two": 2
         ]
 
         let url = try XCTUnwrap(baseUrl)

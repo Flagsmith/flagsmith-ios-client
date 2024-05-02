@@ -48,8 +48,7 @@ class APIManager: NSObject, URLSessionDataDelegate {
     }
 
     func urlSession(_: URLSession, dataTask _: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse,
-                    completionHandler: @escaping (CachedURLResponse?) -> Void)
-    {
+                    completionHandler: @escaping (CachedURLResponse?) -> Void) {
         serialAccessQueue.sync {
             // intercept and modify the cache settings for the response
             if Flagsmith.shared.cacheConfig.useCache {
