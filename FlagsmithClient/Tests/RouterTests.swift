@@ -28,7 +28,7 @@ final class RouterTests: FlagsmithClientTestCase {
         let request = try route.request(baseUrl: url, apiKey: apiKey)
         XCTAssertEqual(request.httpMethod, "GET")
         XCTAssertEqual(request.url?.absoluteString,
-          "https://edge.api.flagsmith.com/api/v1/identities/?identifier=6056BCBF")
+                       "https://edge.api.flagsmith.com/api/v1/identities/?identifier=6056BCBF")
         XCTAssertTrue(request.allHTTPHeaderFields?.contains(where: { $0.key == "X-Environment-Key" }) ?? false)
         XCTAssertNil(request.httpBody)
     }
@@ -86,7 +86,7 @@ final class RouterTests: FlagsmithClientTestCase {
     func testPostAnalyticsRequest() throws {
         let events: [String: Int] = [
             "one": 1,
-            "two": 2
+            "two": 2,
         ]
 
         let url = try XCTUnwrap(baseUrl)

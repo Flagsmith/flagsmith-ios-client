@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
 
   func application(_ application: UIApplication,
-                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     Flagsmith.shared.apiKey = "<add your API key from the Flagsmith settings page>"
 

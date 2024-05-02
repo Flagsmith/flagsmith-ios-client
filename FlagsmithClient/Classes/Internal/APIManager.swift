@@ -48,7 +48,8 @@ class APIManager: NSObject, URLSessionDataDelegate {
     }
 
     func urlSession(_: URLSession, dataTask _: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse,
-                    completionHandler: @escaping (CachedURLResponse?) -> Void) {
+                    completionHandler: @escaping (CachedURLResponse?) -> Void)
+    {
         serialAccessQueue.sync {
             // intercept and modify the cache settings for the response
             if Flagsmith.shared.cacheConfig.useCache {
@@ -69,7 +70,8 @@ class APIManager: NSObject, URLSessionDataDelegate {
     }
 
     func urlSession(_: URLSession, dataTask _: URLSessionDataTask, didReceive _: URLResponse,
-                    completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+                    completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
+    {
         completionHandler(.allow)
     }
 
@@ -134,7 +136,8 @@ class APIManager: NSObject, URLSessionDataDelegate {
     ///   - decoder: `JSONDecoder` used to deserialize the response data.
     ///   - completion: Function block executed with the result of the request.
     func request<T: Decodable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(),
-                               completion: @escaping (Result<T, Error>) -> Void) {
+                               completion: @escaping (Result<T, Error>) -> Void)
+    {
         request(router) { (result: Result<Data, Error>) in
             switch result {
             case let .failure(error):
