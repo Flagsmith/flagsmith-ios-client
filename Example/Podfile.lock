@@ -1,5 +1,5 @@
 PODS:
-  - FlagsmithClient (3.6.0)
+  - FlagsmithClient (3.5.0)
 
 DEPENDENCIES:
   - FlagsmithClient (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  FlagsmithClient: 3a96576f5a251c807e6aa0a3b0db55b3e1dfd0a3
+  FlagsmithClient: 505f315402ddf4482c3477dd4a6124ab8e63361e
 
 PODFILE CHECKSUM: 9fc876dee0cf031cae843156b0740a94b4994d8c
 

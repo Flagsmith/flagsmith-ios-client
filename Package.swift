@@ -16,6 +16,9 @@ let package = Package(
             name: "FlagsmithClient",
             dependencies: [],
             path: "FlagsmithClient/Classes",
+            resources: [
+                .copy("PrivacyInfo.xcprivacy"),
+            ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency=complete"),
                 .enableUpcomingFeature("ExistentialAny"), // https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md

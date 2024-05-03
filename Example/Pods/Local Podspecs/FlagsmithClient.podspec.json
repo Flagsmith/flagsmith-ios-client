@@ -1,6 +1,6 @@
 {
   "name": "FlagsmithClient",
-  "version": "3.6.0",
+  "version": "3.5.0",
   "summary": "iOS Client written in Swift for Flagsmith. Ship features with confidence using feature flags and remote config.",
   "homepage": "https://github.com/Flagsmith/flagsmith-ios-client",
   "license": {
@@ -12,9 +12,14 @@
   },
   "source": {
     "git": "https://github.com/Flagsmith/flagsmith-ios-client.git",
-    "tag": "3.6.0"
+    "tag": "3.5.0"
   },
   "social_media_url": "https://twitter.com/getflagsmith",
+  "resource_bundles": {
+    "FlagSmith_Privacy": [
+      "Classes/PrivacyInfo.xcprivacy"
+    ]
+  },
   "platforms": {
     "ios": "12.0"
   },
