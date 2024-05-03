@@ -22,5 +22,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '12.0'
 
   s.source_files = 'FlagsmithClient/Classes/**/*'
-  s.swift_versions = '4.0'
+  s.swift_versions = '5.6'
 end

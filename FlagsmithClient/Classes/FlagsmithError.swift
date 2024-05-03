@@ -20,25 +20,25 @@ public enum FlagsmithError: LocalizedError, Sendable {
     /// API Response could not be decoded.
     case decoding(DecodingError)
     /// Unknown or unhandled error was encountered.
-    case unhandled(Error)
-    
+    case unhandled(any Error)
+
     public var errorDescription: String? {
         switch self {
         case .apiKey:
             return "API Key was not provided or invalid"
-        case .apiURL(let path):
+        case let .apiURL(path):
             return "API URL '\(path)' was invalid"
-        case .encoding(let error):
+        case let .encoding(error):
             return "API Request could not be encoded: \(error.localizedDescription)"
-        case .statusCode(let code):
+        case let .statusCode(code):
             return "API Status Code '\(code)' was not expected."
-        case .decoding(let error):
+        case let .decoding(error):
             return "API Response could not be decoded: \(error.localizedDescription)"
-        case .unhandled(let error):
+        case let .unhandled(error):
             return "An unknown or unhandled error was encountered: \(error.localizedDescription)"
         }
     }
-    
+
     /// Initialize a `FlagsmithError` using an existing `Swift.Error`.
     ///
     /// The error provided will be processed in several ways:
@@ -46,7 +46,7 @@ public enum FlagsmithError: LocalizedError, Sendable {
     /// * as `EncodingError`: `.encoding()` error will be created.
     /// * as `DecodingError`: `.decoding()` error will be created.
     /// * default: `.unhandled()` error will be created.
-    internal init(_ error: Error) {
+    internal init(_ error: any Error) {
         switch error {
         case let flagsmithError as FlagsmithError:
             self = flagsmithError
