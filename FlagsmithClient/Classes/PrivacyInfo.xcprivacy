@@ -17,12 +17,8 @@
 			</array>
 		</dict>
 	</array>
-	<key>NSPrivacyTrackingDomains</key>
-	<array>
-		<string>edge.api.flagsmith.com</string>
-	</array>
 	<key>NSPrivacyTracking</key>
-	<true/>
+	<false/>
 	<key>NSPrivacyAccessedAPITypes</key>
 	<array>
 		<dict>
