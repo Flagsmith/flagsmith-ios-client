@@ -268,6 +268,21 @@ public final class Flagsmith: @unchecked Sendable {
             completion(result.map(\.traits))
         }
     }
+    
+    /// Get flags for an identity and set traits in the same call
+    ///
+    /// - Parameters:
+    ///   - traits: Traits to be created or updated
+    ///   - identity: ID of the user
+    ///   - completion: Closure with Result which contains a list of Flags in case of success or Error in case of failure
+    public func getIdentityFlags(_ traits: [Trait],
+                                 forIdentity identity: String,
+                                 completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void)
+    {
+        apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
+            completion(result.map(\.flags))
+        }
+    }
 
     /// Get both feature flags and user traits for the provided identity
     ///
