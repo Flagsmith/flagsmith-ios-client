@@ -76,7 +76,8 @@ final class RouterTests: FlagsmithClientTestCase {
               "trait_value" : 42
             }
           ],
-          "identifier" : "A1B2C3D4"
+          "identifier" : "A1B2C3D4",
+          "flags": []
         }
         """.json(using: .utf8)
         let body = try request.httpBody.json()
