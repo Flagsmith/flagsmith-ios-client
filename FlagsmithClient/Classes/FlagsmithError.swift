@@ -21,6 +21,8 @@ public enum FlagsmithError: LocalizedError, Sendable {
     case decoding(DecodingError)
     /// Unknown or unhandled error was encountered.
     case unhandled(any Error)
+    /// Invalid argument error
+    case invalidArgument(String)
 
     public var errorDescription: String? {
         switch self {
@@ -36,6 +38,8 @@ public enum FlagsmithError: LocalizedError, Sendable {
             return "API Response could not be decoded: \(error.localizedDescription)"
         case let .unhandled(error):
             return "An unknown or unhandled error was encountered: \(error.localizedDescription)"
+        case let .invalidArgument(error):
+            return "Invalid argument error: \(error)"
         }
     }
 

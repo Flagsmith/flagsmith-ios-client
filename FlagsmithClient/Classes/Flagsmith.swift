@@ -83,34 +83,50 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - identity: ID of the user (optional)
     ///   - completion: Closure with Result which contains array of Flag objects in case of success or Error in case of failure
     public func getFeatureFlags(forIdentity identity: String? = nil,
+                                traits: [Trait]? = nil,
                                 completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void)
     {
         if let identity = identity {
-            getIdentity(identity) { result in
-                switch result {
-                case let .success(thisIdentity):
-                    completion(.success(thisIdentity.flags))
-                case let .failure(error):
-                    if self.defaultFlags.isEmpty {
-                        completion(.failure(error))
-                    } else {
-                        completion(.success(self.defaultFlags))
+            if let traits = traits {
+                apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
+                    switch result {
+                    case let .success(result):
+                        completion(.success(result.flags))
+                    case let .failure(error):
+                        self.handleFlagsError(error, completion: completion)
+                    }
+                }
+            } else {
+                getIdentity(identity) { result in
+                    switch result {
+                    case let .success(thisIdentity):
+                        completion(.success(thisIdentity.flags))
+                    case let .failure(error):
+                        self.handleFlagsError(error, completion: completion)
                     }
                 }
             }
         } else {
-            apiManager.request(.getFlags) { (result: Result<[Flag], Error>) in
-                switch result {
-                case let .success(flags):
-                    completion(.success(flags))
-                case let .failure(error):
-                    if self.defaultFlags.isEmpty {
-                        completion(.failure(error))
-                    } else {
-                        completion(.success(self.defaultFlags))
+            if let _ = traits {
+                completion(.failure(FlagsmithError.invalidArgument("You must provide an identity to set traits")))
+            } else {
+                apiManager.request(.getFlags) { (result: Result<[Flag], Error>) in
+                    switch result {
+                    case let .success(flags):
+                        completion(.success(flags))
+                    case let .failure(error):
+                        self.handleFlagsError(error, completion: completion)
                     }
                 }
             }
+        }
+    }
+    
+    private func handleFlagsError(_ error: any Error, completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void) {
+        if self.defaultFlags.isEmpty {
+            completion(.failure(error))
+        } else {
+            completion(.success(self.defaultFlags))
         }
     }
 
@@ -266,21 +282,6 @@ public final class Flagsmith: @unchecked Sendable {
     {
         apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
             completion(result.map(\.traits))
-        }
-    }
-    
-    /// Get flags for an identity and set traits in the same call
-    ///
-    /// - Parameters:
-    ///   - traits: Traits to be created or updated
-    ///   - identity: ID of the user
-    ///   - completion: Closure with Result which contains a list of Flags in case of success or Error in case of failure
-    public func getIdentityFlags(_ traits: [Trait],
-                                 forIdentity identity: String,
-                                 completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void)
-    {
-        apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
-            completion(result.map(\.flags))
         }
     }
 
