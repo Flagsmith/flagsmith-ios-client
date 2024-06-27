@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/Flagsmith/flagsmith-ios-client.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/getflagsmith'
   s.resource_bundles = {
-    'FlagSmith_Privacy' => ['Classes/PrivacyInfo.xcprivacy'],
+    'Flagsmith_Privacy' => ['FlagsmithClient/Classes/PrivacyInfo.xcprivacy'],
   }
 
   s.ios.deployment_target = '12.0'
