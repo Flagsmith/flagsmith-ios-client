@@ -244,12 +244,14 @@ public final class Flagsmith: @unchecked Sendable {
     /// - Parameters:
     ///   - trait: Trait to be created or updated
     ///   - identity: ID of the user
+    ///   - transient: Should the identity be transient (default: false)
     ///   - completion: Closure with Result which contains Trait in case of success or Error in case of failure
     public func setTrait(_ trait: Trait,
                          forIdentity identity: String,
+                         transient: Bool = false,
                          completion: @Sendable @escaping (Result<Trait, any Error>) -> Void)
     {
-        apiManager.request(.postTrait(trait: trait, identity: identity)) { (result: Result<Trait, Error>) in
+        apiManager.request(.postTrait(trait: trait, identity: identity, transient: transient)) { (result: Result<Trait, Error>) in
             completion(result)
         }
     }
@@ -259,12 +261,14 @@ public final class Flagsmith: @unchecked Sendable {
     /// - Parameters:
     ///   - traits: Traits to be created or updated
     ///   - identity: ID of the user
+    ///   - transient: Should the identity be transient (default: false)
     ///   - completion: Closure with Result which contains Traits in case of success or Error in case of failure
     public func setTraits(_ traits: [Trait],
                           forIdentity identity: String,
+                          transient: Bool = false,
                           completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void)
     {
-        apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
+        apiManager.request(.postTraits(identity: identity, traits: traits, transient: transient)) { (result: Result<Traits, Error>) in
             completion(result.map(\.traits))
         }
     }

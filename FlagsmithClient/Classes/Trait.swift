@@ -14,6 +14,7 @@ public struct Trait: Codable, Sendable {
     enum CodingKeys: String, CodingKey {
         case key = "trait_key"
         case value = "trait_value"
+        case transient = "trait_transient"
         case identity
         case identifier
     }
@@ -27,9 +28,10 @@ public struct Trait: Codable, Sendable {
     /// The identity of the `Trait` when creating.
     internal let identifier: String?
 
-    public init(key: String, value: TypedValue) {
+    public init(key: String, value: TypedValue, transient: Bool) {
         self.key = key
         typedValue = value
+        transient = transient
         identifier = nil
     }
 
@@ -40,6 +42,7 @@ public struct Trait: Codable, Sendable {
     internal init(trait: Trait, identifier: String) {
         key = trait.key
         typedValue = trait.typedValue
+        transient = trait.transient
         self.identifier = identifier
     }
 
@@ -65,27 +68,31 @@ public struct Trait: Codable, Sendable {
 // MARK: - Convenience Initializers
 
 public extension Trait {
-    init(key: String, value: Bool) {
+    init(key: String, value: Bool, transient: Bool) {
         self.key = key
         typedValue = .bool(value)
+        self.transient = transient
         identifier = nil
     }
 
-    init(key: String, value: Float) {
+    init(key: String, value: Float, transient: Bool) {
         self.key = key
         typedValue = .float(value)
+        self.transient = transient
         identifier = nil
     }
 
-    init(key: String, value: Int) {
+    init(key: String, value: Int, transient: Bool) {
         self.key = key
         typedValue = .int(value)
+        self.transient = transient
         identifier = nil
     }
 
-    init(key: String, value: String) {
+    init(key: String, value: String, transient: Bool) {
         self.key = key
         typedValue = .string(value)
+        self.transient = transient
         identifier = nil
     }
 }
@@ -108,6 +115,7 @@ public struct PostTrait: Codable {
     enum CodingKeys: String, CodingKey {
         case key = "trait_key"
         case value = "trait_value"
+        case transient = "trait_transient"
         case identity
     }
 
@@ -127,9 +135,10 @@ public struct PostTrait: Codable {
         }
     }
 
-    public init(key: String, value: String, identifier: String) {
+    public init(key: String, value: String, transient: Bool identifier: String) {
         self.key = key
         self.value = value
+        self.transient = transient
         identity = IdentityStruct(identifier: identifier)
     }
 }

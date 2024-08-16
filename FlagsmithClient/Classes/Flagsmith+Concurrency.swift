@@ -147,8 +147,9 @@ public extension Flagsmith {
     /// - Parameters:
     ///   - trait: Traits to be created or updated
     ///   - identity: ID of the user
+    ///   - transient: Should the identity be transient (default: false)
     /// - returns: The Traits requested to be set.
-    @discardableResult func setTraits(_ traits: [Trait], forIdentity identity: String) async throws -> [Trait] {
+    @discardableResult func setTraits(_ traits: [Trait], forIdentity identity: String, transient: Bool = false) async throws -> [Trait] {
         try await withCheckedThrowingContinuation { continuation in
             setTraits(traits, forIdentity: identity) { result in
                 switch result {

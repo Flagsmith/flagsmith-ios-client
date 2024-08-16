@@ -71,4 +71,38 @@ final class TraitTests: FlagsmithClientTestCase {
         """.json(using: .utf8)
         XCTAssertEqual(try data.json(), json)
     }
+
+    func testEncodeTransientTraits() throws {
+        let wrappedTrait = Trait(key: "dark_mode", value: .bool(true), transient: true)
+        let trait = Trait(trait: wrappedTrait, identifier: "theme_settings")
+        let data = try encoder.encode(trait)
+        let json = try """
+        {
+          "identity" : {
+            "identifier" : "theme_settings"
+          },
+          "trait_key" : "dark_mode",
+          "trait_value" : true,
+          "transient" : true
+        }
+        """.json(using: .utf8)
+        XCTAssertEqual(try data.json(), json)
+    }
+
+    func testEncodeTransientIdentity() throws {
+        let wrappedTrait = Trait(key: "dark_mode", value: .bool(true))
+        let trait = Trait(trait: wrappedTrait, identifier: "transient_identity", transient: true)
+        let data = try encoder.encode(trait)
+        let json = try """
+        {
+          "identity" : {
+            "identifier" : "transient_identity",
+            "transient" : true
+          },
+          "trait_key" : "dark_mode",
+          "trait_value" : true,
+        }
+        """.json(using: .utf8)
+        XCTAssertEqual(try data.json(), json)
+    }
 }
