@@ -135,7 +135,7 @@ public struct PostTrait: Codable {
         }
     }
 
-    public init(key: String, value: String, transient: Bool identifier: String) {
+    public init(key: String, value: String, transient: Bool, identifier: String) {
         self.key = key
         self.value = value
         self.transient = transient
