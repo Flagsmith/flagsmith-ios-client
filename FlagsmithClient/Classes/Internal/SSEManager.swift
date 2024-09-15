@@ -82,7 +82,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
 //
 //            propertiesSerialAccessQueue.sync {
 //                _enableRealtimeUpdates = newValue
-//                
+//
 //                //TODO: Kick off the real time updates
 //            }
 //        }
@@ -104,7 +104,26 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     private func processSSEData(_ data: String) {
         // Parse and handle SSE events here
         print("Received SSE data: \(data)")
-        //TODO: Decode the data
+    
+        // Split the data into lines and decode the 'data:' lines from JSON into FlagEvent objects
+        let lines = data.components(separatedBy: "\n")
+        for line in lines {
+            if line.hasPrefix("data:") {
+                let json = line.replacingOccurrences(of: "data:", with: "")
+                if let jsonData = json.data(using: .utf8) {
+                    do {
+                        let flagEvent = try JSONDecoder().decode(FlagEvent.self, from: jsonData)
+                        completionHandler?(.success(flagEvent))
+                    } catch {
+                        if let error = error as? DecodingError {
+                            completionHandler?(.failure(FlagsmithError.decoding(error)))
+                        } else {
+                            completionHandler?(.failure(FlagsmithError.unhandled(error)))
+                        }
+                    }
+                }
+            }
+        }
     }
     
     //MARK: URLSessionDelegate

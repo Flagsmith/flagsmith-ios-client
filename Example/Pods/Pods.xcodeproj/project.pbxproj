@@ -19,7 +19,6 @@
 		5F9595BAE9B43E7BCD373E7D4124A3CB /* Flagsmith.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30C8727FF378667687B927B401ACFC2 /* Flagsmith.swift */; };
 		75B3D0FA12069F1890DCC8320528EBF3 /* Traits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD44276DCF6BDE68099A5762C3E3248 /* Traits.swift */; };
 		798F63C19AF4F3F751B51ED5293A8945 /* Flagsmith+Concurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33401B963FE6A82269201D80F422B5DC /* Flagsmith+Concurrency.swift */; };
-		7F4337072C947AC60049DA8A /* ApiManager+SSE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4337062C947AC60049DA8A /* ApiManager+SSE.swift */; };
 		7F4337092C947CFF0049DA8A /* FlagEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4337082C947CFF0049DA8A /* FlagEvent.swift */; };
 		7F43370B2C94861D0049DA8A /* SSEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F43370A2C94861D0049DA8A /* SSEManager.swift */; };
 		8A082CCE8045751DAE322F26D9395A81 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E685A93BDD480D9EBB3E40D9D31E964E /* PrivacyInfo.xcprivacy */; };
@@ -79,7 +78,6 @@
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		740BE3A9082C69EDDCE885472B239E2B /* APIManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		79F99623D8F2206A889E3FC1BB7E028F /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		7F4337062C947AC60049DA8A /* ApiManager+SSE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApiManager+SSE.swift"; sourceTree = "<group>"; };
 		7F4337082C947CFF0049DA8A /* FlagEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagEvent.swift; sourceTree = "<group>"; };
 		7F43370A2C94861D0049DA8A /* SSEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSEManager.swift; sourceTree = "<group>"; };
 		81A815D8A0C28062CD4A8224C6883D5D /* Pods-FlagsmithClient_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-FlagsmithClient_Example.modulemap"; sourceTree = "<group>"; };
@@ -133,7 +131,6 @@
 				5EDBFEFB26106F14D3ACD6A6E8DAF369 /* CachedURLResponse.swift */,
 				010890F60854F25B5CF6D19BAF3B3774 /* FlagsmithAnalytics.swift */,
 				5E0332EE4AA77385BBB3C3A282AEFDFB /* Router.swift */,
-				7F4337062C947AC60049DA8A /* ApiManager+SSE.swift */,
 			);
 			name = Internal;
 			path = FlagsmithClient/Classes/Internal;
@@ -417,7 +414,6 @@
 				A93D2A79A00777B44230CD106666C910 /* FlagsmithError.swift in Sources */,
 				AFE7BD9B1380B83D41B7290911A0EE7B /* Identity.swift in Sources */,
 				F69F1150DD48601F5302373FC9229032 /* PrivacyInfo.xcprivacy in Sources */,
-				7F4337072C947AC60049DA8A /* ApiManager+SSE.swift in Sources */,
 				53814F2B3A01DDD7F772A27EC13B5914 /* Router.swift in Sources */,
 				2CCFB4282CF1AED02452DAB6ABA6A92B /* Trait.swift in Sources */,
 				75B3D0FA12069F1890DCC8320528EBF3 /* Traits.swift in Sources */,
