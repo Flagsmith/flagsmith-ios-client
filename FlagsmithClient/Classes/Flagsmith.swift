@@ -10,12 +10,15 @@ import Foundation
     import FoundationNetworking
 #endif
 
+typealias CompletionHandler<T> = @Sendable (Result<T, any Error>) -> Void
+
 /// Manage feature flags and remote config across multiple projects,
 /// environments and organisations.
 public final class Flagsmith: @unchecked Sendable {
     /// Shared singleton client object
     public static let shared: Flagsmith = .init()
     private let apiManager: APIManager
+    private let sseManager: SSEManager
     private let analytics: FlagsmithAnalytics
 
     /// Base URL
@@ -25,19 +28,45 @@ public final class Flagsmith: @unchecked Sendable {
         get { apiManager.baseURL }
         set { apiManager.baseURL = newValue }
     }
+    
+    /// Base `URL` used for the event source.
+    ///
+    /// The default implementation uses: `https://realtime.flagsmith.com/`.
+    public var eventSourceBaseURL: URL {
+        get { sseManager.baseURL }
+        set { sseManager.baseURL = newValue }
+    }
 
     /// API Key unique to your organization.
     ///
     /// This value must be provided before any request can succeed.
     public var apiKey: String? {
         get { apiManager.apiKey }
-        set { apiManager.apiKey = newValue }
+        set {
+            apiManager.apiKey = newValue
+            sseManager.apiKey = newValue
+        }
     }
 
     /// Is flag analytics enabled?
     public var enableAnalytics: Bool {
         get { analytics.enableAnalytics }
         set { analytics.enableAnalytics = newValue }
+    }
+    
+    /// Are realtime updates enabled?
+    public var enableRealtimeUpdates: Bool {
+        get { sseManager.isStarted }
+        set {
+            if newValue {
+                sseManager.stop()
+                sseManager.start { [weak self] result in
+                    self?.handleSSEResult(result)
+                }
+            } else {
+                sseManager.stop()
+            }
+        }
     }
 
     /// How often to send the flag analytics, in seconds
@@ -74,6 +103,7 @@ public final class Flagsmith: @unchecked Sendable {
 
     private init() {
         apiManager = APIManager()
+        sseManager = SSEManager()
         analytics = FlagsmithAnalytics(apiManager: apiManager)
     }
 
@@ -301,6 +331,16 @@ public final class Flagsmith: @unchecked Sendable {
     /// Return a flag for a flag ID from the default flags.
     private func getFlagUsingDefaults(withID id: String, forIdentity _: String? = nil) -> Flag? {
         return defaultFlags.first(where: { $0.feature.name == id })
+    }
+        
+    private func handleSSEResult(_ result: Result<FlagEvent, any Error>) {
+        // Just print out the results for now
+        switch result {
+        case let .success(event):
+            print("handleSSEResult Received event: \(event)")
+        case let .failure(error):
+            print("handleSSEResult Error in SSE connection: \(error)")
+        }
     }
 }
 

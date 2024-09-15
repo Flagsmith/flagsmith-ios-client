@@ -23,6 +23,8 @@ public enum FlagsmithError: LocalizedError, Sendable {
     case unhandled(any Error)
     /// Invalid argument error
     case invalidArgument(String)
+    /// Mutliple starts of the SSE functionality
+    case sseAlreadyStarted
 
     public var errorDescription: String? {
         switch self {
@@ -40,6 +42,8 @@ public enum FlagsmithError: LocalizedError, Sendable {
             return "An unknown or unhandled error was encountered: \(error.localizedDescription)"
         case let .invalidArgument(error):
             return "Invalid argument error: \(error)"
+        case .sseAlreadyStarted:
+            return "Attempt to start the SSE session when it's already started"
         }
     }
 

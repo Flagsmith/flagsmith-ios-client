@@ -184,4 +184,21 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
+    
+    // MARK: - SSE Support
+    
+    /// Establishes a Server-Sent Events (SSE) connection to the Flagsmith server.
+    /// - Parameters:
+    ///   - identity: The identity of the user.
+    ///   - completion: The completion handler to call when the connection is established.
+//    func establishSSEConnection(forIdentity identity: String, completion: @escaping (Result<Data, Error>) -> Void) {
+//        let url = baseURL.appendingPathComponent("flags/sse/")
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "GET"
+//        request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+//        request.setValue("Bearer \(apiKey!)", forHTTPHeaderField: "Authorization")
+//        let task = session.dataTask(with: request)
+//        tasksToCompletionHandlers[task.taskIdentifier] = completion
+//        task.resume()
+//    }
 }

@@ -43,6 +43,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // set analytics on or off
     Flagsmith.shared.enableAnalytics = true
+    
+    // Enable real time updates
+    Flagsmith.shared.enableRealtimeUpdates = true
 
     // set the analytics flush period in seconds
     Flagsmith.shared.analyticsFlushPeriod = 10
