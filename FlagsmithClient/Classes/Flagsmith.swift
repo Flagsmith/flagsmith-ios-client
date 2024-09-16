@@ -21,8 +21,8 @@ public final class Flagsmith: @unchecked Sendable {
     private let sseManager: SSEManager
     private let analytics: FlagsmithAnalytics
     
-    // The last time we got an event from the SSE stream or via the API
-    private var lastEventUpdate: Double = 0.0
+    // The last time we got flags via the API
+    private var lastUpdatedAt: Double = 0.0
     
     // The last identity used for fetching flags
     private var lastUsedIdentity: String?
@@ -352,10 +352,9 @@ public final class Flagsmith: @unchecked Sendable {
             print("handleSSEResult Received event: \(event)")
             
             // Check whether this event is anything new
-            if (lastEventUpdate < event.updatedAt) {
+            if (lastUpdatedAt < event.updatedAt) {
                 // Evict everything fron the cache
                 cacheConfig.cache.removeAllCachedResponses()
-                lastEventUpdate = event.updatedAt
                 
                 // Now we can get the new values, which we can emit to the flagUpdateFlow if used
                 getFeatureFlags(forIdentity: lastUsedIdentity) { result in
@@ -383,8 +382,8 @@ public final class Flagsmith: @unchecked Sendable {
         }
         
         // Update the last updated time if the API is giving us newer data
-        if let apiManagerUpdatedAt = apiManager.lastUpdatedAt, apiManagerUpdatedAt > lastEventUpdate {
-            lastEventUpdate = apiManagerUpdatedAt
+        if let apiManagerUpdatedAt = apiManager.lastUpdatedAt, apiManagerUpdatedAt > lastUpdatedAt {
+            lastUpdatedAt = apiManagerUpdatedAt
         }
     }
 }
