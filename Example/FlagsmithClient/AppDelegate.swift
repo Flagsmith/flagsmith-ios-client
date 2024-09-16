@@ -8,6 +8,9 @@
 
 import UIKit
 import FlagsmithClient
+#if canImport(SwiftUI)
+    import SwiftUI
+#endif
 
 func isSuccess<T, F>(_ result: Result<T, F>) -> Bool {
     if case .success = result { return true } else { return false }
@@ -68,6 +71,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // Flagsmith.shared.setTrait(Trait(key: "<my_key>", value: "<my_value>"), forIdentity: "<my_identity>") { (result) in print(result) }
     // Flagsmith.shared.getIdentity("<my_key>") { (result) in print(result) }
+    
+    // Launch SwiftUIView
+    if #available(iOS 13.0, *) {
+      let swiftUIView = SwiftUIView()
+      window = UIWindow(frame: UIScreen.main.bounds)
+      window?.rootViewController = UIHostingController(rootView: swiftUIView)
+      window?.makeKeyAndVisible()
+    }
+    
     return true
   }
 

@@ -152,8 +152,13 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
             
             if let error = error {
-                // Handle SSE error
-                print("Error in SSE connection: \(error)")
+                if let error = error as? URLError, (error.code == .cancelled || error.code == .timedOut) {
+                    // Reconnect to the SSE, the connection will have been dropped
+                    if let completionHandler = completionHandler {
+                        // Reconnect to the SSE, the connection will have been dropped
+                        start(completion: completionHandler)
+                    }
+                }
             } else if let completionHandler = completionHandler {
                 // Reconnect to the SSE, the connection will have been dropped
                 start(completion: completionHandler)
