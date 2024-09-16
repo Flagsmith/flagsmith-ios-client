@@ -155,7 +155,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                 // Handle SSE error
                 print("Error in SSE connection: \(error)")
             } else if let completionHandler = completionHandler {
-                // Reconnect to the SSE
+                // Reconnect to the SSE, the connection will have been dropped
                 start(completion: completionHandler)
             }
         }
@@ -171,11 +171,6 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     //MARK: Public Methods
     
     func start(completion: @escaping CompletionHandler<FlagEvent>) {
-        guard completionHandler == nil else {
-            completion(.failure(FlagsmithError.sseAlreadyStarted))
-            return
-        }
-        
         guard let apiKey = apiKey, !apiKey.isEmpty else {
             completion(.failure(FlagsmithError.apiKey))
             return
@@ -191,6 +186,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         request.setValue("keep-alive", forHTTPHeaderField: "Connection")
         
+        completionHandler = completion
         dataTask = session.dataTask(with: request)
         dataTask?.resume()
     }

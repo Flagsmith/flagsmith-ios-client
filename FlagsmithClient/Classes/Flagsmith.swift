@@ -20,6 +20,14 @@ public final class Flagsmith: @unchecked Sendable {
     private let apiManager: APIManager
     private let sseManager: SSEManager
     private let analytics: FlagsmithAnalytics
+    
+    // The last time we got an event from the SSE stream or via the API
+    private var lastEventUpdate: Double = 0.0
+    
+    // The last identity used for fetching flags
+    private var lastUsedIdentity: String?
+    
+    var anyFlagStreamContinuation: Any? // AsyncStream<[Flag]>.Continuation? for iOS 13+
 
     /// Base URL
     ///
@@ -116,6 +124,7 @@ public final class Flagsmith: @unchecked Sendable {
                                 traits: [Trait]? = nil,
                                 completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void)
     {
+        lastUsedIdentity = identity
         if let identity = identity {
             if let traits = traits {
                 apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
@@ -130,6 +139,7 @@ public final class Flagsmith: @unchecked Sendable {
                 getIdentity(identity) { result in
                     switch result {
                     case let .success(thisIdentity):
+                        self.updateFlagStreamAndLastUpdatedAt(thisIdentity.flags)
                         completion(.success(thisIdentity.flags))
                     case let .failure(error):
                         self.handleFlagsError(error, completion: completion)
@@ -140,12 +150,14 @@ public final class Flagsmith: @unchecked Sendable {
             if let _ = traits {
                 completion(.failure(FlagsmithError.invalidArgument("You must provide an identity to set traits")))
             } else {
-                apiManager.request(.getFlags) { (result: Result<[Flag], Error>) in
+                apiManager.request(.getFlags) { [weak self] (result: Result<[Flag], Error>) in
                     switch result {
                     case let .success(flags):
+                        // Call updateFlagStream only when iOS 13+
+                        self?.updateFlagStreamAndLastUpdatedAt(flags)
                         completion(.success(flags))
                     case let .failure(error):
-                        self.handleFlagsError(error, completion: completion)
+                        self?.handleFlagsError(error, completion: completion)
                     }
                 }
             }
@@ -338,11 +350,45 @@ public final class Flagsmith: @unchecked Sendable {
         switch result {
         case let .success(event):
             print("handleSSEResult Received event: \(event)")
+            
+            // Check whether this event is anything new
+            if (lastEventUpdate < event.updatedAt) {
+                // Evict everything fron the cache
+                cacheConfig.cache.removeAllCachedResponses()
+                lastEventUpdate = event.updatedAt
+                
+                // Now we can get the new values, which we can emit to the flagUpdateFlow if used
+                getFeatureFlags(forIdentity: lastUsedIdentity) { result in
+                    switch result {
+                    case let .failure(error):
+                        print("Error getting flags in SSE stream: \(error)")
+                        
+                    case let .success(value):
+                        // On success the flastream is updated automatically in the API call
+                        print("Flags updated from SSE stream: \(value)")
+                        break
+                    }
+                }
+            }
+            
         case let .failure(error):
             print("handleSSEResult Error in SSE connection: \(error)")
         }
     }
+    
+    func updateFlagStreamAndLastUpdatedAt(_ flags: [Flag]) {
+        // Update the flag stream
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            flagStreamContinuation?.yield(flags)
+        }
+        
+        // Update the last updated time if the API is giving us newer data
+        if let apiManagerUpdatedAt = apiManager.lastUpdatedAt, apiManagerUpdatedAt > lastEventUpdate {
+            lastEventUpdate = apiManagerUpdatedAt
+        }
+    }
 }
+
 
 public final class CacheConfig {
     /// Cache to use when enabled, defaults to the shared app cache

@@ -49,6 +49,18 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
+    
+    private var _lastUpdatedAt: Double?
+    var lastUpdatedAt: Double? {
+        get {
+            propertiesSerialAccessQueue.sync { _lastUpdatedAt }
+        }
+        set {
+            propertiesSerialAccessQueue.sync {
+                _lastUpdatedAt = newValue
+            }
+        }
+    }
 
     // store the completion handlers and accumulated data for each task
     private var tasksToCompletionHandlers: [Int: @Sendable (Result<Data, any Error>) -> Void] = [:]
@@ -69,6 +81,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                     if let error = error {
                         DispatchQueue.main.async { completion(.failure(FlagsmithError.unhandled(error))) }
                     } else {
+                        
                         let data = tasksToData[dataTask.taskIdentifier] ?? Data()
                         DispatchQueue.main.async { completion(.success(data)) }
                     }
@@ -185,20 +198,11 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         }
     }
     
-    // MARK: - SSE Support
-    
-    /// Establishes a Server-Sent Events (SSE) connection to the Flagsmith server.
-    /// - Parameters:
-    ///   - identity: The identity of the user.
-    ///   - completion: The completion handler to call when the connection is established.
-//    func establishSSEConnection(forIdentity identity: String, completion: @escaping (Result<Data, Error>) -> Void) {
-//        let url = baseURL.appendingPathComponent("flags/sse/")
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
-//        request.setValue("Bearer \(apiKey!)", forHTTPHeaderField: "Authorization")
-//        let task = session.dataTask(with: request)
-//        tasksToCompletionHandlers[task.taskIdentifier] = completion
-//        task.resume()
-//    }
+    private func updateLastUpdatedFromRequest(_ request: URLRequest) {
+        // Extract the lastUpdatedAt from the updatedAt header
+        if let lastUpdatedAt = request.allHTTPHeaderFields?["x-flagsmith-document-updated-at"] {
+            print("Last Updated At from header: \(lastUpdatedAt)")
+            self.lastUpdatedAt = Double(lastUpdatedAt)
+        }
+    }
 }
