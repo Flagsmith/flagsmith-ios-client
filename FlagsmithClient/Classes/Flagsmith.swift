@@ -147,7 +147,7 @@ public final class Flagsmith: @unchecked Sendable {
                 }
             }
         } else {
-            if let _ = traits {
+            if traits != nil {
                 completion(.failure(FlagsmithError.invalidArgument("You must provide an identity to set traits")))
             } else {
                 apiManager.request(.getFlags) { [weak self] (result: Result<[Flag], Error>) in
@@ -352,7 +352,7 @@ public final class Flagsmith: @unchecked Sendable {
             print("handleSSEResult Received event: \(event)")
             
             // Check whether this event is anything new
-            if (lastUpdatedAt < event.updatedAt) {
+            if lastUpdatedAt < event.updatedAt {
                 // Evict everything fron the cache
                 cacheConfig.cache.removeAllCachedResponses()
                 
@@ -365,7 +365,6 @@ public final class Flagsmith: @unchecked Sendable {
                     case let .success(value):
                         // On success the flastream is updated automatically in the API call
                         print("Flags updated from SSE stream: \(value)")
-                        break
                     }
                 }
             }
@@ -387,7 +386,6 @@ public final class Flagsmith: @unchecked Sendable {
         }
     }
 }
-
 
 public final class CacheConfig {
     /// Cache to use when enabled, defaults to the shared app cache

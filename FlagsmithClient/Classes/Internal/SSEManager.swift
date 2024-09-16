@@ -7,7 +7,7 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-    import FoundationNetworking
+import FoundationNetworking
 #endif
 
 /// Handles interaction with the Flagsmith SSE real-time API.
@@ -68,35 +68,13 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         return completionHandler != nil
     }
     
-//    // Enable real time updates
-//    private var _enableRealtimeUpdates = false
-//    var enableRealtimeUpdates: Bool {
-//        get {
-//            propertiesSerialAccessQueue.sync { _enableRealtimeUpdates }
-//        }
-//        set {
-//            if (apiKey == nil) {
-//                print("API Key must be set before enabling real time updates")
-//                return
-//            }
-//
-//            propertiesSerialAccessQueue.sync {
-//                _enableRealtimeUpdates = newValue
-//
-//                //TODO: Kick off the real time updates
-//            }
-//        }
-//    }
-    
     private var completionHandler: CompletionHandler<FlagEvent>?
     private let serialAccessQueue = DispatchQueue(label: "sseFlagsmithSerialAccessQueue", qos: .default)
     let propertiesSerialAccessQueue = DispatchQueue(label: "ssePropertiesSerialAccessQueue", qos: .default)
-
+    
     override init() {
         super.init()
         let configuration = URLSessionConfiguration.default
-        
-        //TODO: Check session against examples
         session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
     }
     
@@ -104,30 +82,28 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     private func processSSEData(_ data: String) {
         // Parse and handle SSE events here
         print("Received SSE data: \(data)")
-    
+        
         // Split the data into lines and decode the 'data:' lines from JSON into FlagEvent objects
         let lines = data.components(separatedBy: "\n")
-        for line in lines {
-            if line.hasPrefix("data:") {
-                let json = line.replacingOccurrences(of: "data:", with: "")
-                if let jsonData = json.data(using: .utf8) {
-                    do {
-                        let flagEvent = try JSONDecoder().decode(FlagEvent.self, from: jsonData)
-                        completionHandler?(.success(flagEvent))
-                    } catch {
-                        if let error = error as? DecodingError {
-                            completionHandler?(.failure(FlagsmithError.decoding(error)))
-                        } else {
-                            completionHandler?(.failure(FlagsmithError.unhandled(error)))
-                        }
+        for line in lines where line.hasPrefix("data:") {
+            let json = line.replacingOccurrences(of: "data:", with: "")
+            if let jsonData = json.data(using: .utf8) {
+                do {
+                    let flagEvent = try JSONDecoder().decode(FlagEvent.self, from: jsonData)
+                    completionHandler?(.success(flagEvent))
+                } catch {
+                    if let error = error as? DecodingError {
+                        completionHandler?(.failure(FlagsmithError.decoding(error)))
+                    } else {
+                        completionHandler?(.failure(FlagsmithError.unhandled(error)))
                     }
                 }
             }
         }
     }
     
-    //MARK: URLSessionDelegate
-
+    // MARK: URLSessionDelegate
+    
     func urlSession(_: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         serialAccessQueue.sync {
             // Print what's going on
@@ -138,12 +114,6 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-
-//    func urlSession(_: URLSession, dataTask _: URLSessionDataTask, didReceive _: URLResponse,
-//                    completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
-//    {
-//        completionHandler(.allow)
-//    }
     
     func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         serialAccessQueue.sync {
@@ -152,7 +122,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
             
             if let error = error {
-                if let error = error as? URLError, (error.code == .cancelled || error.code == .timedOut) {
+                if let error = error as? URLError, error.code == .cancelled || error.code == .timedOut {
                     // Reconnect to the SSE, the connection will have been dropped
                     if let completionHandler = completionHandler {
                         // Reconnect to the SSE, the connection will have been dropped
@@ -166,14 +136,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         }
     }
     
-//    func urlSession(_: URLSession, dataTask _: URLSessionDataTask, willCacheResponse proposedResponse: CachedURLResponse,
-//                    completionHandler: @Sendable @escaping (CachedURLResponse?) -> Void)
-//    {
-//        // Don't cache the response for the SSE requests
-//        completionHandler(nil)
-//    }
-    
-    //MARK: Public Methods
+    // MARK: Public Methods
     
     func start(completion: @escaping CompletionHandler<FlagEvent>) {
         guard let apiKey = apiKey, !apiKey.isEmpty else {
@@ -198,6 +161,6 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     
     func stop() {
         dataTask?.cancel()
-        completionHandler = nil;
+        completionHandler = nil
     }
 }
