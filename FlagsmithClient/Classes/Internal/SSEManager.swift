@@ -10,7 +10,9 @@ import Foundation
     import FoundationNetworking
 #endif
 
-/// Handles interaction with the Flagsmith SSE real-time API.
+/// SSEManager handles interaction with the Flagsmith SSE real-time API.
+/// It manages the connection to the SSE endpoint, processes incoming events,
+/// and handles reconnection logic with a backoff strategy.
 final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     private var _session: URLSession!
     private var session: URLSession {
@@ -81,9 +83,6 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     
     // Helper function to process SSE data
     internal func processSSEData(_ data: String) {
-        // Parse and handle SSE events here
-        print("Received SSE data: \(data)")
-        
         // Split the data into lines and decode the 'data:' lines from JSON into FlagEvent objects
         let lines = data.components(separatedBy: "\n")
         for line in lines where line.hasPrefix("data:") {
@@ -107,8 +106,6 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     
     func urlSession(_: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         serialAccessQueue.sync {
-            print("SSE received data: \(data)")
-            
             if let message = String(data: data, encoding: .utf8) {
                 processSSEData(message)
                 reconnectionDelay.reset()
@@ -130,7 +127,6 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                     }
                 }
             } else if error == nil {
-                print(">>> reconnecting on no error")
                 start(completion: self.completionHandler!)
                 return
             }
@@ -138,7 +134,6 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             // Otherwise reconnect with increasing delay using the reconnectionTimer so that we don't load the phone / server
             serialAccessQueue.asyncAfter(deadline: .now() + reconnectionDelay.nextDelay()) { [weak self] in
                 if let self {
-                    print(">>> reconnecting with increasing delay")
                     self.start(completion: self.completionHandler!)
                 }
             }
