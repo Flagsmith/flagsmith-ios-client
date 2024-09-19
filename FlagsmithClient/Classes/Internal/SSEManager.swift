@@ -38,8 +38,6 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         }
     }
     
-    // private var streamTask: Task<Void, Error>? = nil
-    
     /// Base `URL` used for requests.
     private var _baseURL = URL(string: "https://realtime.flagsmith.com/")!
     var baseURL: URL {

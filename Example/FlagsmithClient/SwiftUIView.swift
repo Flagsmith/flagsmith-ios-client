@@ -59,9 +59,9 @@ struct SwiftUIView: View {
     func subscribeToFlagUpdates() {
         Task {
             for await updatedFlags in flagsmith.flagStream {
-//                DispatchQueue.main.async {
+                DispatchQueue.main.async {
                     flags = updatedFlags
-//                }
+                }
             }
         }
     }
