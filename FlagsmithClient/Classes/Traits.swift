@@ -14,7 +14,7 @@ public struct Traits: Codable, Sendable {
     public let traits: [Trait]
     public let identifier: String?
     public let flags: [Flag]
-    
+
     init(traits: [Trait], identifier: String?, flags: [Flag] = []) {
         self.traits = traits
         self.identifier = identifier

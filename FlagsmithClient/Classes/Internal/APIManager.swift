@@ -50,6 +50,18 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         }
     }
 
+    private var _lastUpdatedAt: Double?
+    var lastUpdatedAt: Double? {
+        get {
+            propertiesSerialAccessQueue.sync { _lastUpdatedAt }
+        }
+        set {
+            propertiesSerialAccessQueue.sync {
+                _lastUpdatedAt = newValue
+            }
+        }
+    }
+
     // store the completion handlers and accumulated data for each task
     private var tasksToCompletionHandlers: [Int: @Sendable (Result<Data, any Error>) -> Void] = [:]
     private var tasksToData: [Int: Data] = [:]
@@ -182,6 +194,14 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                     completion(.failure(FlagsmithError(error)))
                 }
             }
+        }
+    }
+
+    private func updateLastUpdatedFromRequest(_ request: URLRequest) {
+        // Extract the lastUpdatedAt from the updatedAt header
+        if let lastUpdatedAt = request.allHTTPHeaderFields?["x-flagsmith-document-updated-at"] {
+            print("Last Updated At from header: \(lastUpdatedAt)")
+            self.lastUpdatedAt = Double(lastUpdatedAt)
         }
     }
 }

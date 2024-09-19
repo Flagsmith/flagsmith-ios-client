@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F76D20A2C9852510028470B /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F76D2092C9852510028470B /* SwiftUIView.swift */; };
 		C87CA15C7294632245730C64 /* Pods_FlagsmithClient_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F7BEB767BE008D76723DD6 /* Pods_FlagsmithClient_Example.framework */; };
 		DAED1E94268DBF9100F91DBC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAED1E8C268DBF9100F91DBC /* ViewController.swift */; };
 		DAED1E95268DBF9100F91DBC /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAED1E8D268DBF9100F91DBC /* LaunchScreen.xib */; };
@@ -18,6 +19,7 @@
 /* Begin PBXFileReference section */
 		5357A0EF6DA00FB7B1E84F8C /* Pods-FlagsmithClient_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlagsmithClient_Example.release.xcconfig"; path = "Target Support Files/Pods-FlagsmithClient_Example/Pods-FlagsmithClient_Example.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* FlagsmithClient_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlagsmithClient_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F76D2092C9852510028470B /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 		9DFD4B33E10902546A38D90F /* Pods-FlagsmithClient_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlagsmithClient_Example.debug.xcconfig"; path = "Target Support Files/Pods-FlagsmithClient_Example/Pods-FlagsmithClient_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		C4197E729B096AA93F72A537 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		C9F7BEB767BE008D76723DD6 /* Pods_FlagsmithClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlagsmithClient_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +98,7 @@
 				DAED1E8F268DBF9100F91DBC /* Main.storyboard */,
 				DAED1E91268DBF9100F91DBC /* Images.xcassets */,
 				DAED1E92268DBF9100F91DBC /* AppDelegate.swift */,
+				7F76D2092C9852510028470B /* SwiftUIView.swift */,
 			);
 			path = FlagsmithClient;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 			files = (
 				DAED1E98268DBF9100F91DBC /* AppDelegate.swift in Sources */,
 				DAED1E94268DBF9100F91DBC /* ViewController.swift in Sources */,
+				7F76D20A2C9852510028470B /* SwiftUIView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
