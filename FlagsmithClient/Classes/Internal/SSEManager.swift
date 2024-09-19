@@ -7,7 +7,7 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+    import FoundationNetworking
 #endif
 
 /// Handles interaction with the Flagsmith SSE real-time API.
@@ -71,6 +71,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     private var completionHandler: CompletionHandler<FlagEvent>?
     private let serialAccessQueue = DispatchQueue(label: "sseFlagsmithSerialAccessQueue", qos: .default)
     let propertiesSerialAccessQueue = DispatchQueue(label: "ssePropertiesSerialAccessQueue", qos: .default)
+    private let reconnectionDelay = ReconnectionDelay()
     
     override init() {
         super.init()
@@ -79,7 +80,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     }
     
     // Helper function to process SSE data
-    private func processSSEData(_ data: String) {
+    internal func processSSEData(_ data: String) {
         // Parse and handle SSE events here
         print("Received SSE data: \(data)")
         
@@ -106,11 +107,11 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     
     func urlSession(_: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         serialAccessQueue.sync {
-            // Print what's going on
             print("SSE received data: \(data)")
-            // This is where we need to handle the data
+            
             if let message = String(data: data, encoding: .utf8) {
                 processSSEData(message)
+                reconnectionDelay.reset()
             }
         }
     }
@@ -121,17 +122,25 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                 return
             }
             
+            // If the connection times out or we have no error passed to us it's pretty common, so just reconnect
             if let error = error {
-                if let error = error as? URLError, error.code == .cancelled || error.code == .timedOut {
-                    // Reconnect to the SSE, the connection will have been dropped
+                if let error = error as? URLError, error.code == .timedOut {
                     if let completionHandler = completionHandler {
-                        // Reconnect to the SSE, the connection will have been dropped
                         start(completion: completionHandler)
                     }
                 }
-            } else if let completionHandler = completionHandler {
-                // Reconnect to the SSE, the connection will have been dropped
-                start(completion: completionHandler)
+            } else if error == nil {
+                print(">>> reconnecting on no error")
+                start(completion: self.completionHandler!)
+                return
+            }
+            
+            // Otherwise reconnect with increasing delay using the reconnectionTimer so that we don't load the phone / server
+            serialAccessQueue.asyncAfter(deadline: .now() + reconnectionDelay.nextDelay()) { [weak self] in
+                if let self {
+                    print(">>> reconnecting with increasing delay")
+                    self.start(completion: self.completionHandler!)
+                }
             }
         }
     }
@@ -144,7 +153,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             return
         }
         
-        guard let completeEventSourceUrl = URL(string: "\(baseURL)sse/environments/\(apiKey)/stream") else {
+        guard let completeEventSourceUrl = URL(string: "\(baseURL.absoluteString)sse/environments/\(apiKey)/stream") else {
             completion(.failure(FlagsmithError.apiURL("Invalid event source URL")))
             return
         }
