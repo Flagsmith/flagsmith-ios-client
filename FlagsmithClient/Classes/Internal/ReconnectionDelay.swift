@@ -14,7 +14,7 @@ class ReconnectionDelay {
     private let multiplier: Double
 
     init(initialDelay: TimeInterval = 1.0, maxDelay: TimeInterval = 60.0, multiplier: Double = 2.0) {
-        self.attempt = 0
+        attempt = 0
         self.initialDelay = initialDelay
         self.maxDelay = maxDelay
         self.multiplier = multiplier

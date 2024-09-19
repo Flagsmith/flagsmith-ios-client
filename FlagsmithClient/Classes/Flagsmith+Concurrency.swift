@@ -9,7 +9,6 @@ import Foundation
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *)
 public extension Flagsmith {
-    
     var flagStreamContinuation: AsyncStream<[Flag]>.Continuation? {
         get {
             return anyFlagStreamContinuation as? AsyncStream<[Flag]>.Continuation
@@ -18,13 +17,13 @@ public extension Flagsmith {
             anyFlagStreamContinuation = newValue
         }
     }
-    
+
     var flagStream: AsyncStream<[Flag]> {
         AsyncStream { continuation in
             anyFlagStreamContinuation = continuation
         }
     }
-    
+
     /// Get all feature flags (flags and remote config) optionally for a specific identity
     ///
     /// - Parameters:

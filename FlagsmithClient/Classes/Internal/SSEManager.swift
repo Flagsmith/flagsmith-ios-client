@@ -25,7 +25,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     private var _dataTask: URLSessionDataTask?
     private var dataTask: URLSessionDataTask? {
         get {
@@ -37,7 +37,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     /// Base `URL` used for requests.
     private var _baseURL = URL(string: "https://realtime.flagsmith.com/")!
     var baseURL: URL {
@@ -50,7 +50,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     /// API Key unique to an organization.
     private var _apiKey: String?
     var apiKey: String? {
@@ -63,22 +63,22 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     var isStarted: Bool {
         return completionHandler != nil
     }
-    
+
     private var completionHandler: CompletionHandler<FlagEvent>?
     private let serialAccessQueue = DispatchQueue(label: "sseFlagsmithSerialAccessQueue", qos: .default)
     let propertiesSerialAccessQueue = DispatchQueue(label: "ssePropertiesSerialAccessQueue", qos: .default)
     private let reconnectionDelay = ReconnectionDelay()
-    
+
     override init() {
         super.init()
         let configuration = URLSessionConfiguration.default
         session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
     }
-    
+
     // Helper function to process SSE data
     internal func processSSEData(_ data: String) {
         // Split the data into lines and decode the 'data:' lines from JSON into FlagEvent objects
@@ -99,10 +99,10 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     // MARK: URLSessionDelegate
-    
-    func urlSession(_: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+
+    func urlSession(_: URLSession, dataTask _: URLSessionDataTask, didReceive data: Data) {
         serialAccessQueue.sync {
             if let message = String(data: data, encoding: .utf8) {
                 processSSEData(message)
@@ -110,13 +110,13 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         serialAccessQueue.sync {
             if task != dataTask {
                 return
             }
-            
+
             // If the connection times out or we have no error passed to us it's pretty common, so just reconnect
             if let error = error {
                 if let error = error as? URLError, error.code == .timedOut {
@@ -128,7 +128,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                 start(completion: self.completionHandler!)
                 return
             }
-            
+
             // Otherwise reconnect with increasing delay using the reconnectionTimer so that we don't load the phone / server
             serialAccessQueue.asyncAfter(deadline: .now() + reconnectionDelay.nextDelay()) { [weak self] in
                 if let self {
@@ -137,30 +137,30 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     // MARK: Public Methods
-    
+
     func start(completion: @escaping CompletionHandler<FlagEvent>) {
         guard let apiKey = apiKey, !apiKey.isEmpty else {
             completion(.failure(FlagsmithError.apiKey))
             return
         }
-        
+
         guard let completeEventSourceUrl = URL(string: "\(baseURL.absoluteString)sse/environments/\(apiKey)/stream") else {
             completion(.failure(FlagsmithError.apiURL("Invalid event source URL")))
             return
         }
-        
+
         var request = URLRequest(url: completeEventSourceUrl)
         request.setValue("text/event-stream, application/json; charset=utf-8", forHTTPHeaderField: "Accept")
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         request.setValue("keep-alive", forHTTPHeaderField: "Connection")
-        
+
         completionHandler = completion
         dataTask = session.dataTask(with: request)
         dataTask?.resume()
     }
-    
+
     func stop() {
         dataTask?.cancel()
         completionHandler = nil

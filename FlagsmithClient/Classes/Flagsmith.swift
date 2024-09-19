@@ -20,13 +20,13 @@ public final class Flagsmith: @unchecked Sendable {
     private let apiManager: APIManager
     private let sseManager: SSEManager
     private let analytics: FlagsmithAnalytics
-    
+
     // The last time we got flags via the API
     private var lastUpdatedAt: Double = 0.0
-    
+
     // The last identity used for fetching flags
     private var lastUsedIdentity: String?
-    
+
     var anyFlagStreamContinuation: Any? // AsyncStream<[Flag]>.Continuation? for iOS 13+
 
     /// Base URL
@@ -36,7 +36,7 @@ public final class Flagsmith: @unchecked Sendable {
         get { apiManager.baseURL }
         set { apiManager.baseURL = newValue }
     }
-    
+
     /// Base `URL` used for the event source.
     ///
     /// The default implementation uses: `https://realtime.flagsmith.com/`.
@@ -61,7 +61,7 @@ public final class Flagsmith: @unchecked Sendable {
         get { analytics.enableAnalytics }
         set { analytics.enableAnalytics = newValue }
     }
-    
+
     /// Are realtime updates enabled?
     public var enableRealtimeUpdates: Bool {
         get { sseManager.isStarted }
@@ -163,12 +163,12 @@ public final class Flagsmith: @unchecked Sendable {
             }
         }
     }
-    
+
     private func handleFlagsError(_ error: any Error, completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void) {
-        if self.defaultFlags.isEmpty {
+        if defaultFlags.isEmpty {
             completion(.failure(error))
         } else {
-            completion(.success(self.defaultFlags))
+            completion(.success(defaultFlags))
         }
     }
 
@@ -344,7 +344,7 @@ public final class Flagsmith: @unchecked Sendable {
     private func getFlagUsingDefaults(withID id: String, forIdentity _: String? = nil) -> Flag? {
         return defaultFlags.first(where: { $0.feature.name == id })
     }
-        
+
     private func handleSSEResult(_ result: Result<FlagEvent, any Error>) {
         switch result {
         case let .success(event):
@@ -352,31 +352,31 @@ public final class Flagsmith: @unchecked Sendable {
             if lastUpdatedAt < event.updatedAt {
                 // Evict everything fron the cache
                 cacheConfig.cache.removeAllCachedResponses()
-                
+
                 // Now we can get the new values, which we can emit to the flagUpdateFlow if used
                 getFeatureFlags(forIdentity: lastUsedIdentity) { result in
                     switch result {
                     case let .failure(error):
                         print("Flagsmith - Error getting flags in SSE stream: \(error.localizedDescription)")
-                        
+
                     case .success:
                         // On success the flastream is updated automatically in the API call
                         print("Flagsmith - Flags updated from SSE stream.")
                     }
                 }
             }
-            
+
         case let .failure(error):
             print("handleSSEResult Error in SSE connection: \(error.localizedDescription)")
         }
     }
-    
+
     func updateFlagStreamAndLastUpdatedAt(_ flags: [Flag]) {
         // Update the flag stream
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
             flagStreamContinuation?.yield(flags)
         }
-        
+
         // Update the last updated time if the API is giving us newer data
         if let apiManagerUpdatedAt = apiManager.lastUpdatedAt, apiManagerUpdatedAt > lastUpdatedAt {
             lastUpdatedAt = apiManagerUpdatedAt

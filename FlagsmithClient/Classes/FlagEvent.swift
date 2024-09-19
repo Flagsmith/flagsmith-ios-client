@@ -11,6 +11,6 @@ public struct FlagEvent: Codable, Sendable {
     enum CodingKeys: String, CodingKey {
         case updatedAt = "updated_at"
     }
-    
+
     public let updatedAt: Double
 }

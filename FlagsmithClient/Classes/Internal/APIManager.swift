@@ -49,7 +49,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     private var _lastUpdatedAt: Double?
     var lastUpdatedAt: Double? {
         get {
@@ -81,7 +81,6 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                     if let error = error {
                         DispatchQueue.main.async { completion(.failure(FlagsmithError.unhandled(error))) }
                     } else {
-                        
                         let data = tasksToData[dataTask.taskIdentifier] ?? Data()
                         DispatchQueue.main.async { completion(.success(data)) }
                     }
@@ -197,7 +196,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             }
         }
     }
-    
+
     private func updateLastUpdatedFromRequest(_ request: URLRequest) {
         // Extract the lastUpdatedAt from the updatedAt header
         if let lastUpdatedAt = request.allHTTPHeaderFields?["x-flagsmith-document-updated-at"] {
