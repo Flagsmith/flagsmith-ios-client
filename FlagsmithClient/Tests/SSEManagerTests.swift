@@ -85,7 +85,7 @@ class SSEManagerTests: FlagsmithClientTestCase {
                 requestFinished.fulfill()
             }
             
-            if case .success(_) = result {
+            if case .success = result {
                 XCTFail("Should not have succeeded")
             }
         }

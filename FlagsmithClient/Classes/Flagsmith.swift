@@ -346,11 +346,8 @@ public final class Flagsmith: @unchecked Sendable {
     }
         
     private func handleSSEResult(_ result: Result<FlagEvent, any Error>) {
-        // Just print out the results for now
         switch result {
         case let .success(event):
-            print("handleSSEResult Received event: \(event)")
-            
             // Check whether this event is anything new
             if lastUpdatedAt < event.updatedAt {
                 // Evict everything fron the cache
@@ -360,17 +357,17 @@ public final class Flagsmith: @unchecked Sendable {
                 getFeatureFlags(forIdentity: lastUsedIdentity) { result in
                     switch result {
                     case let .failure(error):
-                        print("Error getting flags in SSE stream: \(error)")
+                        print("Flagsmith - Error getting flags in SSE stream: \(error.localizedDescription)")
                         
-                    case let .success(value):
+                    case .success:
                         // On success the flastream is updated automatically in the API call
-                        print("Flags updated from SSE stream: \(value)")
+                        print("Flagsmith - Flags updated from SSE stream.")
                     }
                 }
             }
             
         case let .failure(error):
-            print("handleSSEResult Error in SSE connection: \(error)")
+            print("handleSSEResult Error in SSE connection: \(error.localizedDescription)")
         }
     }
     
