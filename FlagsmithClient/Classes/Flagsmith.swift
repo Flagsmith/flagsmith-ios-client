@@ -90,7 +90,9 @@ public final class Flagsmith: @unchecked Sendable {
     {
         if let identity = identity {
             if let traits = traits {
-                apiManager.request(.postTraits(identity: identity, traits: traits, transient: transient)) { (result: Result<Traits, Error>) in
+                apiManager.request(
+                    .postTraits(identity: identity, traits: traits, transient: transient)
+                ) { (result: Result<Traits, Error>) in
                     switch result {
                     case let .success(result):
                         completion(.success(result.flags))
