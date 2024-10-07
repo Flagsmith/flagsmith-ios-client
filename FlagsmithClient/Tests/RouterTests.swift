@@ -33,6 +33,14 @@ final class RouterTests: FlagsmithClientTestCase {
         XCTAssertNil(request.httpBody)
     }
 
+    func testGetIdentityRequest_Transient() throws {
+        let url = try XCTUnwrap(baseUrl)
+        let route = Router.getIdentity(identity: "6056BCBF", transient: true)
+        let request = try route.request(baseUrl: url, apiKey: apiKey)
+        XCTAssertEqual(request.url?.absoluteString,
+                       "https://edge.api.flagsmith.com/api/v1/identities/?identifier=6056BCBF&transient=true")
+    }
+
     func testPostTraitRequest() throws {
         let trait = Trait(key: "meaning_of_life", value: 42)
         let url = try XCTUnwrap(baseUrl)
@@ -57,27 +65,47 @@ final class RouterTests: FlagsmithClientTestCase {
 
     func testPostTraitsRequest() throws {
         let questionTrait = Trait(key: "question_meaning_of_life", value: "6 x 9")
-        let meaningTrait = Trait(key: "meaning_of_life", value: 42)
+        let meaningTrait = Trait(key: "meaning_of_life", value: 42, transient: true)
         let url = try XCTUnwrap(baseUrl)
         let route = Router.postTraits(identity: "A1B2C3D4", traits: [questionTrait, meaningTrait])
         let request = try route.request(baseUrl: url, apiKey: apiKey, using: encoder)
         XCTAssertEqual(request.httpMethod, "POST")
-        XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/identities/?identifier=A1B2C3D4")
+        XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/identities/")
 
         let expectedJson = try """
         {
           "traits" : [
             {
               "trait_key" : "question_meaning_of_life",
-              "trait_value" : "6 x 9"
+              "trait_value" : "6 x 9",
+              "transient": false
             },
             {
               "trait_key" : "meaning_of_life",
-              "trait_value" : 42
+              "trait_value" : 42,
+              "transient": true
             }
           ],
           "identifier" : "A1B2C3D4",
-          "flags": []
+          "transient": false
+        }
+        """.json(using: .utf8)
+        let body = try request.httpBody.json()
+        XCTAssertEqual(body, expectedJson)
+    }
+
+    func testPostTraitsRequest_TransientIdentity() throws {
+        let url = try XCTUnwrap(baseUrl)
+        let route = Router.postTraits(identity: "A1B2C3D4", traits: [], transient: true)
+        let request = try route.request(baseUrl: url, apiKey: apiKey, using: encoder)
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/identities/")
+
+        let expectedJson = try """
+        {
+          "traits" : [],
+          "identifier" : "A1B2C3D4",
+          "transient": true
         }
         """.json(using: .utf8)
         let body = try request.httpBody.json()

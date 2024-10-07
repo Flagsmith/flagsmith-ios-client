@@ -17,9 +17,9 @@ enum Router: Sendable {
     }
 
     case getFlags
-    case getIdentity(identity: String)
+    case getIdentity(identity: String, transient: Bool = false)
     case postTrait(trait: Trait, identity: String)
-    case postTraits(identity: String, traits: [Trait])
+    case postTraits(identity: String, traits: [Trait], transient: Bool = false)
     case postAnalytics(events: [String: Int])
 
     private var method: HTTPMethod {
@@ -46,8 +46,12 @@ enum Router: Sendable {
 
     private var parameters: [URLQueryItem]? {
         switch self {
-        case let .getIdentity(identity), let .postTraits(identity, _):
-            return [URLQueryItem(name: "identifier", value: identity)]
+        case let .getIdentity(identity, transient):
+            var queryItems = [URLQueryItem(name: "identifier", value: identity)]
+            if transient {
+                queryItems.append(URLQueryItem(name: "transient", value: "true"))
+            }
+            return queryItems
         default:
             return nil
         }
@@ -60,8 +64,8 @@ enum Router: Sendable {
         case let .postTrait(trait, identifier):
             let traitWithIdentity = Trait(trait: trait, identifier: identifier)
             return try encoder.encode(traitWithIdentity)
-        case let .postTraits(identifier, traits):
-            let traitsWithIdentity = Traits(traits: traits, identifier: identifier)
+        case let .postTraits(identifier, traits, transient):
+            let traitsWithIdentity = Traits(traits: traits, identifier: identifier, transient: transient)
             return try encoder.encode(traitsWithIdentity)
         case let .postAnalytics(events):
             return try encoder.encode(events)
