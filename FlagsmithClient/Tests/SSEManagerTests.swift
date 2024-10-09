@@ -69,7 +69,7 @@ class SSEManagerTests: FlagsmithClientTestCase {
         wait(for: [requestFinished], timeout: 1.0)
     }
 
-    func testInalidSSEDataNotANum() {
+    func testInvalidSSEDataNotANum() {
         let requestFinished = expectation(description: "Request Finished")
 
         sseManager.start { result in
