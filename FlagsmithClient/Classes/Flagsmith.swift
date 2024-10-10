@@ -45,7 +45,7 @@ public final class Flagsmith: @unchecked Sendable {
         set { sseManager.baseURL = newValue }
     }
 
-    /// API Key unique to your organization.
+    /// Environment Key unique to your organization.
     ///
     /// This value must be provided before any request can succeed.
     public var apiKey: String? {

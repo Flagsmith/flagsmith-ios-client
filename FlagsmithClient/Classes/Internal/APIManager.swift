@@ -37,7 +37,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         }
     }
 
-    /// API Key unique to an organization.
+    /// Environment Key unique to an organization.
     private var _apiKey: String?
     var apiKey: String? {
         get {
