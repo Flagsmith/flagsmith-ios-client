@@ -48,3 +48,7 @@ Carthage/Build
 # hence it is not needed unless you have added a package configuration file to your project
 .swiftpm
 .build
+
+# This was causing confusion on PRs and is really just a record of the last time the example
+# pods were re-built from scratch. It's not useful to keep in the repo.
+Example/Podfile.lock
