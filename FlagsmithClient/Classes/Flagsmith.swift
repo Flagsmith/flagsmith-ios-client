@@ -119,15 +119,19 @@ public final class Flagsmith: @unchecked Sendable {
     ///
     /// - Parameters:
     ///   - identity: ID of the user (optional)
+    ///   - transient: If `true`, identity is not persisted
     ///   - completion: Closure with Result which contains array of Flag objects in case of success or Error in case of failure
     public func getFeatureFlags(forIdentity identity: String? = nil,
                                 traits: [Trait]? = nil,
+                                transient: Bool = false,
                                 completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void)
     {
         lastUsedIdentity = identity
         if let identity = identity {
             if let traits = traits {
-                apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
+                apiManager.request(
+                    .postTraits(identity: identity, traits: traits, transient: transient)
+                ) { (result: Result<Traits, Error>) in
                     switch result {
                     case let .success(result):
                         completion(.success(result.flags))
@@ -136,7 +140,7 @@ public final class Flagsmith: @unchecked Sendable {
                     }
                 }
             } else {
-                getIdentity(identity) { result in
+                getIdentity(identity, transient: transient) { result in
                     switch result {
                     case let .success(thisIdentity):
                         self.updateFlagStreamAndLastUpdatedAt(thisIdentity.flags)
@@ -331,8 +335,10 @@ public final class Flagsmith: @unchecked Sendable {
     ///
     /// - Parameters:
     ///   - identity: ID of the user
+    ///   - transient: If `true`, identity is not persisted
     ///   - completion: Closure with Result which contains Identity in case of success or Error in case of failure
     public func getIdentity(_ identity: String,
+                            transient: Bool = false,
                             completion: @Sendable @escaping (Result<Identity, any Error>) -> Void)
     {
         apiManager.request(.getIdentity(identity: identity)) { (result: Result<Identity, Error>) in
