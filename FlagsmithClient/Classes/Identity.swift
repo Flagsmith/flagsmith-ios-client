@@ -20,5 +20,5 @@ public struct Identity: Decodable, Sendable {
 
     public let flags: [Flag]
     public let traits: [Trait]
-    public let transient: Bool
+    public let transient: Bool?
 }

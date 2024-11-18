@@ -37,7 +37,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         }
     }
 
-    /// API Key unique to an organization.
+    /// Environment Key unique to an organization.
     private var _apiKey: String?
     var apiKey: String? {
         get {
@@ -46,6 +46,18 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         set {
             propertiesSerialAccessQueue.sync {
                 _apiKey = newValue
+            }
+        }
+    }
+
+    private var _lastUpdatedAt: Double?
+    var lastUpdatedAt: Double? {
+        get {
+            propertiesSerialAccessQueue.sync { _lastUpdatedAt }
+        }
+        set {
+            propertiesSerialAccessQueue.sync {
+                _lastUpdatedAt = newValue
             }
         }
     }
@@ -182,6 +194,14 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                     completion(.failure(FlagsmithError(error)))
                 }
             }
+        }
+    }
+
+    private func updateLastUpdatedFromRequest(_ request: URLRequest) {
+        // Extract the lastUpdatedAt from the updatedAt header
+        if let lastUpdatedAt = request.allHTTPHeaderFields?["x-flagsmith-document-updated-at"] {
+            print("Last Updated At from header: \(lastUpdatedAt)")
+            self.lastUpdatedAt = Double(lastUpdatedAt)
         }
     }
 }

@@ -76,7 +76,7 @@ enum Router: Sendable {
     ///
     /// - parameters:
     ///  - baseUrl: The base URL of the api on which to base the request.
-    ///  - apiKey: The organization key to provide in the request headers.
+    ///  - apiKey: The environment key to provide in the request headers.
     ///  - encoder: `JSONEncoder` used to encode the request body.
     func request(baseUrl: URL,
                  apiKey: String,
