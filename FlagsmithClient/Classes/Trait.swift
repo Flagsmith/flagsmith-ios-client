@@ -26,7 +26,7 @@ public struct Trait: Codable, Sendable {
     /// - note: In the future, this can be renamed back to 'value' as major/feature-breaking
     ///         updates are released.
     public var typedValue: TypedValue
-    public let transient: Bool
+    public let transient: Bool?
     /// The identity of the `Trait` when creating.
     internal let identifier: String?
     
