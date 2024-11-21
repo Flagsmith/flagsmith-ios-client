@@ -2,6 +2,8 @@ name: Publish SDK to CocoaPods
 
 on:
   push:
+    tags:
+      - '*'
 
 jobs:
   publish:
