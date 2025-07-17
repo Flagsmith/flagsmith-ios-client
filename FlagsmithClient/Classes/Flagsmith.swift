@@ -27,7 +27,7 @@ public final class Flagsmith: @unchecked Sendable {
     // The last identity used for fetching flags
     private var lastUsedIdentity: String?
     // The last result from fetcing flags
-    private var lastFlags: [Flag]?
+    internal var lastFlags: [Flag]?
 
     var anyFlagStreamContinuation: Any? // AsyncStream<[Flag]>.Continuation? for iOS 13+
 
@@ -380,7 +380,6 @@ public final class Flagsmith: @unchecked Sendable {
     func updateFlagStreamAndLastUpdatedAt(_ flags: [Flag]) {
         // Update the flag stream
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // Get the current value from the flagStreamContinuation
             if (flags != lastFlags) {
                 print("Flagsmith - Flag change detected from SSE stream.")
                 flagStreamContinuation?.yield(flags)
