@@ -26,7 +26,7 @@ public final class Flagsmith: @unchecked Sendable {
 
     // The last identity used for fetching flags
     private var lastUsedIdentity: String?
-    // The last result from fetcing flags
+    // The last result from fetching flags
     internal var lastFlags: [Flag]?
 
     var anyFlagStreamContinuation: Any? // AsyncStream<[Flag]>.Continuation? for iOS 13+
