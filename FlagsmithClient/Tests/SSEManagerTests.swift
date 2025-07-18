@@ -157,7 +157,7 @@ class SSEManagerTests: FlagsmithClientTestCase {
         let yieldCounter = YieldCounter()
         let taskCompletionExpectation = expectation(description: "Task completed")
         
-        let streamTask = Task {
+        let _ = Task {
             for await flags in stream {
                 let currentCount = await yieldCounter.increment()
                 switch currentCount {
