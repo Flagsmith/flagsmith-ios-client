@@ -381,7 +381,6 @@ public final class Flagsmith: @unchecked Sendable {
         // Update the flag stream
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
             if (flags != lastFlags) {
-                print("Flagsmith - Flag change detected from SSE stream.")
                 flagStreamContinuation?.yield(flags)
             }
         }
