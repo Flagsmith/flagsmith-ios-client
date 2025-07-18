@@ -10,7 +10,7 @@ import Foundation
 /**
  A Flag represents a feature flag on the server.
  */
-public struct Flag: Codable, Sendable {
+public struct Flag: Codable, Sendable, Equatable {
     enum CodingKeys: String, CodingKey {
         case feature
         case value = "feature_state_value"
@@ -69,5 +69,11 @@ public struct Flag: Codable, Sendable {
         try container.encode(feature, forKey: .feature)
         try container.encode(value, forKey: .value)
         try container.encode(enabled, forKey: .enabled)
+    }
+    
+    public static func == (lhs: Flag, rhs: Flag) -> Bool {
+        return lhs.feature.name == rhs.feature.name &&
+            lhs.value == rhs.value &&
+            lhs.enabled == rhs.enabled
     }
 }

@@ -115,4 +115,86 @@ class SSEManagerTests: FlagsmithClientTestCase {
 
         wait(for: [requestFinished], timeout: 1.0)
     }
+
+    func testFlagStreamYieldsOnlyOnDifferentFlags() {
+        guard #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) else {
+            XCTFail("AsyncStream is not available on this platform.")
+            return
+        }
+
+        let flagsmith = Flagsmith.shared
+        var continuation: AsyncStream<[Flag]>.Continuation?
+        let stream = AsyncStream<[Flag]> { cont in
+            continuation = cont
+        }
+        flagsmith.anyFlagStreamContinuation = continuation
+
+        // Reset lastFlags to ensure a clean state for the test
+        flagsmith.lastFlags = nil
+
+        let flag1 = Flag(featureName: "test_feature_1", value: .string("value1"), enabled: true, featureType: "STANDARD")
+        let flag2 = Flag(featureName: "test_feature_2", value: .int(123), enabled: false, featureType: "STANDARD")
+        let flags1 = [flag1, flag2]
+
+        let flag3 = Flag(featureName: "test_feature_3", value: .bool(true), enabled: true, featureType: "STANDARD")
+        let flags2 = [flag1, flag3] // Different set of flags
+
+        let firstYieldExpectation = expectation(description: "First flags yielded")
+        let noYieldExpectation = expectation(description: "No yield on same flags")
+        noYieldExpectation.isInverted = true
+        let secondYieldExpectation = expectation(description: "Second flags yielded")
+
+        // Use an actor to make the counter thread-safe for Swift 5 compatibility
+        actor YieldCounter {
+            private var count = 0
+            
+            func increment() -> Int {
+                count += 1
+                return count
+            }
+        }
+        
+        let yieldCounter = YieldCounter()
+        let taskCompletionExpectation = expectation(description: "Task completed")
+        
+        let _ = Task {
+            for await flags in stream {
+                let currentCount = await yieldCounter.increment()
+                switch currentCount {
+                case 1:
+                    XCTAssertEqual(flags, flags1)
+                    firstYieldExpectation.fulfill()
+                case 2:
+                    XCTAssertEqual(flags, flags2)
+                    secondYieldExpectation.fulfill()
+                default:
+                    XCTFail("Unexpected yield from stream")
+                }
+            }
+            // Signal that the task has finished processing all stream items
+            taskCompletionExpectation.fulfill()
+        }
+
+        // 1. Call with new flags (should yield)
+        flagsmith.updateFlagStreamAndLastUpdatedAt(flags1)
+        wait(for: [firstYieldExpectation], timeout: 1.0)
+
+        // 2. Call with same flags (should NOT yield)
+        flagsmith.updateFlagStreamAndLastUpdatedAt(flags1)
+        wait(for: [noYieldExpectation], timeout: 0.1) // Short timeout to ensure no yield
+
+        // 3. Call with different flags (should yield)
+        flagsmith.updateFlagStreamAndLastUpdatedAt(flags2)
+        wait(for: [secondYieldExpectation], timeout: 1.0)
+
+        // Clean up: stop the stream and wait for task to complete
+        continuation?.finish()
+        
+        // Wait for the async task to finish processing all items before continuing
+        wait(for: [taskCompletionExpectation], timeout: 1.0)
+        
+        // Reset Flagsmith state to avoid interference with other tests
+        flagsmith.anyFlagStreamContinuation = nil
+        flagsmith.lastFlags = nil
+    }
 }

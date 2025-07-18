@@ -26,6 +26,8 @@ public final class Flagsmith: @unchecked Sendable {
 
     // The last identity used for fetching flags
     private var lastUsedIdentity: String?
+    // The last result from fetching flags
+    internal var lastFlags: [Flag]?
 
     var anyFlagStreamContinuation: Any? // AsyncStream<[Flag]>.Continuation? for iOS 13+
 
@@ -364,10 +366,8 @@ public final class Flagsmith: @unchecked Sendable {
                     switch result {
                     case let .failure(error):
                         print("Flagsmith - Error getting flags in SSE stream: \(error.localizedDescription)")
-
-                    case .success:
-                        // On success the flastream is updated automatically in the API call
-                        print("Flagsmith - Flags updated from SSE stream.")
+                    case .success(_):
+                        break
                     }
                 }
             }
@@ -380,13 +380,18 @@ public final class Flagsmith: @unchecked Sendable {
     func updateFlagStreamAndLastUpdatedAt(_ flags: [Flag]) {
         // Update the flag stream
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            flagStreamContinuation?.yield(flags)
+            if (flags != lastFlags) {
+                flagStreamContinuation?.yield(flags)
+            }
         }
 
         // Update the last updated time if the API is giving us newer data
         if let apiManagerUpdatedAt = apiManager.lastUpdatedAt, apiManagerUpdatedAt > lastUpdatedAt {
             lastUpdatedAt = apiManagerUpdatedAt
         }
+        
+        // Save the last set of flags we got so that we have something to compare against and only publish changes
+        lastFlags = flags
     }
 }
 
