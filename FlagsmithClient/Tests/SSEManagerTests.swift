@@ -144,11 +144,23 @@ class SSEManagerTests: FlagsmithClientTestCase {
         noYieldExpectation.isInverted = true
         let secondYieldExpectation = expectation(description: "Second flags yielded")
 
-        var yieldCount = 0
-        Task {
+        // Use an actor to make the counter thread-safe for Swift 5 compatibility
+        actor YieldCounter {
+            private var count = 0
+            
+            func increment() -> Int {
+                count += 1
+                return count
+            }
+        }
+        
+        let yieldCounter = YieldCounter()
+        let taskCompletionExpectation = expectation(description: "Task completed")
+        
+        let streamTask = Task {
             for await flags in stream {
-                yieldCount += 1
-                switch yieldCount {
+                let currentCount = await yieldCounter.increment()
+                switch currentCount {
                 case 1:
                     XCTAssertEqual(flags, flags1)
                     firstYieldExpectation.fulfill()
@@ -159,6 +171,8 @@ class SSEManagerTests: FlagsmithClientTestCase {
                     XCTFail("Unexpected yield from stream")
                 }
             }
+            // Signal that the task has finished processing all stream items
+            taskCompletionExpectation.fulfill()
         }
 
         // 1. Call with new flags (should yield)
@@ -173,7 +187,14 @@ class SSEManagerTests: FlagsmithClientTestCase {
         flagsmith.updateFlagStreamAndLastUpdatedAt(flags2)
         wait(for: [secondYieldExpectation], timeout: 1.0)
 
-        // Invalidate the continuation to stop the stream
+        // Clean up: stop the stream and wait for task to complete
         continuation?.finish()
+        
+        // Wait for the async task to finish processing all items before continuing
+        wait(for: [taskCompletionExpectation], timeout: 1.0)
+        
+        // Reset Flagsmith state to avoid interference with other tests
+        flagsmith.anyFlagStreamContinuation = nil
+        flagsmith.lastFlags = nil
     }
 }
