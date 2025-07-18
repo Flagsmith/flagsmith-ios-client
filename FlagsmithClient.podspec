@@ -8,6 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'FlagsmithClient'
+  # x-release-please-version
   s.version          = '3.8.1'
   s.summary          = 'iOS Client written in Swift for Flagsmith. Ship features with confidence using feature flags and remote config.'
   s.homepage         = 'https://github.com/Flagsmith/flagsmith-ios-client'
