@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.3](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.8.2...v3.8.3) (2025-07-18)
+
+
+### Other
+
+* **ci:** update source to look for tag with leading v as created by release please ([#82](https://github.com/Flagsmith/flagsmith-ios-client/issues/82)) ([2837cfb](https://github.com/Flagsmith/flagsmith-ios-client/commit/2837cfbb7591882528a744bab51702befc7c70c3))
+
 ## [3.8.2](https://github.com/Flagsmith/flagsmith-ios-client/compare/3.8.1...v3.8.2) (2025-07-18)
 
 
