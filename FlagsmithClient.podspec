@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/Flagsmith/flagsmith-ios-client'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Kyle Johnson' => 'Kyle.johnson@flagsmith.com' }
-  s.source           = { :git => 'https://github.com/Flagsmith/flagsmith-ios-client.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/Flagsmith/flagsmith-ios-client.git', :tag => "v#{s.version}" }
   s.social_media_url = 'https://twitter.com/getflagsmith'
   s.resource_bundles = {
     'Flagsmith_Privacy' => ['FlagsmithClient/Classes/PrivacyInfo.xcprivacy'],
