@@ -9,6 +9,30 @@ import Foundation
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *)
 public extension Flagsmith {
+  final class Box<Wrapped: Sendable>: @unchecked Sendable {
+    private let lock = NSRecursiveLock()
+    private var _wrappedValue: Wrapped
+    
+    var wrappedValue: Wrapped {
+      self.lock.sync {
+        self._wrappedValue
+      }
+    }
+    
+    init(_ value: Wrapped) {
+      self._wrappedValue = value
+    }
+    
+    func withValue<T: Sendable>(
+      _ operation: @Sendable (inout Wrapped) throws -> T
+    ) rethrows -> T {
+      try self.lock.sync {
+        var value = self._wrappedValue
+        defer { self._wrappedValue = value }
+        return try operation(&value)
+      }
+    }
+  }
     var flagStreamContinuation: AsyncStream<[Flag]>.Continuation? {
         get {
             return anyFlagStreamContinuation as? AsyncStream<[Flag]>.Continuation
@@ -107,22 +131,23 @@ public extension Flagsmith {
     ///   - identity: ID of the user
     /// - returns: Collection of Trait objects
     func getTraits(withIDS ids: [String]? = nil, forIdentity identity: String) async throws -> [Trait] {
-      
-      var dataTask: URLSessionTask?
+      let dataTask: Box<URLSessionTask?> = .init(nil)
       
       return try await withTaskCancellationHandler {
         try await withCheckedThrowingContinuation { continuation in
-          dataTask = getTraits(withIDS: ids, forIdentity: identity) { result in
-            switch result {
-            case let .failure(error):
-              continuation.resume(throwing: error)
-            case let .success(value):
-              continuation.resume(returning: value)
-            }
+          dataTask.withValue {
+             $0 = getTraits(withIDS: ids, forIdentity: identity) { result in
+               switch result {
+               case let .failure(error):
+                 continuation.resume(throwing: error)
+               case let .success(value):
+                 continuation.resume(returning: value)
+               }
+             }
           }
         }
       } onCancel: {
-        dataTask?.cancel()
+        dataTask.wrappedValue?.cancel()
       }
     }
 
@@ -171,22 +196,24 @@ public extension Flagsmith {
     ///   - identity: ID of the user
     /// - returns: The Traits requested to be set.
     @discardableResult func setTraits(_ traits: [Trait], forIdentity identity: String) async throws -> [Trait] {
-      
-      var dataTask: URLSessionTask?
+      let dataTask: Box<URLSessionTask?> = .init(nil)
       
       return try await withTaskCancellationHandler {
         try await withCheckedThrowingContinuation { continuation in
-          dataTask = setTraits(traits, forIdentity: identity) { result in
-            switch result {
-            case let .failure(error):
-              continuation.resume(throwing: error)
-            case let .success(value):
-              continuation.resume(returning: value)
+          dataTask.withValue {
+            $0 = setTraits(traits, forIdentity: identity) { result in
+              switch result {
+              case let .failure(error):
+                continuation.resume(throwing: error)
+              case let .success(value):
+                continuation.resume(returning: value)
+              }
             }
           }
+          
         }
       } onCancel: {
-        dataTask?.cancel()
+        dataTask.wrappedValue?.cancel()
       }
     }
 
@@ -207,4 +234,13 @@ public extension Flagsmith {
             }
         }
     }
+}
+
+extension NSRecursiveLock {
+  @inlinable @discardableResult
+  @_spi(Internals) public func sync<R>(work: () throws -> R) rethrows -> R {
+    self.lock()
+    defer { self.unlock() }
+    return try work()
+  }
 }
