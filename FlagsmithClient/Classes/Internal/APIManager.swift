@@ -125,10 +125,10 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     /// - parameters:
     ///   - router: The path and parameters that should be requested.
     ///   - completion: Function block executed with the result of the request.
-    private func request(_ router: Router, completion: @Sendable @escaping (Result<Data, any Error>) -> Void) {
+    private func request(_ router: Router, completion: @Sendable @escaping (Result<Data, any Error>) -> Void) -> URLSessionTask? {
         guard let apiKey = apiKey, !apiKey.isEmpty else {
             completion(.failure(FlagsmithError.apiKey))
-            return
+            return nil
         }
 
         var request: URLRequest
@@ -136,7 +136,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             request = try router.request(baseUrl: baseURL, apiKey: apiKey)
         } catch {
             completion(.failure(error))
-            return
+            return nil
         }
 
         // set the cache policy based on Flagsmith settings
@@ -150,10 +150,11 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         }
 
         // we must use the delegate form here, not the completion handler, to be able to modify the cache
-        serialAccessQueue.sync {
+        return serialAccessQueue.sync {
             let task = session.dataTask(with: request)
             tasksToCompletionHandlers[task.taskIdentifier] = completion
             task.resume()
+          return task
         }
     }
 
@@ -162,7 +163,8 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     /// - parameters:
     ///   - router: The path and parameters that should be requested.
     ///   - completion: Function block executed with the result of the request.
-    func request(_ router: Router, completion: @Sendable @escaping (Result<Void, any Error>) -> Void) {
+//    @discardableResult
+    func request(_ router: Router, completion: @Sendable @escaping (Result<Void, any Error>) -> Void) -> URLSessionTask? {
         request(router) { (result: Result<Data, Error>) in
             switch result {
             case let .failure(error):
@@ -179,8 +181,9 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     ///   - router: The path and parameters that should be requested.
     ///   - decoder: `JSONDecoder` used to deserialize the response data.
     ///   - completion: Function block executed with the result of the request.
+//    @discardableResult
     func request<T: Decodable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(),
-                               completion: @Sendable @escaping (Result<T, any Error>) -> Void)
+                               completion: @Sendable @escaping (Result<T, any Error>) -> Void) -> URLSessionTask?
     {
         request(router) { (result: Result<Data, Error>) in
             switch result {

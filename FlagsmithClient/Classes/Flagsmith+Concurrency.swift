@@ -107,16 +107,23 @@ public extension Flagsmith {
     ///   - identity: ID of the user
     /// - returns: Collection of Trait objects
     func getTraits(withIDS ids: [String]? = nil, forIdentity identity: String) async throws -> [Trait] {
+      
+      var dataTask: URLSessionTask?
+      
+      return try await withTaskCancellationHandler {
         try await withCheckedThrowingContinuation { continuation in
-            getTraits(withIDS: ids, forIdentity: identity) { result in
-                switch result {
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                case let .success(value):
-                    continuation.resume(returning: value)
-                }
+          dataTask = getTraits(withIDS: ids, forIdentity: identity) { result in
+            switch result {
+            case let .failure(error):
+              continuation.resume(throwing: error)
+            case let .success(value):
+              continuation.resume(returning: value)
             }
+          }
         }
+      } onCancel: {
+        dataTask?.cancel()
+      }
     }
 
     /// Get user trait for provided identity and trait key
@@ -164,16 +171,23 @@ public extension Flagsmith {
     ///   - identity: ID of the user
     /// - returns: The Traits requested to be set.
     @discardableResult func setTraits(_ traits: [Trait], forIdentity identity: String) async throws -> [Trait] {
+      
+      var dataTask: URLSessionTask?
+      
+      return try await withTaskCancellationHandler {
         try await withCheckedThrowingContinuation { continuation in
-            setTraits(traits, forIdentity: identity) { result in
-                switch result {
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                case let .success(value):
-                    continuation.resume(returning: value)
-                }
+          dataTask = setTraits(traits, forIdentity: identity) { result in
+            switch result {
+            case let .failure(error):
+              continuation.resume(throwing: error)
+            case let .success(value):
+              continuation.resume(returning: value)
             }
+          }
         }
+      } onCancel: {
+        dataTask?.cancel()
+      }
     }
 
     /// Get both feature flags and user traits for the provided identity

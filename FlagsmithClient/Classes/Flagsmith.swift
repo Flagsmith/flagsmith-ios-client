@@ -123,15 +123,17 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - identity: ID of the user (optional)
     ///   - transient: If `true`, identity is not persisted
     ///   - completion: Closure with Result which contains array of Flag objects in case of success or Error in case of failure
-    public func getFeatureFlags(forIdentity identity: String? = nil,
-                                traits: [Trait]? = nil,
-                                transient: Bool = false,
-                                completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void)
+  public func getFeatureFlags(
+    forIdentity identity: String? = nil,
+    traits: [Trait]? = nil,
+    transient: Bool = false,
+    completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void
+  ) -> URLSessionTask?
     {
         lastUsedIdentity = identity
         if let identity = identity {
             if let traits = traits {
-                apiManager.request(
+                return apiManager.request(
                     .postTraits(identity: identity, traits: traits, transient: transient)
                 ) { (result: Result<Traits, Error>) in
                     switch result {
@@ -142,7 +144,7 @@ public final class Flagsmith: @unchecked Sendable {
                     }
                 }
             } else {
-                getIdentity(identity, transient: transient) { result in
+                return getIdentity(identity, transient: transient) { result in
                     switch result {
                     case let .success(thisIdentity):
                         self.updateFlagStreamAndLastUpdatedAt(thisIdentity.flags)
@@ -155,8 +157,9 @@ public final class Flagsmith: @unchecked Sendable {
         } else {
             if traits != nil {
                 completion(.failure(FlagsmithError.invalidArgument("You must provide an identity to set traits")))
+              return nil
             } else {
-                apiManager.request(.getFlags) { [weak self] (result: Result<[Flag], Error>) in
+                return apiManager.request(.getFlags) { [weak self] (result: Result<[Flag], Error>) in
                     switch result {
                     case let .success(flags):
                         // Call updateFlagStream only when iOS 13+
@@ -186,10 +189,10 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains Bool in case of success or Error in case of failure
     public func hasFeatureFlag(withID id: String,
                                forIdentity identity: String? = nil,
-                               completion: @Sendable @escaping (Result<Bool, any Error>) -> Void)
+                               completion: @Sendable @escaping (Result<Bool, any Error>) -> Void) -> URLSessionTask?
     {
         analytics.trackEvent(flagName: id)
-        getFeatureFlags(forIdentity: identity) { result in
+        return getFeatureFlags(forIdentity: identity) { result in
             switch result {
             case let .success(flags):
                 let hasFlag = flags.contains(where: { $0.feature.name == id && $0.enabled })
@@ -213,10 +216,10 @@ public final class Flagsmith: @unchecked Sendable {
     @available(*, deprecated, renamed: "getValueForFeature(withID:forIdentity:completion:)")
     public func getFeatureValue(withID id: String,
                                 forIdentity identity: String? = nil,
-                                completion: @Sendable @escaping (Result<String?, any Error>) -> Void)
+                                completion: @Sendable @escaping (Result<String?, any Error>) -> Void) -> URLSessionTask?
     {
         analytics.trackEvent(flagName: id)
-        getFeatureFlags(forIdentity: identity) { result in
+        return getFeatureFlags(forIdentity: identity) { result in
             switch result {
             case let .success(flags):
                 let flag = flags.first(where: { $0.feature.name == id })
@@ -240,9 +243,10 @@ public final class Flagsmith: @unchecked Sendable {
     public func getValueForFeature(withID id: String,
                                    forIdentity identity: String? = nil,
                                    completion: @Sendable @escaping (Result<TypedValue?, any Error>) -> Void)
+  -> URLSessionTask?
     {
         analytics.trackEvent(flagName: id)
-        getFeatureFlags(forIdentity: identity) { result in
+        return getFeatureFlags(forIdentity: identity) { result in
             switch result {
             case let .success(flags):
                 let flag = flags.first(where: { $0.feature.name == id })
@@ -265,7 +269,7 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains array of Trait objects in case of success or Error in case of failure
     public func getTraits(withIDS ids: [String]? = nil,
                           forIdentity identity: String,
-                          completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void)
+                          completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void) -> URLSessionTask?
     {
         getIdentity(identity) { result in
             switch result {
@@ -290,7 +294,7 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains Trait in case of success or Error in case of failure
     public func getTrait(withID id: String,
                          forIdentity identity: String,
-                         completion: @Sendable @escaping (Result<Trait?, any Error>) -> Void)
+                         completion: @Sendable @escaping (Result<Trait?, any Error>) -> Void) -> URLSessionTask?
     {
         getIdentity(identity) { result in
             switch result {
@@ -311,7 +315,7 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains Trait in case of success or Error in case of failure
     public func setTrait(_ trait: Trait,
                          forIdentity identity: String,
-                         completion: @Sendable @escaping (Result<Trait, any Error>) -> Void)
+                         completion: @Sendable @escaping (Result<Trait, any Error>) -> Void) -> URLSessionTask?
     {
         apiManager.request(.postTrait(trait: trait, identity: identity)) { (result: Result<Trait, Error>) in
             completion(result)
@@ -326,7 +330,7 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - completion: Closure with Result which contains Traits in case of success or Error in case of failure
     public func setTraits(_ traits: [Trait],
                           forIdentity identity: String,
-                          completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void)
+                          completion: @Sendable @escaping (Result<[Trait], any Error>) -> Void) -> URLSessionTask?
     {
         apiManager.request(.postTraits(identity: identity, traits: traits)) { (result: Result<Traits, Error>) in
             completion(result.map(\.traits))
@@ -339,9 +343,11 @@ public final class Flagsmith: @unchecked Sendable {
     ///   - identity: ID of the user
     ///   - transient: If `true`, identity is not persisted
     ///   - completion: Closure with Result which contains Identity in case of success or Error in case of failure
-    public func getIdentity(_ identity: String,
-                            transient: Bool = false,
-                            completion: @Sendable @escaping (Result<Identity, any Error>) -> Void)
+  public func getIdentity(
+    _ identity: String,
+    transient: Bool = false,
+    completion: @Sendable @escaping (Result<Identity, any Error>) -> Void
+  ) -> URLSessionTask?
     {
         apiManager.request(.getIdentity(identity: identity)) { (result: Result<Identity, Error>) in
             completion(result)
