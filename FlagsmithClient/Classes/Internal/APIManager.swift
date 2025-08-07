@@ -157,7 +157,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             let task = session.dataTask(with: request)
             tasksToCompletionHandlers[task.taskIdentifier] = completion
             task.resume()
-          return task
+            return task
         }
     }
 

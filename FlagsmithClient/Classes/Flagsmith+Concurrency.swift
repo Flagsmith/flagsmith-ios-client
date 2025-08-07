@@ -17,13 +17,13 @@ public extension Flagsmith {
             anyFlagStreamContinuation = newValue
         }
     }
-    
+
     var flagStream: AsyncStream<[Flag]> {
         AsyncStream { continuation in
             anyFlagStreamContinuation = continuation
         }
     }
-        
+
     /// Get all feature flags (flags and remote config) optionally for a specific identity
     ///
     /// - Parameters:
@@ -34,7 +34,7 @@ public extension Flagsmith {
             getFeatureFlags(forIdentity: identity, completion: completion)
         }
     }
-    
+
     /// Check feature exists and is enabled optionally for a specific identity
     ///
     /// - Parameters:
@@ -46,7 +46,7 @@ public extension Flagsmith {
             hasFeatureFlag(withID: id, forIdentity: identity, completion: completion)
         }
     }
-    
+
     /// Get remote config value optionally for a specific identity
     ///
     /// - Parameters:
@@ -59,7 +59,7 @@ public extension Flagsmith {
             getFeatureValue(withID: id, forIdentity: identity, completion: completion)
         }
     }
-    
+
     /// Get remote config value optionally for a specific identity
     ///
     /// - Parameters:
@@ -71,7 +71,7 @@ public extension Flagsmith {
             getValueForFeature(withID: id, forIdentity: identity, completion: completion)
         }
     }
-    
+
     /// Get all user traits for provided identity. Optionally filter results with a list of keys
     ///
     /// - Parameters:
@@ -83,7 +83,7 @@ public extension Flagsmith {
             getTraits(withIDS: ids, forIdentity: identity, completion: completion)
         }
     }
-    
+
     /// Get user trait for provided identity and trait key
     ///
     /// - Parameters:
@@ -95,7 +95,7 @@ public extension Flagsmith {
             getTrait(withID: id, forIdentity: identity, completion: completion)
         }
     }
-    
+
     /// Set user trait for provided identity
     ///
     /// - Parameters:
@@ -107,7 +107,7 @@ public extension Flagsmith {
             setTrait(trait, forIdentity: identity, completion: completion)
         }
     }
-    
+
     /// Set user traits in bulk for provided identity
     ///
     /// - Parameters:
@@ -119,7 +119,7 @@ public extension Flagsmith {
             setTraits(traits, forIdentity: identity, completion: completion)
         }
     }
-    
+
     /// Get both feature flags and user traits for the provided identity
     ///
     /// - Parameters:
@@ -130,37 +130,37 @@ public extension Flagsmith {
             getIdentity(identity, completion: completion)
         }
     }
-    
+
     final class Box<Wrapped: Sendable>: @unchecked Sendable {
         private let lock = NSRecursiveLock()
         private var _wrappedValue: Wrapped
-        
+
         var wrappedValue: Wrapped {
-            self.lock.sync {
+            lock.sync {
                 self._wrappedValue
             }
         }
-        
+
         init(_ value: Wrapped) {
-            self._wrappedValue = value
+            _wrappedValue = value
         }
-        
+
         func withValue<T: Sendable>(
             _ operation: @Sendable (inout Wrapped) throws -> T
         ) rethrows -> T {
-            try self.lock.sync {
+            try lock.sync {
                 var value = self._wrappedValue
                 defer { self._wrappedValue = value }
                 return try operation(&value)
             }
         }
     }
-    
+
     private func withCancellableRequest<T: Sendable>(
         operation: @Sendable (@Sendable @escaping (Result<T, any Error>) -> Void) -> URLSessionTask?
     ) async throws -> T {
         let dataTask: Box<URLSessionTask?> = .init(nil)
-        
+
         return try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { continuation in
                 dataTask.withValue {
@@ -180,10 +180,10 @@ public extension Flagsmith {
     }
 }
 
-extension NSRecursiveLock {
+public extension NSRecursiveLock {
     @inlinable @discardableResult
-    @_spi(Internals) public func sync<R>(work: () throws -> R) rethrows -> R {
-        self.lock()
+    @_spi(Internals) func sync<R>(work: () throws -> R) rethrows -> R {
+        lock()
         defer { self.unlock() }
         return try work()
     }

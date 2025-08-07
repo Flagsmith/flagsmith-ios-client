@@ -147,16 +147,16 @@ class SSEManagerTests: FlagsmithClientTestCase {
         // Use an actor to make the counter thread-safe for Swift 5 compatibility
         actor YieldCounter {
             private var count = 0
-            
+
             func increment() -> Int {
                 count += 1
                 return count
             }
         }
-        
+
         let yieldCounter = YieldCounter()
         let taskCompletionExpectation = expectation(description: "Task completed")
-        
+
         let _ = Task {
             for await flags in stream {
                 let currentCount = await yieldCounter.increment()
@@ -189,10 +189,10 @@ class SSEManagerTests: FlagsmithClientTestCase {
 
         // Clean up: stop the stream and wait for task to complete
         continuation?.finish()
-        
+
         // Wait for the async task to finish processing all items before continuing
         wait(for: [taskCompletionExpectation], timeout: 1.0)
-        
+
         // Reset Flagsmith state to avoid interference with other tests
         flagsmith.anyFlagStreamContinuation = nil
         flagsmith.lastFlags = nil

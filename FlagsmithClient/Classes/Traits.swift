@@ -15,7 +15,7 @@ public struct Traits: Codable, Sendable {
     public let identifier: String?
     public let flags: [Flag]
     public let transient: Bool?
-    
+
     init(traits: [Trait], identifier: String?, flags: [Flag] = [], transient: Bool = false) {
         self.traits = traits
         self.identifier = identifier
@@ -30,4 +30,3 @@ public struct Traits: Codable, Sendable {
         try container.encode(transient, forKey: .transient)
     }
 }
-

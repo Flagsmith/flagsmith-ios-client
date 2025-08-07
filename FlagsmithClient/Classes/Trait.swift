@@ -29,7 +29,7 @@ public struct Trait: Codable, Sendable {
     public let transient: Bool?
     /// The identity of the `Trait` when creating.
     internal let identifier: String?
-    
+
     public init(key: String, value: TypedValue, transient: Bool = false) {
         self.key = key
         self.transient = transient
