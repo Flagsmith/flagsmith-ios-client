@@ -70,7 +70,7 @@ public struct Flag: Codable, Sendable, Equatable {
         try container.encode(value, forKey: .value)
         try container.encode(enabled, forKey: .enabled)
     }
-
+    
     public static func == (lhs: Flag, rhs: Flag) -> Bool {
         return lhs.feature.name == rhs.feature.name &&
             lhs.value == rhs.value &&
