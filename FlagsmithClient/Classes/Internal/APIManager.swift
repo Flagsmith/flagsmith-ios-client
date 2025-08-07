@@ -125,7 +125,10 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     /// - parameters:
     ///   - router: The path and parameters that should be requested.
     ///   - completion: Function block executed with the result of the request.
-    private func request(_ router: Router, completion: @Sendable @escaping (Result<Data, any Error>) -> Void) -> URLSessionTask? {
+    private func request(
+        _ router: Router,
+        completion: @Sendable @escaping (Result<Data, any Error>) -> Void
+    ) -> URLSessionTask? {
         guard let apiKey = apiKey, !apiKey.isEmpty else {
             completion(.failure(FlagsmithError.apiKey))
             return nil
@@ -182,9 +185,11 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     ///   - decoder: `JSONDecoder` used to deserialize the response data.
     ///   - completion: Function block executed with the result of the request.
     @discardableResult
-    func request<T: Decodable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(),
-                               completion: @Sendable @escaping (Result<T, any Error>) -> Void) -> URLSessionTask?
-    {
+    func request<T: Decodable>(
+        _ router: Router,
+        using decoder: JSONDecoder = JSONDecoder(),
+        completion: @Sendable @escaping (Result<T, any Error>) -> Void
+    ) -> URLSessionTask? {
         request(router) { (result: Result<Data, Error>) in
             switch result {
             case let .failure(error):

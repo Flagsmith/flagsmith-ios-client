@@ -9,54 +9,6 @@ import Foundation
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *)
 public extension Flagsmith {
-  final class Box<Wrapped: Sendable>: @unchecked Sendable {
-    private let lock = NSRecursiveLock()
-    private var _wrappedValue: Wrapped
-    
-    var wrappedValue: Wrapped {
-      self.lock.sync {
-        self._wrappedValue
-      }
-    }
-    
-    init(_ value: Wrapped) {
-      self._wrappedValue = value
-    }
-    
-    func withValue<T: Sendable>(
-      _ operation: @Sendable (inout Wrapped) throws -> T
-    ) rethrows -> T {
-      try self.lock.sync {
-        var value = self._wrappedValue
-        defer { self._wrappedValue = value }
-        return try operation(&value)
-      }
-    }
-  }
-  
-  private func withCancellableRequest<T: Sendable>(
-    operation: @Sendable (@Sendable @escaping (Result<T, any Error>) -> Void) -> URLSessionTask?
-  ) async throws -> T {
-      let dataTask: Box<URLSessionTask?> = .init(nil)
-
-      return try await withTaskCancellationHandler {
-          try await withCheckedThrowingContinuation { continuation in
-              dataTask.withValue {
-                  $0 = operation { result in
-                      switch result {
-                      case let .failure(error):
-                          continuation.resume(throwing: error)
-                      case let .success(value):
-                          continuation.resume(returning: value)
-                      }
-                  }
-              }
-          }
-      } onCancel: {
-          dataTask.wrappedValue?.cancel()
-      }
-  }
-  
     var flagStreamContinuation: AsyncStream<[Flag]>.Continuation? {
         get {
             return anyFlagStreamContinuation as? AsyncStream<[Flag]>.Continuation
@@ -65,26 +17,24 @@ public extension Flagsmith {
             anyFlagStreamContinuation = newValue
         }
     }
-
+    
     var flagStream: AsyncStream<[Flag]> {
         AsyncStream { continuation in
             anyFlagStreamContinuation = continuation
         }
     }
-  
-
-
+        
     /// Get all feature flags (flags and remote config) optionally for a specific identity
     ///
     /// - Parameters:
     ///   - identity: ID of the user (optional)
     /// - returns: Collection of Flag objects
     func getFeatureFlags(forIdentity identity: String? = nil) async throws -> [Flag] {
-      try await withCancellableRequest { completion in
-        getFeatureFlags(forIdentity: identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            getFeatureFlags(forIdentity: identity, completion: completion)
+        }
     }
-
+    
     /// Check feature exists and is enabled optionally for a specific identity
     ///
     /// - Parameters:
@@ -92,11 +42,11 @@ public extension Flagsmith {
     ///   - identity: ID of the user (optional)
     /// - returns: Bool value of the feature
     func hasFeatureFlag(withID id: String, forIdentity identity: String? = nil) async throws -> Bool {
-      try await withCancellableRequest { completion in
-        hasFeatureFlag(withID: id, forIdentity: identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            hasFeatureFlag(withID: id, forIdentity: identity, completion: completion)
+        }
     }
-
+    
     /// Get remote config value optionally for a specific identity
     ///
     /// - Parameters:
@@ -105,11 +55,11 @@ public extension Flagsmith {
     /// - returns: String value of the feature if available
     @available(*, deprecated, renamed: "getValueForFeature(withID:forIdentity:)")
     func getFeatureValue(withID id: String, forIdentity identity: String? = nil) async throws -> String? {
-      try await withCancellableRequest { completion in
-        getFeatureValue(withID: id, forIdentity: identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            getFeatureValue(withID: id, forIdentity: identity, completion: completion)
+        }
     }
-
+    
     /// Get remote config value optionally for a specific identity
     ///
     /// - Parameters:
@@ -117,11 +67,11 @@ public extension Flagsmith {
     ///   - identity: ID of the user (optional)
     /// - returns: String value of the feature if available
     func getValueForFeature(withID id: String, forIdentity identity: String? = nil) async throws -> TypedValue? {
-      try await withCancellableRequest { completion in
-        getValueForFeature(withID: id, forIdentity: identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            getValueForFeature(withID: id, forIdentity: identity, completion: completion)
+        }
     }
-
+    
     /// Get all user traits for provided identity. Optionally filter results with a list of keys
     ///
     /// - Parameters:
@@ -129,11 +79,11 @@ public extension Flagsmith {
     ///   - identity: ID of the user
     /// - returns: Collection of Trait objects
     func getTraits(withIDS ids: [String]? = nil, forIdentity identity: String) async throws -> [Trait] {
-      try await withCancellableRequest { completion in
-        getTraits(withIDS: ids, forIdentity: identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            getTraits(withIDS: ids, forIdentity: identity, completion: completion)
+        }
     }
-
+    
     /// Get user trait for provided identity and trait key
     ///
     /// - Parameters:
@@ -141,11 +91,11 @@ public extension Flagsmith {
     ///   - identity: ID of the user
     /// - returns: Optional Trait if found.
     func getTrait(withID id: String, forIdentity identity: String) async throws -> Trait? {
-      try await withCancellableRequest { completion in
-        getTrait(withID: id, forIdentity: identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            getTrait(withID: id, forIdentity: identity, completion: completion)
+        }
     }
-
+    
     /// Set user trait for provided identity
     ///
     /// - Parameters:
@@ -153,11 +103,11 @@ public extension Flagsmith {
     ///   - identity: ID of the user
     /// - returns: The Trait requested to be set.
     @discardableResult func setTrait(_ trait: Trait, forIdentity identity: String) async throws -> Trait {
-      try await withCancellableRequest { completion in
-        setTrait(trait, forIdentity: identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            setTrait(trait, forIdentity: identity, completion: completion)
+        }
     }
-
+    
     /// Set user traits in bulk for provided identity
     ///
     /// - Parameters:
@@ -165,28 +115,76 @@ public extension Flagsmith {
     ///   - identity: ID of the user
     /// - returns: The Traits requested to be set.
     @discardableResult func setTraits(_ traits: [Trait], forIdentity identity: String) async throws -> [Trait] {
-      try await withCancellableRequest { completion in
-        setTraits(traits, forIdentity: identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            setTraits(traits, forIdentity: identity, completion: completion)
+        }
     }
-
+    
     /// Get both feature flags and user traits for the provided identity
     ///
     /// - Parameters:
     ///   - identity: ID of the user
     /// - returns: Identity matching the requested ID.
     func getIdentity(_ identity: String) async throws -> Identity {
-      try await withCancellableRequest { completion in
-        getIdentity(identity, completion: completion)
-      }
+        try await withCancellableRequest { completion in
+            getIdentity(identity, completion: completion)
+        }
+    }
+    
+    final class Box<Wrapped: Sendable>: @unchecked Sendable {
+        private let lock = NSRecursiveLock()
+        private var _wrappedValue: Wrapped
+        
+        var wrappedValue: Wrapped {
+            self.lock.sync {
+                self._wrappedValue
+            }
+        }
+        
+        init(_ value: Wrapped) {
+            self._wrappedValue = value
+        }
+        
+        func withValue<T: Sendable>(
+            _ operation: @Sendable (inout Wrapped) throws -> T
+        ) rethrows -> T {
+            try self.lock.sync {
+                var value = self._wrappedValue
+                defer { self._wrappedValue = value }
+                return try operation(&value)
+            }
+        }
+    }
+    
+    private func withCancellableRequest<T: Sendable>(
+        operation: @Sendable (@Sendable @escaping (Result<T, any Error>) -> Void) -> URLSessionTask?
+    ) async throws -> T {
+        let dataTask: Box<URLSessionTask?> = .init(nil)
+        
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                dataTask.withValue {
+                    $0 = operation { result in
+                        switch result {
+                        case let .failure(error):
+                            continuation.resume(throwing: error)
+                        case let .success(value):
+                            continuation.resume(returning: value)
+                        }
+                    }
+                }
+            }
+        } onCancel: {
+            dataTask.wrappedValue?.cancel()
+        }
     }
 }
 
 extension NSRecursiveLock {
-  @inlinable @discardableResult
-  @_spi(Internals) public func sync<R>(work: () throws -> R) rethrows -> R {
-    self.lock()
-    defer { self.unlock() }
-    return try work()
-  }
+    @inlinable @discardableResult
+    @_spi(Internals) public func sync<R>(work: () throws -> R) rethrows -> R {
+        self.lock()
+        defer { self.unlock() }
+        return try work()
+    }
 }
