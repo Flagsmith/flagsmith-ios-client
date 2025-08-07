@@ -163,7 +163,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     /// - parameters:
     ///   - router: The path and parameters that should be requested.
     ///   - completion: Function block executed with the result of the request.
-//    @discardableResult
+    @discardableResult
     func request(_ router: Router, completion: @Sendable @escaping (Result<Void, any Error>) -> Void) -> URLSessionTask? {
         request(router) { (result: Result<Data, Error>) in
             switch result {
@@ -181,7 +181,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     ///   - router: The path and parameters that should be requested.
     ///   - decoder: `JSONDecoder` used to deserialize the response data.
     ///   - completion: Function block executed with the result of the request.
-//    @discardableResult
+    @discardableResult
     func request<T: Decodable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(),
                                completion: @Sendable @escaping (Result<T, any Error>) -> Void) -> URLSessionTask?
     {

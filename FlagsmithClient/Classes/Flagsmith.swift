@@ -368,7 +368,7 @@ public final class Flagsmith: @unchecked Sendable {
                 cacheConfig.cache.removeAllCachedResponses()
 
                 // Now we can get the new values, which we can emit to the flagUpdateFlow if used
-                getFeatureFlags(forIdentity: lastUsedIdentity) { result in
+                _ = getFeatureFlags(forIdentity: lastUsedIdentity) { result in
                     switch result {
                     case let .failure(error):
                         print("Flagsmith - Error getting flags in SSE stream: \(error.localizedDescription)")
