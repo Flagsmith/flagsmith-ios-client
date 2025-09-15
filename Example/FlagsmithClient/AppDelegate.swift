@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
-    Flagsmith.shared.apiKey = "<add your API key from the Flagsmith settings page>"
+    Flagsmith.shared.apiKey = "F5X4CN67ZmSB547j2k2nX4"
 
     // set default flags
     Flagsmith.shared.defaultFlags = [Flag(featureName: "feature_a", enabled: false),
@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // set custom cache to use (defaults to shared URLCache)
     // Flagsmith.shared.cacheConfig.cache = <CUSTOM_CACHE>
 
-    // set skip API on / off (defaults to off). This option ensures that should a cached flag be available, this will be used throughout the session.
+    // set skip API on / off (defaults to off)
     Flagsmith.shared.cacheConfig.skipAPI = false
 
     // set cache TTL in seconds (defaults to 0, i.e. infinite)
