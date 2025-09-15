@@ -125,14 +125,16 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                     }
                 }
             } else if error == nil {
-                start(completion: self.completionHandler!)
+                if let completionHandler = self.completionHandler {
+                    start(completion: completionHandler)
+                }
                 return
             }
 
             // Otherwise reconnect with increasing delay using the reconnectionTimer so that we don't load the phone / server
             serialAccessQueue.asyncAfter(deadline: .now() + reconnectionDelay.nextDelay()) { [weak self] in
-                if let self {
-                    self.start(completion: self.completionHandler!)
+                if let self, let completionHandler = self.completionHandler {
+                    self.start(completion: completionHandler)
                 }
             }
         }
