@@ -26,6 +26,7 @@ let package = Package(
         .testTarget(
             name: "FlagsmitClientTests",
             dependencies: ["FlagsmithClient"],
-            path: "FlagsmithClient/Tests")
+            path: "FlagsmithClient/Tests",
+            exclude: ["README_Testing.md"])
     ]
 )

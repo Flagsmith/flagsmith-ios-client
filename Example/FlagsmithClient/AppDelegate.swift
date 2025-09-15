@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // set custom cache to use (defaults to shared URLCache)
     // Flagsmith.shared.cacheConfig.cache = <CUSTOM_CACHE>
 
-    // set skip API on / off (defaults to off)
+    // set skip API on / off (defaults to off). This option ensures that should a cached flag be available, this will be used throughout the session.
     Flagsmith.shared.cacheConfig.skipAPI = false
 
     // set cache TTL in seconds (defaults to 0, i.e. infinite)
