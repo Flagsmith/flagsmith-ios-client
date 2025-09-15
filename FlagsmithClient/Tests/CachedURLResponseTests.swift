@@ -163,9 +163,9 @@ final class CachedURLResponseTests: FlagsmithClientTestCase {
         expectation.expectedFulfillmentCount = 10
         
         // Run multiple concurrent modifications
-        for i in 0..<10 {
+        for dispatch in 0..<10 {
             DispatchQueue.global().async {
-                let ttl = 60 + i // Different TTL for each thread
+                let ttl = 60 + dispatch // Different TTL for each thread
                 let modifiedResponse = cachedResponse.response(withExpirationDuration: ttl)
                 
                 // Verify the modification worked

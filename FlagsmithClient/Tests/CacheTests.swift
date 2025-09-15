@@ -8,6 +8,7 @@
 @testable import FlagsmithClient
 import XCTest
 
+// swiftlint:disable type_body_length
 final class CacheTests: FlagsmithClientTestCase {
     var testCache: URLCache!
     var apiManager: APIManager!
@@ -490,7 +491,8 @@ final class CacheTests: FlagsmithClientTestCase {
             case .success(let flags):
                 print("DEBUG: Unexpected success when cache disabled")
                 // If it succeeded, verify it's NOT the cached data
-                let isFromCache = flags.isEmpty ? false : (String(data: flags.first?.value.stringValue?.data(using: .utf8) ?? Data(), encoding: .utf8) == "cached data")
+                let isFromCache = flags.isEmpty ? false : 
+                    (String(data: flags.first?.value.stringValue?.data(using: .utf8) ?? Data(), encoding: .utf8) == "cached data")
                 XCTAssertFalse(isFromCache, "Should not get cached data when useCache=false")
             case .failure(_):
                 print("DEBUG: Expected failure when cache disabled and invalid API key")
