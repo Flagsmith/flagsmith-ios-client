@@ -12,9 +12,15 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
     
     /// Test the exact customer configuration that was reported as problematic
     func testCustomerReportedConfiguration() throws {
+        // This test requires a real API key to validate actual cache behavior
+        guard TestConfig.hasRealApiKey else {
+            XCTFail("This customer use case test requires FLAGSMITH_TEST_API_KEY environment variable to be set")
+            return
+        }
+
         let expectation = expectation(description: "Customer configuration test")
         
-        print("🔍 CUSTOMER USE CASE: Testing exact reported configuration")
+        // Test exact customer configuration that was reported as problematic
         
         // Configure exactly as the customer reported
         let env = (baseURL: URL(string: "https://edge.api.flagsmith.com/api/v1/")!, apiKey: TestConfig.apiKey)
@@ -31,34 +37,25 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         Flagsmith.shared.cacheConfig.cacheTTL = 180
         Flagsmith.shared.cacheConfig.skipAPI = true
         
-        print("Configuration:")
-        print("- baseURL: \(Flagsmith.shared.baseURL)")
-        print("- apiKey: \(Flagsmith.shared.apiKey ?? "nil")")
-        print("- enableRealtimeUpdates: \(Flagsmith.shared.enableRealtimeUpdates)")
-        print("- useCache: \(Flagsmith.shared.cacheConfig.useCache)")
-        print("- cacheTTL: \(Flagsmith.shared.cacheConfig.cacheTTL)")
-        print("- skipAPI: \(Flagsmith.shared.cacheConfig.skipAPI)")
+        // Configuration matches customer's exact settings
         
-        // Test the exact call that was problematic
-        print("\nTesting: try await Flagsmith.shared.getFeatureFlags(forIdentity: self.identity)")
-        print("API key type: \(TestConfig.hasRealApiKey ? "real" : "mock")")
+        // Test the exact call that was problematic: getFeatureFlags(forIdentity:)
         
         let testIdentity = TestConfig.hasRealApiKey ? TestConfig.testIdentity : "customer-test-identity"
         
         // First call - should attempt network (may fail with test key)
         Flagsmith.shared.getFeatureFlags(forIdentity: testIdentity) { firstResult in
-            print("First call result: \(firstResult)")
+            // First call completed
             
             switch firstResult {
             case .success(let flags):
-                print("✅ First call succeeded - got \(flags.count) flags")
-                print("Now testing second call (should use cache per customer expectation)")
+                // First call succeeded - now test cache behavior
                 
                 // Second call - customer expects this to use cache, not HTTP
                 Flagsmith.shared.getFeatureFlags(forIdentity: testIdentity) { secondResult in
                     switch secondResult {
                     case .success(let cachedFlags):
-                        print("✅ Second call succeeded - got \(cachedFlags.count) flags")
+                        // Second call succeeded using cache
                         XCTAssertEqual(flags.count, cachedFlags.count, "Should get same flags from cache")
                         
                         // Verify it's using cache by checking flags are identical
@@ -70,21 +67,27 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
                     expectation.fulfill()
                 }
                 
-            case .failure(let error):
-                print("ℹ️ First call failed as expected with test key: \(error.localizedDescription)")
+            case .failure(_):
+                // First call failed as expected with test key
                 
                 // Test the behavior customer would see - subsequent calls should still attempt network
                 // because no successful cache was established
-                print("Testing subsequent call behavior when no cache exists")
+                // Test subsequent call behavior when no cache exists
                 
                 Flagsmith.shared.getFeatureFlags(forIdentity: testIdentity) { subsequentResult in
                     switch subsequentResult {
                     case .success(_):
-                        print("⚠️ Unexpected success on subsequent call")
-                    case .failure(let subsequentError):
-                        print("ℹ️ Subsequent call also failed: \(subsequentError.localizedDescription)")
+                        // Unexpected success on subsequent call
+                        break
+                    case .failure(_):
+                        // Subsequent call also failed as expected
                         // This demonstrates the customer's issue: requests always go via HTTP
                         // because cache never gets populated from failed requests
+
+                        // For real API keys, this should work after first success
+                        if TestConfig.hasRealApiKey {
+                            XCTFail("With real API key and caching enabled, subsequent requests should use cache and succeed")
+                        }
                     }
                     expectation.fulfill()
                 }
@@ -100,9 +103,10 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
     
     /// Test customer use case with simulated successful cache population
     func testCustomerConfigurationWithSuccessfulCache() throws {
+        // This test validates cache behavior with pre-populated cache (doesn't need real API key)
         let expectation = expectation(description: "Customer config with successful cache")
         
-        print("🔍 CUSTOMER USE CASE: Testing with successful cache population")
+        // Test customer configuration with simulated successful cache
         
         // Same configuration as customer
         Flagsmith.shared.baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
@@ -164,24 +168,23 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         let cachedResponse = CachedURLResponse(response: httpResponse, data: mockIdentityResponse)
         Flagsmith.shared.cacheConfig.cache.storeCachedResponse(cachedResponse, for: mockRequest)
         
-        print("✅ Pre-populated cache with successful response")
-        print("Now testing customer's exact call with skipAPI=true")
+        // Pre-populated cache with successful response
+        // Now test customer's exact call with skipAPI=true
         
         // Now test customer's exact scenario
         Flagsmith.shared.getFeatureFlags(forIdentity: testIdentity) { result in
             switch result {
             case .success(let flags):
-                print("✅ SUCCESS: Customer call worked with cache!")
-                print("Got \(flags.count) flags from cache")
+                // Customer call worked with cache successfully
                 XCTAssertEqual(flags.count, 1, "Should get one cached flag")
                 XCTAssertEqual(flags.first?.feature.name, "customer_test_feature", "Should get cached feature")
                 
                 // Test subsequent calls also work
-                print("Testing subsequent call...")
+                // Test subsequent calls also work
                 Flagsmith.shared.getFeatureFlags(forIdentity: testIdentity) { subsequentResult in
                     switch subsequentResult {
                     case .success(let subsequentFlags):
-                        print("✅ Subsequent call also succeeded with \(subsequentFlags.count) flags")
+                        // Subsequent call also succeeded with cache
                         XCTAssertEqual(flags.count, subsequentFlags.count, "Subsequent calls should return same cached data")
                     case .failure(let error):
                         XCTFail("Subsequent call should also succeed with cache: \(error)")
@@ -206,8 +209,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
     func testCustomerSessionLongCaching() throws {
         let expectation = expectation(description: "Session-long caching test")
         
-        print("🔍 CUSTOMER USE CASE: Testing session-long cache behavior")
-        print("Customer expectation: 'should a cached flag be available, this will be used throughout the session'")
+        // Test customer's session-long cache expectation
         
         // Customer configuration
         Flagsmith.shared.baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
@@ -221,14 +223,21 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         
         func makeSessionRequest() {
             requestCount += 1
-            print("Session request #\(requestCount)")
+            // Session request #\(requestCount)
             
             Flagsmith.shared.getFeatureFlags(forIdentity: sessionIdentity) { result in
                 switch result {
-                case .success(let flags):
-                    print("✅ Request #\(requestCount): Got \(flags.count) flags")
-                case .failure(let error):
-                    print("ℹ️ Request #\(requestCount): Failed as expected: \(error.localizedDescription)")
+                case .success(_):
+                    // Request succeeded
+                    break
+                case .failure(_):
+                    // Request failed as expected
+                    // If we have a real API key and caching is enabled, failures after first success indicate a problem
+                    if TestConfig.hasRealApiKey && requestCount > 1 {
+                        // Warning: Session request failed - cache might not be working
+                        // Note: Not failing here as session behavior may vary, but logging concern
+                    }
+                    break
                 }
                 
                 // Continue session requests
@@ -238,7 +247,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
                         makeSessionRequest()
                     }
                 } else {
-                    print("✅ Session simulation complete - made \(totalRequests) requests")
+                    // Session simulation complete
                     expectation.fulfill()
                 }
             }
@@ -258,7 +267,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
     func testCustomerConfigurationEdgeCases() throws {
         let expectation = expectation(description: "Customer config edge cases")
         
-        print("🔍 CUSTOMER USE CASE: Testing edge cases")
+        // Test customer configuration edge cases
         
         // Test with customer config but different identities
         Flagsmith.shared.baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
@@ -270,19 +279,19 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         var completedTests = 0
         
         for identity in identities {
-            print("Testing edge case with identity: \(identity)")
+            // Testing with identity: \(identity)
             
             // Test both forIdentity and no identity calls
             Flagsmith.shared.getFeatureFlags(forIdentity: identity) { identityResult in
-                print("Identity '\(identity)' result: \(identityResult)")
+                // Identity request completed
                 
                 // Also test without identity
                 Flagsmith.shared.getFeatureFlags { noIdentityResult in
-                    print("No identity result for test \(identity): \(noIdentityResult)")
+                    // No identity request completed
                     
                     completedTests += 1
                     if completedTests == identities.count {
-                        print("✅ All edge case tests completed")
+                        // All edge case tests completed
                         expectation.fulfill()
                     }
                 }
@@ -300,8 +309,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
     func testExactCustomerIssueReproduction() throws {
         let expectation = expectation(description: "Exact customer issue reproduction")
         
-        print("🐛 REPRODUCING CUSTOMER ISSUE")
-        print("Issue: 'requests are always served via HTTP, even though skipAPI = true'")
+        // Reproduce customer issue: requests always via HTTP despite skipAPI=true
         
         // Exact customer setup
         let baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
@@ -326,43 +334,54 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         
         RequestCounter.reset()
         
-        print("Making first request with customer config...")
+        // Make first request with customer configuration
         
         // Customer's problematic call
         Flagsmith.shared.getFeatureFlags(forIdentity: customerIdentity) { firstResult in
             RequestCounter.increment()
-            print("First request completed. Result: \(firstResult)")
+            // First request completed
             
-            print("Making second request (customer expects cache, but reports HTTP)...")
+            // Make second request (customer expects cache)
             
             Flagsmith.shared.getFeatureFlags(forIdentity: customerIdentity) { secondResult in
                 RequestCounter.increment()
-                print("Second request completed. Result: \(secondResult)")
+                // Second request completed
                 
-                print("Making third request...")
+                // Make third request
                 
                 Flagsmith.shared.getFeatureFlags(forIdentity: customerIdentity) { thirdResult in
                     RequestCounter.increment()
-                    print("Third request completed. Result: \(thirdResult)")
+                    // Third request completed
                     
-                    print("\n📊 CUSTOMER ISSUE ANALYSIS:")
-                    print("- Total requests made: \(RequestCounter.count)")
-                    print("- Customer expectation: Subsequent requests use cache (no HTTP)")
-                    print("- Customer problem: All requests go via HTTP")
+                    // Analyze customer issue results
+                    // Total requests made, expectation: use cache, problem: all via HTTP
                     
                     // All three will likely fail with test credentials, demonstrating the issue:
                     // Cache is never populated because requests fail, so skipAPI falls back to HTTP
                     switch (firstResult, secondResult, thirdResult) {
                     case (.failure(_), .failure(_), .failure(_)):
-                        print("🐛 ISSUE REPRODUCED: All requests failed, proving HTTP calls were made")
-                        print("   Root cause: skipAPI=true with no cache falls back to HTTP")
-                        print("   Our fix: ensureResponseIsCached() should solve this")
+                        // Issue reproduced: all requests failed, proving HTTP calls were made
+                        // Root cause: skipAPI=true with no cache falls back to HTTP
+
+                        // With real API keys, this indicates a genuine caching problem
+                        if TestConfig.hasRealApiKey {
+                            XCTFail("Customer issue reproduced: skipAPI=true should use cache after successful initial request, but all requests failed")
+                        } else {
+                            // Issue demonstrated with test credentials
+                        }
                         
                     case (.success(_), .success(_), .success(_)):
-                        print("✅ All succeeded - cache might be working")
+                        // All succeeded - cache working
+                        break
                         
                     default:
-                        print("🤔 Mixed results - partial cache behavior")
+                        // Mixed results - partial cache behavior
+
+                        // Mixed results with real API key suggest inconsistent cache behavior
+                        if TestConfig.hasRealApiKey {
+                            // Warning: Mixed results suggest cache inconsistency
+                            // Not failing as some mixed results might be acceptable, but noting concern
+                        }
                     }
                     
                     expectation.fulfill()
