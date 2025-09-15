@@ -41,8 +41,7 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
     func testEndToEndCacheBehaviorPublicAPIOnly() throws {
         // This test requires a real API key to properly test cache behavior
         guard TestConfig.hasRealApiKey else {
-            XCTFail("This integration test requires FLAGSMITH_TEST_API_KEY environment variable to be set")
-            return
+            throw XCTSkip("Requires FLAGSMITH_TEST_API_KEY; skipping.")
         }
 
         let expectation = expectation(description: "End-to-end cache behavior test")
@@ -159,6 +158,10 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
     
     /// Black box test: skipAPI behavior with different cache states
     func testSkipAPIBehaviorPublicAPI() throws {
+        guard TestConfig.hasRealApiKey else {
+            throw XCTSkip("Network-dependent: requires real API key.")
+        }
+
         let expectation = expectation(description: "SkipAPI behavior test")
         
         // Test skipAPI behavior with different cache states
@@ -325,6 +328,10 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
     
     /// Black box test: Feature-specific methods with caching
     func testFeatureSpecificMethodsWithCachingPublicAPI() throws {
+        guard TestConfig.hasRealApiKey else {
+            throw XCTSkip("Requires real API key or pre-populated cache.")
+        }
+
         let expectation = expectation(description: "Feature-specific methods caching test")
         
         // Test feature-specific methods with caching
@@ -359,6 +366,10 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
     
     /// Black box test: Analytics with caching interaction
     func testAnalyticsWithCachingPublicAPI() throws {
+        guard TestConfig.hasRealApiKey else {
+            throw XCTSkip("Requires real API key.")
+        }
+
         let expectation = expectation(description: "Analytics with caching test")
 
         // Test analytics with caching interaction
@@ -396,8 +407,7 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
     func testCustomerTTLBehaviorWithSkipAPI() throws {
         // This test requires a real API key to properly validate cache TTL behavior
         guard TestConfig.hasRealApiKey else {
-            XCTFail("This integration test requires FLAGSMITH_TEST_API_KEY environment variable to be set")
-            return
+            throw XCTSkip("Requires FLAGSMITH_TEST_API_KEY; skipping.")
         }
 
         let expectation = expectation(description: "Customer TTL behavior test")
