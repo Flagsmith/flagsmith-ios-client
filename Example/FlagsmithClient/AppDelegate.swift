@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
-    Flagsmith.shared.apiKey = "F5X4CN67ZmSB547j2k2nX4"
+    Flagsmith.shared.apiKey = "<add your API key from the Flagsmith dashboard here>"
 
     // set default flags
     Flagsmith.shared.defaultFlags = [Flag(featureName: "feature_a", enabled: false),
