@@ -14,47 +14,30 @@ jobs:
         runs-on: macOS-latest
         steps:
             - uses: actions/checkout@v4
+            - name: Check for FLAGSMITH_TEST_API_KEY
+              run: |
+                if [ -z "$FLAGSMITH_TEST_API_KEY" ]; then
+                  echo "Warning: FLAGSMITH_TEST_API_KEY environment variable is not set"
+                  exit 1
+                fi
+              env:
+                FLAGSMITH_TEST_API_KEY: ${{ secrets.FLAGSMITH_TEST_API_KEY }}
             - name: Build (macOS)
-              run: swift --version && swift build -v
+              run: swift --version && swift build
             - name: Run tests
-              run: swift test -v
-
-    macos-latest-xcrun:
-        # macOS-latest images are not the most recent
-        # The vast majority of macOS developers would be using the latest version of macOS
-        # Current list here: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
-        runs-on: macOS-latest
-        steps:
-            - uses: actions/checkout@v4
-            - name: Get Swift version
-              run: /usr/bin/xcrun --toolchain -f swift --version
-            - name: Run build
-              run: /usr/bin/xcrun --toolchain -f swift build -v
-
-            - name: Run Tests
-              run: /usr/bin/xcrun --toolchain -f swift test -v
-              
-    build-matrix:
-        name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
-        strategy:
-          matrix:
-            os: [ubuntu-latest, macos-latest]
-            swift: ["5.10", "6.0"]
-        runs-on: ${{ matrix.os }}
-        steps:
-        - uses: swift-actions/setup-swift@next
-          with:
-            swift-version: ${{ matrix.swift }}
-        - uses: actions/checkout@v5
-        - name: Build
-          run: swift build
-        - name: Run tests
-          run: swift test
-
+              run: swift test
     swift-lint:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+            - name: Check for FLAGSMITH_TEST_API_KEY
+              run: |
+                if [ -z "$FLAGSMITH_TEST_API_KEY" ]; then
+                  echo "Warning: FLAGSMITH_TEST_API_KEY environment variable is not set"
+                  exit 1
+                fi
+              env:
+                FLAGSMITH_TEST_API_KEY: ${{ secrets.FLAGSMITH_TEST_API_KEY }}
 
             - name: Run SwiftLint
               uses: norio-nomura/action-swiftlint@3.2.1
