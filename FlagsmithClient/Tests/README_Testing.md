@@ -21,11 +21,6 @@ Create `FlagsmithClient/Tests/test-config.json`:
 
 ## Test Behavior
 
-### With Mock Keys (Default)
-- Unit tests pass as expected
-- Integration tests fail with JSON decode errors (expected)
-- Cache behavior still validated through unit tests
-
 ### With Real API Keys
 - Full end-to-end testing
 - Real network requests to Flagsmith API
@@ -45,7 +40,7 @@ Create `FlagsmithClient/Tests/test-config.json`:
 swift test --filter CacheTests
 swift test --filter CachedURLResponseTests
 
-# Run integration tests (better with real keys)
+# Run integration tests
 swift test --filter FlagsmithCacheIntegrationTests
 swift test --filter CustomerCacheUseCaseTests
 ```
