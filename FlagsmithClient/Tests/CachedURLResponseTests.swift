@@ -171,7 +171,7 @@ final class CachedURLResponseTests: FlagsmithClientTestCase {
                 // Verify the modification worked
                 if let httpResp = modifiedResponse.response as? HTTPURLResponse {
                     let cacheControl = httpResp.allHeaderFields["Cache-Control"] as? String
-                    XCTAssertEqual(cacheControl, "max-age=\(ttl)", "TTL should be set correctly in thread \(i)")
+                    XCTAssertEqual(cacheControl, "max-age=\(ttl)", "TTL should be set correctly in thread \(dispatch)")
                 }
                 
                 expectation.fulfill()
