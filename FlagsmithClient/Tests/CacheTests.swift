@@ -254,7 +254,10 @@ final class CacheTests: FlagsmithClientTestCase {
             cacheOnlyRequest.cachePolicy = .returnCacheDataDontLoad
 
             // Test 3: Attempt to fetch with cache-only policy to verify expiration
-            let session = URLSession(configuration: .default)
+            let config = URLSessionConfiguration.default
+            config.urlCache = testCache
+            config.requestCachePolicy = .returnCacheDataDontLoad
+            let session = URLSession(configuration: config)
             let task = session.dataTask(with: cacheOnlyRequest) { data, response, error in
                 // With returnCacheDataDontLoad and expired cache, this should fail
                 if let error = error {
