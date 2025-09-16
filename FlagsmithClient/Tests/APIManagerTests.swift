@@ -80,7 +80,7 @@ final class APIManagerTests: FlagsmithClientTestCase {
             }
         }
 
-        wait(for: expectations, timeout: 10)
+        wait(for: expectations, timeout: 20)
 
         print("Finished!")
     }

@@ -27,6 +27,9 @@ let package = Package(
             name: "FlagsmitClientTests",
             dependencies: ["FlagsmithClient"],
             path: "FlagsmithClient/Tests",
-            exclude: ["README_Testing.md"])
+            exclude: ["README_Testing.md"],
+            resources: [
+                .copy("test-config.json")
+            ])
     ]
 )

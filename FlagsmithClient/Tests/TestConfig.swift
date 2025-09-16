@@ -17,7 +17,7 @@ struct TestConfig {
         }
         
         // Check for local test config file (not committed to git)
-        if let path = Bundle(for: TestConfigObjC.self).path(forResource: "test-config", ofType: "json"),
+        if let path = Bundle.module.path(forResource: "test-config", ofType: "json"),
            let data = FileManager.default.contents(atPath: path),
            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
            let key = json["apiKey"] as? String,
