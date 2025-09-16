@@ -50,7 +50,6 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
             switch firstResult {
             case .success(let flags):
                 // First call succeeded - now test cache behavior
-                print("DEBUG: First call succeeded with \(flags.count) flags")
 
                 // Wait a moment to ensure cache is stored properly
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -59,14 +58,12 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
                         switch secondResult {
                         case .success(let cachedFlags):
                             // Second call succeeded using cache
-                            print("DEBUG: Second call succeeded with \(cachedFlags.count) flags")
                             XCTAssertEqual(flags.count, cachedFlags.count, "Should get same flags from cache")
 
                             // Verify it's using cache by checking flags are identical
                             XCTAssertEqual(flags.first?.feature.name, cachedFlags.first?.feature.name, "Should get identical cached flags")
 
                         case .failure(let error):
-                            print("DEBUG: Second call failed with error: \(error)")
                             XCTFail("Second call should succeed with cache: \(error)")
                         }
                         expectation.fulfill()
@@ -385,7 +382,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
                         // With real API keys, all failures might indicate API/environment issues rather than cache problems
                         if TestConfig.hasRealApiKey {
                             print("DEBUG: Real API key provided but all requests failed - this may indicate API key/environment issues rather than cache problems")
-                            // Note: Not failing the test as this might be due to API key/environment mismatch
+                        // Note: Not failing the test as this might be due to API key/environment mismatch
                         } else {
                             // Issue demonstrated with test credentials as expected
                             print("DEBUG: Mock API key used - all requests failed as expected")
