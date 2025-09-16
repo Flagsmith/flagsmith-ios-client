@@ -92,9 +92,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
                         // 2. The specific identity doesn't exist
                         // 3. There's a network/server issue
                         // This is not necessarily a cache problem, so we shouldn't fail the test
-                        if TestConfig.hasRealApiKey {
-                            print("DEBUG: Real API key provided but both calls failed - this may indicate API key/identity issues rather than cache problems")
-                        }
+                        break
                     }
                     expectation.fulfill()
                 }
@@ -117,7 +115,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         // Test customer configuration with simulated successful cache
 
         // Use a consistent test API key for cache consistency
-        let testApiKey = "customer-test-key"
+        let testApiKey = "mock-test-api-key"
         Flagsmith.shared.apiKey = testApiKey
         Flagsmith.shared.baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
         Flagsmith.shared.enableRealtimeUpdates = false
@@ -326,7 +324,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         // Reproduce customer issue: requests always via HTTP despite skipAPI=true
 
         // Exact customer setup - ensure API key is set for proper cache behavior
-        let testApiKey = TestConfig.hasRealApiKey ? TestConfig.apiKey : "customer-test-reproduction-key"
+        let testApiKey = TestConfig.hasRealApiKey ? TestConfig.apiKey : "mock-test-api-key"
         Flagsmith.shared.apiKey = testApiKey
         let baseURL = URL(string: "https://edge.api.flagsmith.com/api/v1/")!
         Flagsmith.shared.baseURL = baseURL
@@ -380,13 +378,8 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
                         // Root cause: skipAPI=true with no cache falls back to HTTP
 
                         // With real API keys, all failures might indicate API/environment issues rather than cache problems
-                        if TestConfig.hasRealApiKey {
-                            print("DEBUG: Real API key provided but all requests failed - this may indicate API key/environment issues")
                         // Note: Not failing the test as this might be due to API key/environment mismatch
-                        } else {
-                            // Issue demonstrated with test credentials as expected
-                            print("DEBUG: Mock API key used - all requests failed as expected")
-                        }
+                        break
                         
                     case (.success(_), .success(_), .success(_)):
                         // All succeeded - cache working
