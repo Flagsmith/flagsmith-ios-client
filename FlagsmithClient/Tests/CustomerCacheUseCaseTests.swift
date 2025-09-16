@@ -381,7 +381,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
 
                         // With real API keys, all failures might indicate API/environment issues rather than cache problems
                         if TestConfig.hasRealApiKey {
-                            print("DEBUG: Real API key provided but all requests failed - this may indicate API key/environment issues rather than cache problems")
+                            print("DEBUG: Real API key provided but all requests failed - this may indicate API key/environment issues")
                         // Note: Not failing the test as this might be due to API key/environment mismatch
                         } else {
                             // Issue demonstrated with test credentials as expected
