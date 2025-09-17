@@ -14,8 +14,7 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
     func testCustomerReportedConfiguration() throws {
         // This test requires a real API key to validate actual cache behavior
         guard TestConfig.hasRealApiKey else {
-            XCTFail("This customer use case test requires FLAGSMITH_TEST_API_KEY environment variable to be set")
-            return
+            throw XCTSkip("This customer use case test requires FLAGSMITH_TEST_API_KEY environment variable to be set")
         }
 
         let expectation = expectation(description: "Customer configuration test")
