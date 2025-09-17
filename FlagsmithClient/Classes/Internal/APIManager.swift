@@ -31,7 +31,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             propertiesSerialAccessQueue.sync { _baseURL }
         }
         set {
-            propertiesSerialAccessQueue.sync {
+            propertiesSerialAccessQueue.sync(flags: .barrier) {
                 _baseURL = newValue
             }
         }
@@ -44,7 +44,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             propertiesSerialAccessQueue.sync { _apiKey }
         }
         set {
-            propertiesSerialAccessQueue.sync {
+            propertiesSerialAccessQueue.sync(flags: .barrier) {
                 _apiKey = newValue
             }
         }
@@ -56,7 +56,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             propertiesSerialAccessQueue.sync { _lastUpdatedAt }
         }
         set {
-            propertiesSerialAccessQueue.sync {
+            propertiesSerialAccessQueue.sync(flags: .barrier) {
                 _lastUpdatedAt = newValue
             }
         }
@@ -142,13 +142,6 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             return
         }
 
-        // Update session cache configuration if it has changed
-        if session.configuration.urlCache !== Flagsmith.shared.cacheConfig.cache {
-            let configuration = URLSessionConfiguration.default
-            configuration.urlCache = Flagsmith.shared.cacheConfig.cache
-            session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
-        }
-        
         // set the cache policy based on Flagsmith settings
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         if Flagsmith.shared.cacheConfig.useCache {
@@ -160,6 +153,13 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
 
         // we must use the delegate form here, not the completion handler, to be able to modify the cache
         serialAccessQueue.sync {
+            // Update session cache configuration if it has changed (must be done inside the serial queue)
+            if session.configuration.urlCache !== Flagsmith.shared.cacheConfig.cache {
+                let configuration = URLSessionConfiguration.default
+                configuration.urlCache = Flagsmith.shared.cacheConfig.cache
+                session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
+            }
+
             let task = session.dataTask(with: request)
             tasksToCompletionHandlers[task.taskIdentifier] = completion
             task.resume()
