@@ -17,7 +17,10 @@ struct TestConfig {
         }
         
         // Check for local test config file (not committed to git)
-        if let path = Bundle.module.path(forResource: "test-config", ofType: "json"),
+        // Note: Bundle.module is not accessible in Swift 6 from test code
+        // Fallback to Bundle(for:) approach
+        let testBundle = Bundle(for: TestConfigObjC.self)
+        if let path = testBundle.path(forResource: "test-config", ofType: "json"),
            let data = FileManager.default.contents(atPath: path),
            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
            let key = json["apiKey"] as? String,

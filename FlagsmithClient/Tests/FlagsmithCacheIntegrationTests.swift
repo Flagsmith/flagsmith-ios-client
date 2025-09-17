@@ -266,23 +266,26 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
         Flagsmith.shared.cacheConfig.skipAPI = false
         
         let identities = ["user1", "user2", "user3"]
+        let completedRequestsQueue = DispatchQueue(label: "completedRequests")
         var completedRequests = 0
-        
+
         for identity in identities {
             // Testing identity: \(identity)
-            
+
             Flagsmith.shared.getFeatureFlags(forIdentity: identity) { result in
                 // Identity \(identity) completed
-                
-                completedRequests += 1
-                if completedRequests == identities.count {
-                    // Phase 2: Test skipAPI with identities
-                    Flagsmith.shared.cacheConfig.skipAPI = true
-                    
-                    // Test first identity again
-                    Flagsmith.shared.getFeatureFlags(forIdentity: identities.first!) { skipApiResult in
-                        // SkipAPI with identity completed
-                        expectation.fulfill()
+
+                completedRequestsQueue.sync {
+                    completedRequests += 1
+                    if completedRequests == identities.count {
+                        // Phase 2: Test skipAPI with identities
+                        Flagsmith.shared.cacheConfig.skipAPI = true
+
+                        // Test first identity again
+                        Flagsmith.shared.getFeatureFlags(forIdentity: identities.first!) { skipApiResult in
+                            // SkipAPI with identity completed
+                            expectation.fulfill()
+                        }
                     }
                 }
             }
@@ -477,7 +480,11 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
             case .success(let flags):
                 // Got flags from cache as expected
                 XCTAssertEqual(flags.first?.feature.name, "ttl_test_feature", "Should get cached feature")
-                XCTAssertEqual(flags.first?.value.stringValue, "initial_value", "Should get cached value")
+                if case .string(let stringValue) = flags.first?.value {
+                    XCTAssertEqual(stringValue, "initial_value", "Should get cached value")
+                } else {
+                    XCTFail("Expected string value")
+                }
             case .failure(let error):
                 // Unexpected failure with pre-populated cache
                 XCTFail("Unexpected failure: \(error)")
@@ -491,7 +498,11 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
                     case .success(let flags):
                         // Got flags from cache as expected
                         XCTAssertEqual(flags.first?.feature.name, "ttl_test_feature", "Should get same cached feature")
-                        XCTAssertEqual(flags.first?.value.stringValue, "initial_value", "Should get same cached value")
+                        if case .string(let stringValue) = flags.first?.value {
+                            XCTAssertEqual(stringValue, "initial_value", "Should get same cached value")
+                        } else {
+                            XCTFail("Expected string value")
+                        }
                     case .failure(let error):
                         // Unexpected failure within TTL
                         XCTFail("Unexpected failure: \(error)")
@@ -499,7 +510,8 @@ final class FlagsmithCacheIntegrationTests: FlagsmithClientTestCase {
 
                     // Test 3: Clear specific cache entry and verify behavior
                     // Test 3: After clearing cache (simulating TTL expiry)
-                    Flagsmith.shared.cacheConfig.cache.removeCachedResponse(for: mockRequest)
+                    let clearRequest = URLRequest(url: mockURL)
+                    Flagsmith.shared.cacheConfig.cache.removeCachedResponse(for: clearRequest)
 
                     Flagsmith.shared.getFeatureFlags(forIdentity: testIdentity) { result3 in
                         switch result3 {

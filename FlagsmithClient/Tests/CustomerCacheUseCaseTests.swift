@@ -228,13 +228,17 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         Flagsmith.shared.cacheConfig.skipAPI = true
         
         let sessionIdentity = "session-test-user"
+        let requestCountQueue = DispatchQueue(label: "requestCount")
         var requestCount = 0
         let totalRequests = 5 // Simulate multiple requests during session
-        
+
         func makeSessionRequest() {
-            requestCount += 1
-            // Session request #\(requestCount)
-            
+            let currentCount = requestCountQueue.sync {
+                requestCount += 1
+                return requestCount
+            }
+            // Session request #\(currentCount)
+
             Flagsmith.shared.getFeatureFlags(forIdentity: sessionIdentity) { result in
                 switch result {
                 case .success(_):
@@ -243,15 +247,15 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
                 case .failure(_):
                     // Request failed as expected
                     // If we have a real API key and caching is enabled, failures after first success indicate a problem
-                    if TestConfig.hasRealApiKey && requestCount > 1 {
+                    if TestConfig.hasRealApiKey && currentCount > 1 {
                         // Warning: Session request failed - cache might not be working
                         // Note: Not failing here as session behavior may vary, but logging concern
                     }
                     break
                 }
-                
+
                 // Continue session requests
-                if requestCount < totalRequests {
+                if currentCount < totalRequests {
                     // Simulate time between requests in a session
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         makeSessionRequest()
@@ -287,23 +291,26 @@ final class CustomerCacheUseCaseTests: FlagsmithClientTestCase {
         Flagsmith.shared.cacheConfig.skipAPI = true
         
         let identities = ["user_a", "user_b", "user_c"]
+        let completedTestsQueue = DispatchQueue(label: "completedTests")
         var completedTests = 0
-        
+
         for identity in identities {
             // Testing with identity: \(identity)
-            
+
             // Test both forIdentity and no identity calls
             Flagsmith.shared.getFeatureFlags(forIdentity: identity) { identityResult in
                 // Identity request completed
-                
+
                 // Also test without identity
                 Flagsmith.shared.getFeatureFlags { noIdentityResult in
                     // No identity request completed
-                    
-                    completedTests += 1
-                    if completedTests == identities.count {
-                        // All edge case tests completed
-                        expectation.fulfill()
+
+                    completedTestsQueue.sync {
+                        completedTests += 1
+                        if completedTests == identities.count {
+                            // All edge case tests completed
+                            expectation.fulfill()
+                        }
                     }
                 }
             }
