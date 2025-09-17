@@ -12,25 +12,31 @@ import XCTest
 final class CacheTests: FlagsmithClientTestCase {
     var testCache: URLCache!
     var apiManager: APIManager!
-    
+    var originalApiKey: String?
+
     override func setUp() {
         super.setUp()
+        // Save the original API key to restore later
+        originalApiKey = Flagsmith.shared.apiKey
+
         // Create a fresh cache for each test
         testCache = URLCache(memoryCapacity: 8 * 1024 * 1024, diskCapacity: 64 * 1024 * 1024, directory: nil)
         apiManager = APIManager()
         apiManager.apiKey = "test-cache-api-key"
-        
+
         // Reset Flagsmith cache configuration
         Flagsmith.shared.cacheConfig.useCache = false
         Flagsmith.shared.cacheConfig.skipAPI = false
         Flagsmith.shared.cacheConfig.cache = testCache
         Flagsmith.shared.cacheConfig.cacheTTL = 180
     }
-    
+
     override func tearDown() {
         testCache.removeAllCachedResponses()
         Flagsmith.shared.cacheConfig.useCache = false
         Flagsmith.shared.cacheConfig.skipAPI = false
+        // Restore the original API key
+        Flagsmith.shared.apiKey = originalApiKey
         super.tearDown()
     }
     
@@ -101,7 +107,10 @@ final class CacheTests: FlagsmithClientTestCase {
     func testSkipAPIWithCacheAvailable() throws {
         Flagsmith.shared.cacheConfig.useCache = true
         Flagsmith.shared.cacheConfig.skipAPI = true
-        
+
+        // Set API key to match the mock request
+        Flagsmith.shared.apiKey = "test-cache-api-key"
+
         // Pre-populate cache with mock response
         let mockURL = URL(string: "https://edge.api.flagsmith.com/api/v1/flags/")!
         var mockRequest = URLRequest(url: mockURL)
@@ -363,7 +372,10 @@ final class CacheTests: FlagsmithClientTestCase {
         Flagsmith.shared.cacheConfig.useCache = true
         Flagsmith.shared.cacheConfig.cacheTTL = 300 // 5 minutes
         Flagsmith.shared.cacheConfig.skipAPI = true
-        
+
+        // Set API key to match the mock request
+        Flagsmith.shared.apiKey = "test-cache-api-key"
+
         // Test our manual cache storage (simulating ensureResponseIsCached)
         let mockURL = URL(string: "https://edge.api.flagsmith.com/api/v1/flags/")!
         var mockRequest = URLRequest(url: mockURL)
