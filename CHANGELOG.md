@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.8.4](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.8.3...v3.8.4) (2025-10-02)
+
+
+### Bug Fixes
+
+* Cache Functionality Fixes and Comprehensive Test Suite ([#91](https://github.com/Flagsmith/flagsmith-ios-client/issues/91)) ([c5be992](https://github.com/Flagsmith/flagsmith-ios-client/commit/c5be9925cbfc53a1973c44dbe701c7c6e314a6f6))
+
+
+### Other
+
+* Add `CODEOWNERS` ([#86](https://github.com/Flagsmith/flagsmith-ios-client/issues/86)) ([88fdb10](https://github.com/Flagsmith/flagsmith-ios-client/commit/88fdb101754620e679afa71bf4bef5e3541f1866))
+
 ## [3.8.3](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.8.2...v3.8.3) (2025-07-18)
 
 
