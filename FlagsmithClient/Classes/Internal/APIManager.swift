@@ -31,7 +31,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             propertiesSerialAccessQueue.sync { _baseURL }
         }
         set {
-            propertiesSerialAccessQueue.sync {
+            propertiesSerialAccessQueue.sync(flags: .barrier) {
                 _baseURL = newValue
             }
         }
@@ -44,7 +44,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             propertiesSerialAccessQueue.sync { _apiKey }
         }
         set {
-            propertiesSerialAccessQueue.sync {
+            propertiesSerialAccessQueue.sync(flags: .barrier) {
                 _apiKey = newValue
             }
         }
@@ -56,7 +56,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             propertiesSerialAccessQueue.sync { _lastUpdatedAt }
         }
         set {
-            propertiesSerialAccessQueue.sync {
+            propertiesSerialAccessQueue.sync(flags: .barrier) {
                 _lastUpdatedAt = newValue
             }
         }
@@ -71,6 +71,8 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     override init() {
         super.init()
         let configuration = URLSessionConfiguration.default
+        // Set initial cache configuration - this will be updated when cache settings change
+        configuration.urlCache = URLCache.shared
         session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
     }
 
@@ -100,7 +102,8 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                 let newResponse = proposedResponse.response(withExpirationDuration: Int(Flagsmith.shared.cacheConfig.cacheTTL))
                 DispatchQueue.main.async { completionHandler(newResponse) }
             } else {
-                DispatchQueue.main.async { completionHandler(proposedResponse) }
+                // When caching is disabled, don't cache the response
+                DispatchQueue.main.async { completionHandler(nil) }
             }
         }
     }
@@ -141,7 +144,6 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
 
         // set the cache policy based on Flagsmith settings
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-        session.configuration.urlCache = Flagsmith.shared.cacheConfig.cache
         if Flagsmith.shared.cacheConfig.useCache {
             request.cachePolicy = .useProtocolCachePolicy
             if Flagsmith.shared.cacheConfig.skipAPI {
@@ -151,6 +153,13 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
 
         // we must use the delegate form here, not the completion handler, to be able to modify the cache
         serialAccessQueue.sync {
+            // Update session cache configuration if it has changed (must be done inside the serial queue)
+            if session.configuration.urlCache !== Flagsmith.shared.cacheConfig.cache {
+                let configuration = URLSessionConfiguration.default
+                configuration.urlCache = Flagsmith.shared.cacheConfig.cache
+                session = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
+            }
+
             let task = session.dataTask(with: request)
             tasksToCompletionHandlers[task.taskIdentifier] = completion
             task.resume()
@@ -189,11 +198,57 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             case let .success(data):
                 do {
                     let value = try decoder.decode(T.self, from: data)
+                    
+                    // Ensure successful response is cached if caching is enabled
+                    if Flagsmith.shared.cacheConfig.useCache {
+                        self.ensureResponseIsCached(router: router, data: data)
+                    }
+                    
                     completion(.success(value))
                 } catch {
                     completion(.failure(FlagsmithError(error)))
                 }
             }
+        }
+    }
+    
+    /// Ensures that a successful response is properly cached
+    /// This is a fallback mechanism in case URLSession's automatic caching fails
+    private func ensureResponseIsCached(router: Router, data: Data) {
+        guard let apiKey = apiKey, !apiKey.isEmpty else { return }
+        
+        do {
+            let request = try router.request(baseUrl: baseURL, apiKey: apiKey)
+            
+            // Check if response is already cached
+            if Flagsmith.shared.cacheConfig.cache.cachedResponse(for: request) != nil {
+                return // Already cached
+            }
+            
+            // Create a cacheable response
+            let httpResponse = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: "HTTP/1.1",
+                headerFields: [
+                    "Content-Type": "application/json",
+                    "Cache-Control": "max-age=\(Int(Flagsmith.shared.cacheConfig.cacheTTL))"
+                ]
+            )!
+            
+            let cachedResponse = CachedURLResponse(
+                response: httpResponse,
+                data: data,
+                userInfo: nil,
+                storagePolicy: .allowed
+            )
+            
+            // Store the response in cache
+            Flagsmith.shared.cacheConfig.cache.storeCachedResponse(cachedResponse, for: request)
+            
+        } catch {
+            // If we can't create the request, just skip caching
+            print("Flagsmith: Failed to manually cache response: \(error)")
         }
     }
 

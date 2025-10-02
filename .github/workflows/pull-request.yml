@@ -7,48 +7,39 @@ on:
         branches: [main]
 
 jobs:
-    macos-build-14:
+    macos-latest:
         # macOS-latest images are not the most recent
-        # The macos-latest workflow label currently uses the macOS 12 runner image, which doesn't include the build-tools we need
         # The vast majority of macOS developers would be using the latest version of macOS
         # Current list here: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
-        runs-on: macOS-14 
-
+        runs-on: macOS-latest
         steps:
             - uses: actions/checkout@v4
+            - name: Check for FLAGSMITH_TEST_API_KEY
+              run: |
+                if [ -z "$FLAGSMITH_TEST_API_KEY" ]; then
+                  echo "Warning: FLAGSMITH_TEST_API_KEY environment variable is not set"
+                  exit 1
+                fi
+              env:
+                FLAGSMITH_TEST_API_KEY: ${{ secrets.FLAGSMITH_TEST_API_KEY }}
             - name: Build (macOS)
-              run: swift build -v
+              run: swift --version && swift build
             - name: Run tests
-              run: swift test -v
-
-    macos-build-13:
-        # Let's also check that the code builds on macOS 13
-        # At 23rd April 2023 the 'latest' macOS version is macOS 12
-        runs-on: macOS-13
-
-        steps:
-            - uses: actions/checkout@v4
-            - name: Build (macOS)
-              run: swift build -v
-            - name: Run tests
-              run: swift test -v
-
-    ubuntu-build:
-        runs-on: ubuntu-latest
-
-        steps:
-            - uses: actions/checkout@v4
-            - name: Build (Ubuntu)
-              run: swift build -v
-            - name: Run tests
-              run: swift test -v
-
+              run: swift test
+              env:
+                FLAGSMITH_TEST_API_KEY: ${{ secrets.FLAGSMITH_TEST_API_KEY }}
     swift-lint:
-
         runs-on: ubuntu-latest
-
         steps:
             - uses: actions/checkout@v4
+            - name: Check for FLAGSMITH_TEST_API_KEY
+              run: |
+                if [ -z "$FLAGSMITH_TEST_API_KEY" ]; then
+                  echo "Warning: FLAGSMITH_TEST_API_KEY environment variable is not set"
+                  exit 1
+                fi
+              env:
+                FLAGSMITH_TEST_API_KEY: ${{ secrets.FLAGSMITH_TEST_API_KEY }}
 
             - name: Run SwiftLint
               uses: norio-nomura/action-swiftlint@3.2.1
