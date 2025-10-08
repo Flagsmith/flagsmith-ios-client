@@ -24,7 +24,7 @@ let package = Package(
                 .enableUpcomingFeature("ExistentialAny"), // https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
             ]),
         .testTarget(
-            name: "FlagsmitClientTests",
+            name: "FlagsmithClientTests",
             dependencies: ["FlagsmithClient"],
             path: "FlagsmithClient/Tests",
             exclude: ["README_Testing.md"],
