@@ -18,35 +18,42 @@ public final class Flagsmith: @unchecked Sendable {
     /// Shared singleton client object
     public static let shared: Flagsmith = .init()
     
+    /// SDK version constant - should match the podspec version
+    /// This is used as a fallback when bundle version detection fails
+    private static let sdkVersionConstant = "3.8.4"
+    
     /// User-Agent header value for HTTP requests
     /// Format: flagsmith-swift-ios-sdk/<version>
     /// Falls back to "unknown" if version is not discoverable at runtime
-    internal static var userAgent: String {
+    public static var userAgent: String {
         let version = getSDKVersion()
         return "flagsmith-swift-ios-sdk/\(version)"
     }
     
     /// Get the SDK version from the bundle at runtime
-    /// Falls back to "unknown" if version is not discoverable
+    /// Falls back to hardcoded constant or "unknown" if version is not discoverable
     private static func getSDKVersion() -> String {
-        // Try to get version from the main bundle first
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, !version.isEmpty {
-            return version
-        }
-        
-        // Try to get version from the FlagsmithClient bundle (CocoaPods)
+        // Try to get version from the FlagsmithClient bundle first (CocoaPods)
         if let bundle = Bundle(identifier: "org.cocoapods.FlagsmithClient"),
-           let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String, !version.isEmpty {
+           let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String, 
+           !version.isEmpty && version != "1.0" {
             return version
         }
         
         // Try to get version from the current bundle (for SPM or direct integration)
-        if let version = Bundle(for: Flagsmith.self).infoDictionary?["CFBundleShortVersionString"] as? String, !version.isEmpty {
+        if let version = Bundle(for: Flagsmith.self).infoDictionary?["CFBundleShortVersionString"] as? String, 
+           !version.isEmpty && version != "1.0" {
             return version
         }
         
-        // Fallback to "unknown" if version is not discoverable
-        return "unknown"
+        // Try to get version from the main bundle as last resort (but avoid app versions)
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, 
+           !version.isEmpty && version != "1.0" && version.range(of: #"^\d+\.\d+\.\d+$"#, options: NSString.CompareOptions.regularExpression) != nil {
+            return version
+        }
+        
+        // Fallback to hardcoded SDK version constant
+        return sdkVersionConstant
     }
     private let apiManager: APIManager
     private let sseManager: SSEManager

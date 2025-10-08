@@ -35,12 +35,12 @@ final class RouterTests: FlagsmithClientTestCase {
         XCTAssertNotNil(userAgent)
         XCTAssertTrue(userAgent?.hasPrefix("flagsmith-swift-ios-sdk/") ?? false)
         
-        // Verify the format is correct (should end with either a version number or "unknown")
-        let expectedPattern = "^flagsmith-swift-ios-sdk/([0-9]+\\.[0-9]+\\.[0-9]+|unknown)$"
+        // Verify the format is correct (should end with a semantic version number)
+        let expectedPattern = "^flagsmith-swift-ios-sdk/[0-9]+\\.[0-9]+\\.[0-9]+$"
         let regex = try NSRegularExpression(pattern: expectedPattern)
         let range = NSRange(location: 0, length: userAgent?.count ?? 0)
         XCTAssertTrue(regex.firstMatch(in: userAgent ?? "", options: [], range: range) != nil, 
-                     "User-Agent should match pattern 'flagsmith-swift-ios-sdk/<version>' or 'flagsmith-swift-ios-sdk/unknown', got: \(userAgent ?? "nil")")
+                     "User-Agent should match pattern 'flagsmith-swift-ios-sdk/<version>', got: \(userAgent ?? "nil")")
     }
     
     func testUserAgentHeaderFormat() {
@@ -48,10 +48,13 @@ final class RouterTests: FlagsmithClientTestCase {
         let userAgent = Flagsmith.userAgent
         XCTAssertTrue(userAgent.hasPrefix("flagsmith-swift-ios-sdk/"))
         
-        // Should either have a version number or "unknown"
+        // Should have a semantic version number (e.g., 3.8.4)
         let versionPart = String(userAgent.dropFirst("flagsmith-swift-ios-sdk/".count))
-        XCTAssertTrue(versionPart == "unknown" || versionPart.range(of: #"^\d+\.\d+\.\d+$"#, options: .regularExpression) != nil,
-                     "Version part should be 'unknown' or a semantic version number, got: \(versionPart)")
+        XCTAssertTrue(versionPart.range(of: #"^\d+\.\d+\.\d+$"#, options: NSString.CompareOptions.regularExpression) != nil,
+                     "Version part should be a semantic version number (e.g., 3.8.4), got: \(versionPart)")
+        
+        // Should be the expected SDK version
+        XCTAssertEqual(versionPart, "3.8.4", "Expected SDK version 3.8.4, got: \(versionPart)")
     }
 
     func testGetIdentityRequest() throws {
