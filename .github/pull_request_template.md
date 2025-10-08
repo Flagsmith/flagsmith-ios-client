@@ -26,4 +26,4 @@
 
 ## Estimated time to fix the ticket(s) or epic(s) refernced by the PR in days
 
-- #FD343 - 2 days
+<!--- Add estimate to complete the work -->
