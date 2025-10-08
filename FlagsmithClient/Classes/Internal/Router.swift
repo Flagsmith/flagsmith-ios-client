@@ -102,6 +102,7 @@ enum Router: Sendable {
         }
         request.addValue(apiKey, forHTTPHeaderField: "X-Environment-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue(Flagsmith.userAgent, forHTTPHeaderField: "User-Agent")
 
         return request
     }

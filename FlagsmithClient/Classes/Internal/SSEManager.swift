@@ -157,6 +157,7 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         request.setValue("text/event-stream, application/json; charset=utf-8", forHTTPHeaderField: "Accept")
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         request.setValue("keep-alive", forHTTPHeaderField: "Connection")
+        request.setValue(Flagsmith.userAgent, forHTTPHeaderField: "User-Agent")
 
         completionHandler = completion
         dataTask = session.dataTask(with: request)

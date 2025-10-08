@@ -17,6 +17,37 @@ typealias CompletionHandler<T> = @Sendable (Result<T, any Error>) -> Void
 public final class Flagsmith: @unchecked Sendable {
     /// Shared singleton client object
     public static let shared: Flagsmith = .init()
+    
+    /// User-Agent header value for HTTP requests
+    /// Format: flagsmith-swift-ios-sdk/<version>
+    /// Falls back to "unknown" if version is not discoverable at runtime
+    internal static var userAgent: String {
+        let version = getSDKVersion()
+        return "flagsmith-swift-ios-sdk/\(version)"
+    }
+    
+    /// Get the SDK version from the bundle at runtime
+    /// Falls back to "unknown" if version is not discoverable
+    private static func getSDKVersion() -> String {
+        // Try to get version from the main bundle first
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, !version.isEmpty {
+            return version
+        }
+        
+        // Try to get version from the FlagsmithClient bundle (CocoaPods)
+        if let bundle = Bundle(identifier: "org.cocoapods.FlagsmithClient"),
+           let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String, !version.isEmpty {
+            return version
+        }
+        
+        // Try to get version from the current bundle (for SPM or direct integration)
+        if let version = Bundle(for: Flagsmith.self).infoDictionary?["CFBundleShortVersionString"] as? String, !version.isEmpty {
+            return version
+        }
+        
+        // Fallback to "unknown" if version is not discoverable
+        return "unknown"
+    }
     private let apiManager: APIManager
     private let sseManager: SSEManager
     private let analytics: FlagsmithAnalytics
