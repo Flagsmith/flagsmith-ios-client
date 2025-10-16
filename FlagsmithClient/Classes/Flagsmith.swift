@@ -270,6 +270,11 @@ public final class Flagsmith: @unchecked Sendable {
         
         // Check if we have a cache control header
         if let cacheControl = httpResponse.allHeaderFields["Cache-Control"] as? String {
+            // First check for no-cache and no-store directives (case-insensitive, token-aware)
+            if hasNoCacheDirective(in: cacheControl) {
+                return false
+            }
+            
             if let maxAge = extractMaxAge(from: cacheControl) {
                 // Check if cache is still valid based on max-age
                 if let dateString = httpResponse.allHeaderFields["Date"] as? String,
@@ -294,6 +299,18 @@ public final class Flagsmith: @unchecked Sendable {
             }
         }
         return nil
+    }
+    
+    private func hasNoCacheDirective(in cacheControl: String) -> Bool {
+        let components = cacheControl.split(separator: ",")
+        for component in components {
+            let trimmed = component.trimmingCharacters(in: .whitespaces)
+            let directive = trimmed.lowercased()
+            if directive == "no-cache" || directive == "no-store" {
+                return true
+            }
+        }
+        return false
     }
 }
 
