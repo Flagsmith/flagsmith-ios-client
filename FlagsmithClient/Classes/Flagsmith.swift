@@ -305,7 +305,10 @@ public final class Flagsmith: @unchecked Sendable {
         let components = cacheControl.split(separator: ",")
         for component in components {
             let trimmed = component.trimmingCharacters(in: .whitespaces)
-            let directive = trimmed.lowercased()
+            let directiveTokens = trimmed.split(separator: "=").first?.split(separator: ";").first
+            guard let directiveToken = directiveTokens else { continue }
+            
+            let directive = directiveToken.trimmingCharacters(in: .whitespaces).lowercased()
             if directive == "no-cache" || directive == "no-store" {
                 return true
             }
