@@ -228,7 +228,7 @@ public final class Flagsmith: @unchecked Sendable {
                     let flags = try JSONDecoder().decode([Flag].self, from: cachedResponse.data)
                     return flags
                 } catch {
-                    // Cache data is corrupted, return nil
+                    print("Flagsmith - Failed to decode cached flags: \(error.localizedDescription)")
                     return nil
                 }
             }
@@ -242,7 +242,9 @@ public final class Flagsmith: @unchecked Sendable {
         
         // Create request for identity-specific flags
         let identityURL = baseURL.appendingPathComponent("identities/")
-        var components = URLComponents(url: identityURL, resolvingAgainstBaseURL: false)!
+        guard var components = URLComponents(url: identityURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
         components.queryItems = [URLQueryItem(name: "identifier", value: identity)]
         
         guard let url = components.url else { return nil }
@@ -256,7 +258,7 @@ public final class Flagsmith: @unchecked Sendable {
                     let identity = try JSONDecoder().decode(Identity.self, from: cachedResponse.data)
                     return identity.flags
                 } catch {
-                    // Cache data is corrupted, return nil
+                    print("Flagsmith - Failed to decode cached identity flags: \(error.localizedDescription)")
                     return nil
                 }
             }
@@ -285,8 +287,20 @@ public final class Flagsmith: @unchecked Sendable {
             }
         }
         
-        // If no cache control, assume valid for the configured TTL
+        // If no cache control, validate against configured TTL
+        if cacheConfig.cacheTTL > 0 {
+            if let dateString = httpResponse.allHeaderFields["Date"] as? String,
+               let date = HTTPURLResponse.dateFormatter.date(from: dateString) {
+                let age = Date().timeIntervalSince(date)
+                return age < cacheConfig.cacheTTL
+            }
+            // No Date header, be conservative
+            return false
+        }
+        // TTL of 0 means infinite
+        
         return true
+
     }
     
     private func extractMaxAge(from cacheControl: String) -> TimeInterval? {
