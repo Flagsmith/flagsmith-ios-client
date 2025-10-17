@@ -25,7 +25,7 @@ public final class Flagsmith: @unchecked Sendable {
     /// User-Agent header value for HTTP requests
     /// Format: flagsmith-swift-ios-sdk/<version>
     /// Falls back to "unknown" if version is not discoverable at runtime
-    public static var userAgent: String {
+    public static let userAgent: String {
         let version = getSDKVersion()
         return "flagsmith-swift-ios-sdk/\(version)"
     }
@@ -33,27 +33,22 @@ public final class Flagsmith: @unchecked Sendable {
     /// Get the SDK version from the bundle at runtime
     /// Falls back to hardcoded constant or "unknown" if version is not discoverable
     private static func getSDKVersion() -> String {
-        // Try to get version from the FlagsmithClient bundle first (CocoaPods)
+        // Try CocoaPods bundle first
         if let bundle = Bundle(identifier: "org.cocoapods.FlagsmithClient"),
-           let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String, 
-           !version.isEmpty && version != "1.0" {
+        let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String, 
+        !version.isEmpty,
+        version.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) != nil {
             return version
         }
         
-        // Try to get version from the current bundle (for SPM or direct integration)
-        if let version = Bundle(for: Flagsmith.self).infoDictionary?["CFBundleShortVersionString"] as? String, 
-           !version.isEmpty && version != "1.0" {
+        // Try SPM bundle
+        if let version = Bundle(for: Flagsmith.self).infoDictionary?["CFBundleShortVersionString"] as? String,
+        !version.isEmpty,
+        version.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) != nil {
             return version
         }
         
-        // Try to get version from the main bundle as last resort (but avoid app versions)
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, 
-           !version.isEmpty && version != "1.0" && version.range(of: #"^\d+\.\d+\.\d+$"#, options: NSString.CompareOptions.regularExpression) != nil {
-            return version
-        }
-        
-        // Fallback to hardcoded SDK version constant
-        return sdkVersionConstant
+        return "unknown"
     }
     private let apiManager: APIManager
     private let sseManager: SSEManager

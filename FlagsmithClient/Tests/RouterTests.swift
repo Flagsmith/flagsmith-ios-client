@@ -39,8 +39,9 @@ final class RouterTests: FlagsmithClientTestCase {
         let expectedPattern = "^flagsmith-swift-ios-sdk/[0-9]+\\.[0-9]+\\.[0-9]+$"
         let regex = try NSRegularExpression(pattern: expectedPattern)
         let range = NSRange(location: 0, length: userAgent?.count ?? 0)
-        XCTAssertTrue(regex.firstMatch(in: userAgent ?? "", options: [], range: range) != nil, 
-                     "User-Agent should match pattern 'flagsmith-swift-ios-sdk/<version>', got: \(userAgent ?? "nil")")
+        let match = regex.firstMatch(in: userAgent ?? "", options: [], range: range)
+        let message = "User-Agent should match pattern 'flagsmith-swift-ios-sdk/<version>', got: \(userAgent ?? "nil")"
+        XCTAssertTrue(match != nil, message)
     }
     
     func testUserAgentHeaderFormat() {

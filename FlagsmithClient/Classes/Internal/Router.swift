@@ -100,9 +100,9 @@ enum Router: Sendable {
         if let body = try body(using: encoder) {
             request.httpBody = body
         }
-        request.addValue(apiKey, forHTTPHeaderField: "X-Environment-Key")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue(Flagsmith.userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(apiKey, forHTTPHeaderField: "X-Environment-Key")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(Flagsmith.userAgent, forHTTPHeaderField: "User-Agent")
 
         return request
     }

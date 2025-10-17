@@ -24,6 +24,6 @@
 - [ ] 📝 Documentation
 - [ ] 🗑️ Chore
 
-## Estimated time to fix the ticket(s) or epic(s) refernced by the PR in days
+## Estimated time to fix the ticket(s) or epic(s) referenced by the PR in days
 
 <!--- Add estimate to complete the work -->
