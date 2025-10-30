@@ -148,7 +148,7 @@ public final class Flagsmith: @unchecked Sendable {
                         self.updateFlagStreamAndLastUpdatedAt(thisIdentity.flags)
                         completion(.success(thisIdentity.flags))
                     case let .failure(error):
-                        self.handleFlagsError(error, completion: completion)
+                        self.handleFlagsErrorForIdentity(error, identity: identity, completion: completion)
                     }
                 }
             }
@@ -171,13 +171,181 @@ public final class Flagsmith: @unchecked Sendable {
     }
 
     private func handleFlagsError(_ error: any Error, completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void) {
-        if defaultFlags.isEmpty {
-            completion(.failure(error))
-        } else {
+        // Priority: 1. Try cached flags, 2. Fall back to default flags, 3. Return error
+        
+        // First, try to get cached flags if caching is enabled
+        if cacheConfig.useCache {
+            if let cachedFlags = getCachedFlags() {
+                completion(.success(cachedFlags))
+                return
+            }
+        }
+        
+        // If no cached flags available, try default flags
+        if !defaultFlags.isEmpty {
             completion(.success(defaultFlags))
+        } else {
+            completion(.failure(error))
         }
     }
+    
+    private func handleFlagsErrorForIdentity(_ error: any Error, identity: String, completion: @Sendable @escaping (Result<[Flag], any Error>) -> Void) {
+        // Priority: 1. Try cached flags for identity, 2. Try general cached flags, 3. Fall back to default flags, 4. Return error
+        
+        // First, try to get cached flags for the specific identity if caching is enabled
+        if cacheConfig.useCache {
+            if let cachedFlags = getCachedFlags(forIdentity: identity) {
+                completion(.success(cachedFlags))
+                return
+            }
+            
+            // If no identity-specific cache, try general flags cache
+            if let cachedFlags = getCachedFlags() {
+                completion(.success(cachedFlags))
+                return
+            }
+        }
+        
+        // If no cached flags available, try default flags
+        if !defaultFlags.isEmpty {
+            completion(.success(defaultFlags))
+        } else {
+            completion(.failure(error))
+        }
+    }
+    
+    private func getCachedFlags() -> [Flag]? {
+        let cache = cacheConfig.cache
+        
+        // Create request for general flags
+        let request = URLRequest(url: baseURL.appendingPathComponent("flags/"))
+        
+        // Check if we have a cached response
+        if let cachedResponse = cache.cachedResponse(for: request) {
+            // Check if cache is still valid based on TTL
+            if isCacheValid(cachedResponse: cachedResponse) {
+                do {
+                    let flags = try JSONDecoder().decode([Flag].self, from: cachedResponse.data)
+                    return flags
+                } catch {
+                    print("Flagsmith - Failed to decode cached flags: \(error.localizedDescription)")
+                    return nil
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    private func getCachedFlags(forIdentity identity: String) -> [Flag]? {
+        let cache = cacheConfig.cache
+        
+        // Create request for identity-specific flags
+        let identityURL = baseURL.appendingPathComponent("identities/")
+        guard var components = URLComponents(url: identityURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.queryItems = [URLQueryItem(name: "identifier", value: identity)]
+        
+        guard let url = components.url else { return nil }
+        let request = URLRequest(url: url)
+        
+        // Check if we have a cached response
+        if let cachedResponse = cache.cachedResponse(for: request) {
+            // Check if cache is still valid based on TTL
+            if isCacheValid(cachedResponse: cachedResponse) {
+                do {
+                    let identity = try JSONDecoder().decode(Identity.self, from: cachedResponse.data)
+                    return identity.flags
+                } catch {
+                    print("Flagsmith - Failed to decode cached identity flags: \(error.localizedDescription)")
+                    return nil
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    private func isCacheValid(cachedResponse: CachedURLResponse) -> Bool {
+        guard let httpResponse = cachedResponse.response as? HTTPURLResponse else { return false }
+        
+        // Check if we have a cache control header
+        if let cacheControl = httpResponse.allHeaderFields["Cache-Control"] as? String {
+            // First check for no-cache and no-store directives (case-insensitive, token-aware)
+            if hasNoCacheDirective(in: cacheControl) {
+                return false
+            }
+            
+            if let maxAge = extractMaxAge(from: cacheControl) {
+                // Check if cache is still valid based on max-age
+                if let dateString = httpResponse.allHeaderFields["Date"] as? String,
+                   let date = HTTPURLResponse.dateFormatter.date(from: dateString) {
+                    let age = Date().timeIntervalSince(date)
+                    return age < maxAge
+                }
+            }
+        }
+        
+        // If no cache control, validate against configured TTL
+        if cacheConfig.cacheTTL > 0 {
+            if let dateString = httpResponse.allHeaderFields["Date"] as? String,
+               let date = HTTPURLResponse.dateFormatter.date(from: dateString) {
+                let age = Date().timeIntervalSince(date)
+                return age < cacheConfig.cacheTTL
+            }
+            // No Date header, be conservative
+            return false
+        }
+        // TTL of 0 means infinite
+        
+        return true
 
+    }
+    
+    private func extractMaxAge(from cacheControl: String) -> TimeInterval? {
+        let components = cacheControl.split(separator: ",")
+        for component in components {
+            let trimmed = component.trimmingCharacters(in: .whitespaces)
+            if trimmed.hasPrefix("max-age=") {
+                let maxAgeString = String(trimmed.dropFirst(8))
+                return TimeInterval(maxAgeString)
+            }
+        }
+        return nil
+    }
+    
+    private func hasNoCacheDirective(in cacheControl: String) -> Bool {
+        let components = cacheControl.split(separator: ",")
+        for component in components {
+            let trimmed = component.trimmingCharacters(in: .whitespaces)
+            let directiveTokens = trimmed.split(separator: "=").first?.split(separator: ";").first
+            guard let directiveToken = directiveTokens else { continue }
+            
+            let directive = directiveToken.trimmingCharacters(in: .whitespaces).lowercased()
+            if directive == "no-cache" || directive == "no-store" {
+                return true
+            }
+        }
+        return false
+    }
+}
+
+// MARK: - HTTPURLResponse Extensions
+
+extension HTTPURLResponse {
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(abbreviation: "GMT")
+        return formatter
+    }()
+}
+
+// MARK: - Public API Methods
+
+extension Flagsmith {
     /// Check feature exists and is enabled optionally for a specific identity
     ///
     /// - Parameters:
