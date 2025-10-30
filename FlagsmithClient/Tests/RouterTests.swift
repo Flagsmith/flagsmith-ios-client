@@ -21,6 +21,42 @@ final class RouterTests: FlagsmithClientTestCase {
         XCTAssertTrue(request.allHTTPHeaderFields?.contains(where: { $0.key == "X-Environment-Key" }) ?? false)
         XCTAssertNil(request.httpBody)
     }
+    
+    func testUserAgentHeader() throws {
+        let url = try XCTUnwrap(baseUrl)
+        let route = Router.getFlags
+        let request = try route.request(baseUrl: url, apiKey: apiKey)
+        
+        // Verify User-Agent header is present
+        XCTAssertTrue(request.allHTTPHeaderFields?.contains(where: { $0.key == "User-Agent" }) ?? false)
+        
+        // Verify User-Agent header format
+        let userAgent = request.allHTTPHeaderFields?["User-Agent"]
+        XCTAssertNotNil(userAgent)
+        XCTAssertTrue(userAgent?.hasPrefix("flagsmith-swift-ios-sdk/") ?? false)
+        
+        // Verify the format is correct (should end with a semantic version number)
+        let expectedPattern = "^flagsmith-swift-ios-sdk/[0-9]+\\.[0-9]+\\.[0-9]+$"
+        let regex = try NSRegularExpression(pattern: expectedPattern)
+        let range = NSRange(location: 0, length: userAgent?.count ?? 0)
+        let match = regex.firstMatch(in: userAgent ?? "", options: [], range: range)
+        let message = "User-Agent should match pattern 'flagsmith-swift-ios-sdk/<version>', got: \(userAgent ?? "nil")"
+        XCTAssertTrue(match != nil, message)
+    }
+    
+    func testUserAgentHeaderFormat() {
+        // Test that the User-Agent format is correct
+        let userAgent = Flagsmith.userAgent
+        XCTAssertTrue(userAgent.hasPrefix("flagsmith-swift-ios-sdk/"))
+        
+        // Should have a semantic version number (e.g., 3.8.4)
+        let versionPart = String(userAgent.dropFirst("flagsmith-swift-ios-sdk/".count))
+        XCTAssertTrue(versionPart.range(of: #"^\d+\.\d+\.\d+$"#, options: NSString.CompareOptions.regularExpression) != nil,
+                     "Version part should be a semantic version number (e.g., 3.8.4), got: \(versionPart)")
+        
+        // Should be the expected SDK version
+        XCTAssertEqual(versionPart, "3.8.4", "Expected SDK version 3.8.4, got: \(versionPart)")
+    }
 
     func testGetIdentityRequest() throws {
         let url = try XCTUnwrap(baseUrl)

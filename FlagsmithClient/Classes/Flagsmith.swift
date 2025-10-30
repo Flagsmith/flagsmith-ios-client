@@ -17,6 +17,39 @@ typealias CompletionHandler<T> = @Sendable (Result<T, any Error>) -> Void
 public final class Flagsmith: @unchecked Sendable {
     /// Shared singleton client object
     public static let shared: Flagsmith = .init()
+    
+    /// SDK version constant - should match the podspec version
+    /// This is used as a fallback when bundle version detection fails
+    private static let sdkVersionConstant = "3.8.4"
+    
+    /// User-Agent header value for HTTP requests
+    /// Format: flagsmith-swift-ios-sdk/<version>
+    /// Falls back to "unknown" if version is not discoverable at runtime
+    public static let userAgent: String {
+        let version = getSDKVersion()
+        return "flagsmith-swift-ios-sdk/\(version)"
+    }
+    
+    /// Get the SDK version from the bundle at runtime
+    /// Falls back to hardcoded constant or "unknown" if version is not discoverable
+    private static func getSDKVersion() -> String {
+        // Try CocoaPods bundle first
+        if let bundle = Bundle(identifier: "org.cocoapods.FlagsmithClient"),
+        let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String, 
+        !version.isEmpty,
+        version.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) != nil {
+            return version
+        }
+        
+        // Try SPM bundle
+        if let version = Bundle(for: Flagsmith.self).infoDictionary?["CFBundleShortVersionString"] as? String,
+        !version.isEmpty,
+        version.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) != nil {
+            return version
+        }
+        
+        return "unknown"
+    }
     private let apiManager: APIManager
     private let sseManager: SSEManager
     private let analytics: FlagsmithAnalytics
