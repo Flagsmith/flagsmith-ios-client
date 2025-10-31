@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.9.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.8.4...v3.9.0) (2025-10-30)
+
+
+### Features
+
+* cache priority and tests ([#96](https://github.com/Flagsmith/flagsmith-ios-client/issues/96)) ([4a0f4e4](https://github.com/Flagsmith/flagsmith-ios-client/commit/4a0f4e475bef25cb3785928ee8e1fb63c4f00952))
+
 ## [3.8.4](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.8.3...v3.8.4) (2025-10-02)
 
 
