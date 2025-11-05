@@ -25,7 +25,7 @@ public final class Flagsmith: @unchecked Sendable {
     /// User-Agent header value for HTTP requests
     /// Format: flagsmith-swift-ios-sdk/<version>
     /// Falls back to "unknown" if version is not discoverable at runtime
-    public static let userAgent: String {
+    public static var userAgent: String {
         let version = getSDKVersion()
         return "flagsmith-swift-ios-sdk/\(version)"
     }

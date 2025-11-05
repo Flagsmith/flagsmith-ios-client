@@ -188,7 +188,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     ///   - router: The path and parameters that should be requested.
     ///   - decoder: `JSONDecoder` used to deserialize the response data.
     ///   - completion: Function block executed with the result of the request.
-    func request<T: Decodable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(),
+    func request<T: Decodable & Sendable>(_ router: Router, using decoder: JSONDecoder = JSONDecoder(),
                                completion: @Sendable @escaping (Result<T, any Error>) -> Void)
     {
         request(router) { (result: Result<Data, Error>) in
