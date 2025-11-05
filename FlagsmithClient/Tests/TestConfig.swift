@@ -9,25 +9,30 @@ import Foundation
 
 struct TestConfig {
     /// Real API key for integration testing
-    /// Set via environment variable FLAGSMITH_TEST_API_KEY or falls back to mock key
+    /// Set via environment variable FLAGSMITH_TEST_API_KEY or falls back to test-config.json
     static let apiKey: String = {
+        // First priority: environment variable
         if let envKey = ProcessInfo.processInfo.environment["FLAGSMITH_TEST_API_KEY"],
            !envKey.isEmpty {
             return envKey
         }
-        
-        // Check for local test config file (not committed to git)
-        // Note: Bundle.module is not accessible in Swift 6 from test code
-        // Fallback to Bundle(for:) approach
+
+        // Second priority: test-config.json file
+        // SPM puts test resources in a separate resource bundle in the same directory as the xctest bundle
         let testBundle = Bundle(for: TestConfigObjC.self)
-        if let path = testBundle.path(forResource: "test-config", ofType: "json"),
+        let bundleName = "FlagsmithClient_FlagsmithClientTests"
+        let testBundleURL = URL(fileURLWithPath: testBundle.bundlePath)
+        let resourceBundleURL = testBundleURL.deletingLastPathComponent().appendingPathComponent("\(bundleName).bundle")
+
+        if let resourceBundle = Bundle(url: resourceBundleURL),
+           let path = resourceBundle.path(forResource: "test-config", ofType: "json"),
            let data = FileManager.default.contents(atPath: path),
            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
            let key = json["apiKey"] as? String,
            !key.isEmpty {
             return key
         }
-        
+
         // Fallback to mock key for tests that don't need real API
         return "mock-test-api-key"
     }()

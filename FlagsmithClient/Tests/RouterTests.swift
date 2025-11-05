@@ -55,7 +55,9 @@ final class RouterTests: FlagsmithClientTestCase {
                      "Version part should be a semantic version number (e.g., 3.8.4), got: \(versionPart)")
         
         // Should be the expected SDK version
+        // x-release-please-start-version
         XCTAssertEqual(versionPart, "3.8.4", "Expected SDK version 3.8.4, got: \(versionPart)")
+        // x-release-please-end
     }
 
     func testGetIdentityRequest() throws {
