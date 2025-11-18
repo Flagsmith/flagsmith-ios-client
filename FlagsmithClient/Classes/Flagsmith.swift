@@ -18,38 +18,22 @@ public final class Flagsmith: @unchecked Sendable {
     /// Shared singleton client object
     public static let shared: Flagsmith = .init()
     
-    /// SDK version constant - should match the podspec version
-    /// This is used as a fallback when bundle version detection fails
+    /// SDK version constant - managed by release-please
     // x-release-please-start-version
     private static let sdkVersionConstant = "3.8.4"
     // // x-release-please-end
-    
+
     /// User-Agent header value for HTTP requests
     /// Format: flagsmith-swift-ios-sdk/<version>
-    /// Falls back to hardcoded constant if version is not discoverable at runtime
+    /// Version is managed by release-please automation
     public static var userAgent: String {
         let version = getSDKVersion()
         return "flagsmith-swift-ios-sdk/\(version)"
     }
-    
-    /// Get the SDK version from the bundle at runtime
-    /// Falls back to hardcoded constant if version is not discoverable
+
+    /// Get the SDK version
+    /// Returns the version constant managed by release-please
     private static func getSDKVersion() -> String {
-        // Try CocoaPods bundle first
-        if let bundle = Bundle(identifier: "org.cocoapods.FlagsmithClient"),
-        let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String,
-        !version.isEmpty,
-        version.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) != nil {
-            return version
-        }
-
-        // Try SPM bundle
-        if let version = Bundle(for: Flagsmith.self).infoDictionary?["CFBundleShortVersionString"] as? String,
-        !version.isEmpty,
-        version.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) != nil {
-            return version
-        }
-
         return sdkVersionConstant
     }
     private let apiManager: APIManager
