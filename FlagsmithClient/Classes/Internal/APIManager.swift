@@ -142,6 +142,13 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
             return
         }
 
+        // Inject custom headers (called fresh per request to support dynamic values like OAuth tokens)
+        if let headers = Flagsmith.shared.customHeaders?() {
+            for (key, value) in headers {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+        }
+
         // set the cache policy based on Flagsmith settings
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         if Flagsmith.shared.cacheConfig.useCache {

@@ -58,6 +58,20 @@ public final class Flagsmith: @unchecked Sendable {
         }
     }
 
+    /// Custom HTTP headers to inject into every Flagsmith request.
+    ///
+    /// The closure is invoked **fresh** on every request, so dynamic values
+    /// (like OAuth Bearer tokens that get refreshed) are always up to date.
+    ///
+    /// Example — inject an Authorization header:
+    /// ```swift
+    /// Flagsmith.shared.customHeaders = { [weak tokenStore] in
+    ///     guard let token = tokenStore?.tokens?.accessToken else { return [:] }
+    ///     return ["Authorization": "Bearer \(token)"]
+    /// }
+    /// ```
+    public var customHeaders: (@Sendable () -> [String: String])?
+
     /// Is flag analytics enabled?
     public var enableAnalytics: Bool {
         get { analytics.enableAnalytics }

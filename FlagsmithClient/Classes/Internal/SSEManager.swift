@@ -158,6 +158,13 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         request.setValue("keep-alive", forHTTPHeaderField: "Connection")
 
+        // Inject custom headers (called fresh per request to support dynamic values like OAuth tokens)
+        if let headers = Flagsmith.shared.customHeaders?() {
+            for (key, value) in headers {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+        }
+
         completionHandler = completion
         dataTask = session.dataTask(with: request)
         dataTask?.resume()
