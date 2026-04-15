@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.10.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.9.0...v3.10.0) (2026-04-15)
+
+
+### Features
+
+* Send a standard User-Agent: sdk-name/version header ([#104](https://github.com/Flagsmith/flagsmith-ios-client/issues/104)) ([6bb72dd](https://github.com/Flagsmith/flagsmith-ios-client/commit/6bb72ddc7f68c9b99dcb03a145200c12c2668756))
+
+
+### Other
+
+* Remove amannn/action-semantic-pull-request workflow ([#101](https://github.com/Flagsmith/flagsmith-ios-client/issues/101)) ([c5d8181](https://github.com/Flagsmith/flagsmith-ios-client/commit/c5d818146c19f1fd08450444cd5310964859de82))
+
 ## [3.9.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.8.4...v3.9.0) (2025-10-30)
 
 

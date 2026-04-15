@@ -21,7 +21,7 @@ final class RouterTests: FlagsmithClientTestCase {
         XCTAssertTrue(request.allHTTPHeaderFields?.contains(where: { $0.key == "X-Environment-Key" }) ?? false)
         XCTAssertNil(request.httpBody)
         // x-release-please-start-version
-        XCTAssertEqual(request.allHTTPHeaderFields?["User-Agent"], "flagsmith-swift-ios-sdk/3.9.0")
+        XCTAssertEqual(request.allHTTPHeaderFields?["User-Agent"], "flagsmith-swift-ios-sdk/3.10.0")
         // x-release-please-end
     }
 
