@@ -10,7 +10,9 @@
             "prerelease": false,
             "include-component-in-tag": false,
             "extra-files": [
-                "FlagsmithClient.podspec"
+                "FlagsmithClient.podspec",
+                "FlagsmithClient/Classes/Internal/Router.swift",
+                "FlagsmithClient/Tests/RouterTests.swift"
             ]
         }
     },

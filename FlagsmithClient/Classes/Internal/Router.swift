@@ -11,6 +11,11 @@ import Foundation
 #endif
 
 enum Router: Sendable {
+    // x-release-please-start-version
+    private static let sdkVersion = "3.9.0"
+    // x-release-please-end
+    static let userAgent = "flagsmith-swift-ios-sdk/\(sdkVersion)"
+
     private enum HTTPMethod: String {
         case get = "GET"
         case post = "POST"
@@ -102,6 +107,7 @@ enum Router: Sendable {
         }
         request.addValue(apiKey, forHTTPHeaderField: "X-Environment-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue(Router.userAgent, forHTTPHeaderField: "User-Agent")
 
         return request
     }

@@ -20,6 +20,9 @@ final class RouterTests: FlagsmithClientTestCase {
         XCTAssertEqual(request.url?.absoluteString, "https://edge.api.flagsmith.com/api/v1/flags/")
         XCTAssertTrue(request.allHTTPHeaderFields?.contains(where: { $0.key == "X-Environment-Key" }) ?? false)
         XCTAssertNil(request.httpBody)
+        // x-release-please-start-version
+        XCTAssertEqual(request.allHTTPHeaderFields?["User-Agent"], "flagsmith-swift-ios-sdk/3.9.0")
+        // x-release-please-end
     }
 
     func testGetIdentityRequest() throws {
