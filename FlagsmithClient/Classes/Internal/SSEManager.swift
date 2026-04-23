@@ -159,6 +159,13 @@ final class SSEManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
         request.setValue("keep-alive", forHTTPHeaderField: "Connection")
         request.setValue(Router.userAgent, forHTTPHeaderField: "User-Agent")
 
+        // Inject custom headers (called fresh per request to support dynamic values like OAuth tokens)
+        if let headers = Flagsmith.shared.customHeaders?() {
+            for (key, value) in headers {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+        }
+
         completionHandler = completion
         dataTask = session.dataTask(with: request)
         dataTask?.resume()
