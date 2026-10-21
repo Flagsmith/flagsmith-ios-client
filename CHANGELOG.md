@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.10.1](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.10.0...v3.10.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* serialize lastUsedIdentity to avoid EXC_BAD_ACCESS under concurrent async callers ([#107](https://github.com/Flagsmith/flagsmith-ios-client/issues/107)) ([407b473](https://github.com/Flagsmith/flagsmith-ios-client/commit/407b47338c6a39f173cc5e33d483ca3421e0bfb7))
+
+
+### Other
+
+* Reword comment added in [#107](https://github.com/Flagsmith/flagsmith-ios-client/issues/107) ([#111](https://github.com/Flagsmith/flagsmith-ios-client/issues/111)) ([a3662a3](https://github.com/Flagsmith/flagsmith-ios-client/commit/a3662a3d431f2ef40dba425e4a7aa0e921eac990))
+
 ## [3.10.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.9.0...v3.10.0) (2026-04-15)
 
 
