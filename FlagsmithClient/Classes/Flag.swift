@@ -15,11 +15,13 @@ public struct Flag: Codable, Sendable, Equatable {
         case feature
         case value = "feature_state_value"
         case enabled
+        case reason
     }
 
     public let feature: Feature
     public let value: TypedValue
     public let enabled: Bool
+    public let reason: String?
 
     public init(featureName: String, boolValue: Bool, enabled: Bool,
                 featureType: String? = nil, featureDescription: String? = nil)
@@ -57,11 +59,12 @@ public struct Flag: Codable, Sendable, Equatable {
     }
 
     public init(featureName: String, value: TypedValue, enabled: Bool,
-                featureType: String? = nil, featureDescription: String? = nil)
+                featureType: String? = nil, featureDescription: String? = nil, reason: String? = nil)
     {
         feature = Feature(name: featureName, type: featureType, description: featureDescription)
         self.value = value
         self.enabled = enabled
+        self.reason = reason
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -69,6 +72,7 @@ public struct Flag: Codable, Sendable, Equatable {
         try container.encode(feature, forKey: .feature)
         try container.encode(value, forKey: .value)
         try container.encode(enabled, forKey: .enabled)
+        try container.encodeIfPresent(reason, forKey: .reason)
     }
     
     public static func == (lhs: Flag, rhs: Flag) -> Bool {
