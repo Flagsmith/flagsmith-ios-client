@@ -24,10 +24,7 @@ public final class Flagsmith: @unchecked Sendable {
     // The last time we got flags via the API
     private var lastUpdatedAt: Double = 0.0
 
-    // The last identity used for fetching flags. Backed by a serialized
-    // accessor because `getFeatureFlags(forIdentity:...)` writes it
-    // unconditionally on entry, on whatever executor the caller is on —
-    // concurrent async callers race here and can corrupt the String? storage.
+    // The last identity used for fetching flags
     private var _lastUsedIdentity: String?
     private var lastUsedIdentity: String? {
         get { apiManager.propertiesSerialAccessQueue.sync { _lastUsedIdentity } }
