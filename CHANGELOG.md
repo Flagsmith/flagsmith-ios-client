@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.10.2](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.10.1...v3.10.2) (2026-10-21)
+
+
+### CI
+
+* Label Renovate's SDK spec bump PRs ([#113](https://github.com/Flagsmith/flagsmith-ios-client/issues/113)) ([64691d1](https://github.com/Flagsmith/flagsmith-ios-client/commit/64691d1ad015fb433721401fd60b4d472e94a438))
+* Run the Flagsmith SDK behavioural spec ([#109](https://github.com/Flagsmith/flagsmith-ios-client/issues/109)) ([afda3b4](https://github.com/Flagsmith/flagsmith-ios-client/commit/afda3b4d22f5161fe781beec365fe741a74093d9))
+
 ## [3.10.1](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.10.0...v3.10.1) (2026-10-21)
 
 
