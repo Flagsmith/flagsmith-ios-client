@@ -43,4 +43,43 @@ final class FlagTests: FlagsmithClientTestCase {
         XCTAssertEqual(disabledFlag.feature.name, "realtime_diagnostics_level")
         XCTAssertEqual(disabledFlag.value, .string("debug"))
     }
+
+    func testDecodeFlagServedInExperiment() throws {
+        // Given
+        let json = """
+        {
+            "feature": { "name": "banner" },
+            "feature_state_value": "hello treatment",
+            "enabled": true,
+            "variant": "treatment",
+            "metadata": { "experiment": { "id": 1, "name": "banner experiment", "in_experiment": true } }
+        }
+        """
+
+        // When
+        let flag = try decoder.decode(Flag.self, from: Data(json.utf8))
+
+        // Then
+        XCTAssertEqual(flag.value, .string("hello treatment"))
+        XCTAssertEqual(flag.variant, "treatment")
+        XCTAssertEqual(flag.experiment, Experiment(id: 1, name: "banner experiment", inExperiment: true))
+        XCTAssertEqual(try decoder.decode(Flag.self, from: encoder.encode(flag)).experiment, flag.experiment)
+    }
+
+    func testDecodeFlagWithoutExperiment() throws {
+        // Given
+        let json = """
+        [
+            { "feature": { "name": "banner" }, "feature_state_value": "hello", "enabled": true },
+            { "feature": { "name": "theme" }, "feature_state_value": "dark", "enabled": true, "metadata": { "experiment": "unknown" } }
+        ]
+        """
+
+        // When
+        let flags = try decoder.decode([Flag].self, from: Data(json.utf8))
+
+        // Then
+        XCTAssertEqual(flags.map(\.variant), [nil, nil])
+        XCTAssertEqual(flags.map(\.experiment), [nil, nil])
+    }
 }
