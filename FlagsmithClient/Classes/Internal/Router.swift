@@ -12,7 +12,7 @@ import Foundation
 
 enum Router: Sendable {
     // x-release-please-start-version
-    private static let sdkVersion = "3.10.1"
+    static let sdkVersion = "3.10.1"
     // x-release-please-end
     static let userAgent = "flagsmith-swift-ios-sdk/\(sdkVersion)"
 
@@ -26,12 +26,13 @@ enum Router: Sendable {
     case postTrait(trait: Trait, identity: String)
     case postTraits(identity: String, traits: [Trait], transient: Bool = false)
     case postAnalytics(events: [String: Int])
+    case postEvents(events: [Event])
 
     private var method: HTTPMethod {
         switch self {
         case .getFlags, .getIdentity:
             return .get
-        case .postTrait, .postTraits, .postAnalytics:
+        case .postTrait, .postTraits, .postAnalytics, .postEvents:
             return .post
         }
     }
@@ -46,6 +47,8 @@ enum Router: Sendable {
             return "traits/"
         case .postAnalytics:
             return "analytics/flags/"
+        case .postEvents:
+            return "v1/events"
         }
     }
 
@@ -74,6 +77,8 @@ enum Router: Sendable {
             return try encoder.encode(traitsWithIdentity)
         case let .postAnalytics(events):
             return try encoder.encode(events)
+        case let .postEvents(events):
+            return try encoder.encode(["events": events])
         }
     }
 
