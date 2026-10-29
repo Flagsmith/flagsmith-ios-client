@@ -136,4 +136,35 @@ final class RouterTests: FlagsmithClientTestCase {
         """.json(using: .utf8)
         XCTAssertEqual(try request.httpBody.json(), json)
     }
+
+    func testPostEventsRequest() throws {
+        // Given
+        let url = try XCTUnwrap(URL(string: "https://events.api.flagsmith.com/"))
+        let event = Event(event: "checkout_completed", featureName: nil, identifier: "user_123", value: "42",
+                          traits: nil, metadata: ["currency": .string("GBP")], timestamp: 1_700_000_000_000)
+
+        // When
+        let request = try Router.postEvents(events: [event]).request(baseUrl: url, apiKey: apiKey, using: encoder)
+
+        // Then
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.url?.absoluteString, "https://events.api.flagsmith.com/v1/events")
+        XCTAssertEqual(request.allHTTPHeaderFields?["X-Environment-Key"], apiKey)
+        let json = try """
+        {
+          "events" : [
+            {
+              "event" : "checkout_completed",
+              "feature_name" : null,
+              "identifier" : "user_123",
+              "value" : "42",
+              "traits" : null,
+              "metadata" : { "currency" : "GBP" },
+              "timestamp" : 1700000000000
+            }
+          ]
+        }
+        """.json(using: .utf8)
+        XCTAssertEqual(try request.httpBody.json(), json)
+    }
 }

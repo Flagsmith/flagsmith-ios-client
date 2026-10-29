@@ -20,6 +20,7 @@ public final class Flagsmith: @unchecked Sendable {
     private let apiManager: APIManager
     private let sseManager: SSEManager
     private let analytics: FlagsmithAnalytics
+    private let events: FlagsmithEvents
 
     // The last time we got flags via the API
     private var lastUpdatedAt: Double = 0.0
@@ -90,6 +91,28 @@ public final class Flagsmith: @unchecked Sendable {
         set { analytics.flushPeriod = newValue }
     }
 
+    /// Are experimentation events sent? Defaults to `false`.
+    ///
+    /// Events are tracked with `trackEvent`, `trackExposureEvent` and `getExperimentFlag`.
+    public var enableEvents: Bool {
+        get { events.enabled }
+        set { events.enabled = newValue }
+    }
+
+    /// Base `URL` of Flagsmith's events API.
+    ///
+    /// The default implementation uses: `https://events.api.flagsmith.com/`.
+    public var eventsBaseURL: URL {
+        get { events.baseURL }
+        set { events.baseURL = newValue }
+    }
+
+    /// How often to send the experimentation events, in seconds
+    public var eventsFlushPeriod: Int {
+        get { events.flushPeriod }
+        set { events.flushPeriod = newValue }
+    }
+
     /// Default flags to fall back on if an API call fails
     private var _defaultFlags: [Flag] = []
     public var defaultFlags: [Flag] {
@@ -120,6 +143,7 @@ public final class Flagsmith: @unchecked Sendable {
         apiManager = APIManager()
         sseManager = SSEManager()
         analytics = FlagsmithAnalytics(apiManager: apiManager)
+        events = FlagsmithEvents(apiManager: apiManager)
     }
 
     /// Get all feature flags (flags and remote config) optionally for a specific identity
@@ -428,6 +452,84 @@ extension Flagsmith {
                 }
             }
         }
+    }
+
+    /// Get a feature flag for an identity, and record that the identity was exposed to it
+    ///
+    /// When events are enabled, and the identity is enrolled in a running experiment on the feature,
+    /// this tracks a `$flag_exposure` event with the variant the identity was served.
+    ///
+    /// - Parameters:
+    ///   - id: ID of the feature
+    ///   - identity: ID of the user
+    ///   - traits: Traits of the user (optional)
+    ///   - completion: Closure with Result which contains the Flag, if the feature exists, in case of success or Error in case of failure
+    public func getExperimentFlag(withID id: String,
+                                  forIdentity identity: String,
+                                  traits: [Trait]? = nil,
+                                  completion: @Sendable @escaping (Result<Flag?, any Error>) -> Void)
+    {
+        analytics.trackEvent(flagName: id)
+        getFeatureFlags(forIdentity: identity, traits: traits) { result in
+            completion(result.map { flags in
+                let flag = flags.first(where: { $0.feature.name == id })
+                if let flag = flag {
+                    self.events.trackExposure(to: flag, identifier: identity, traits: traits.map(self.traitValues))
+                }
+                return flag
+            })
+        }
+    }
+
+    /// Track an event, e.g. a conversion, when events are enabled
+    ///
+    /// - Parameters:
+    ///   - event: Name of the event. Names starting with `$` are reserved for Flagsmith.
+    ///   - identity: ID of the user (optional)
+    ///   - value: Value of the event, e.g. a purchase amount (optional)
+    ///   - traits: Traits of the user (optional)
+    ///   - metadata: Additional data about the event (optional)
+    public func trackEvent(_ event: String,
+                           forIdentity identity: String? = nil,
+                           value: TypedValue? = nil,
+                           traits: [Trait]? = nil,
+                           metadata: [String: TypedValue]? = nil) throws
+    {
+        guard !event.hasPrefix("$") else {
+            throw FlagsmithError.invalidArgument("Event names starting with \"$\" are reserved: \(event)")
+        }
+        events.trackEvent(event, identifier: identity, value: value, traits: traits.map(traitValues),
+                          metadata: metadata)
+    }
+
+    /// Track that a user was exposed to a variant of a feature, as a `$flag_exposure` event, when events are enabled
+    ///
+    /// - Parameters:
+    ///   - featureName: Name of the feature
+    ///   - identity: ID of the user
+    ///   - value: The variant the user was exposed to (optional)
+    ///   - traits: Traits of the user (optional)
+    ///   - metadata: Additional data about the exposure, e.g. `experiment_id` (optional)
+    public func trackExposureEvent(forFeature featureName: String,
+                                   forIdentity identity: String,
+                                   value: TypedValue? = nil,
+                                   traits: [Trait]? = nil,
+                                   metadata: [String: TypedValue]? = nil)
+    {
+        events.trackExposureEvent(featureName: featureName, identifier: identity, value: value,
+                                  traits: traits.map(traitValues), metadata: metadata)
+    }
+
+    /// Send the tracked events now
+    ///
+    /// - Parameters:
+    ///   - completion: Closure called once the events have been sent, or dropped after failing to send (optional)
+    public func flushEvents(completion: (@Sendable () -> Void)? = nil) {
+        events.flush(completion: completion)
+    }
+
+    private func traitValues(_ traits: [Trait]) -> [String: TypedValue] {
+        Dictionary(traits.map { ($0.key, $0.typedValue) }) { _, last in last }
     }
 
     /// Get all user traits for provided identity. Optionally filter results with a list of keys
