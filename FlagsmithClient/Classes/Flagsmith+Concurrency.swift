@@ -100,6 +100,28 @@ public extension Flagsmith {
         }
     }
 
+    /// Get a feature flag for an identity, and record that the identity was exposed to it
+    ///
+    /// - Parameters:
+    ///   - id: ID of the feature
+    ///   - identity: ID of the user
+    ///   - traits: Traits of the user (optional)
+    /// - returns: The Flag, if the feature exists
+    func getExperimentFlag(withID id: String, forIdentity identity: String, traits: [Trait]? = nil) async throws -> Flag? {
+        try await withCheckedThrowingContinuation { continuation in
+            getExperimentFlag(withID: id, forIdentity: identity, traits: traits) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+
+    /// Send the tracked events now, and wait until they have been sent, or dropped after failing to send
+    func flushEvents() async {
+        await withCheckedContinuation { continuation in
+            flushEvents { continuation.resume() }
+        }
+    }
+
     /// Get all user traits for provided identity. Optionally filter results with a list of keys
     ///
     /// - Parameters:

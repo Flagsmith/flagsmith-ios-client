@@ -127,8 +127,11 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     ///
     /// - parameters:
     ///   - router: The path and parameters that should be requested.
+    ///   - baseURL: The base URL to request the route from, instead of `self.baseURL`.
     ///   - completion: Function block executed with the result of the request.
-    private func request(_ router: Router, completion: @Sendable @escaping (Result<Data, any Error>) -> Void) {
+    private func request(_ router: Router, baseURL: URL? = nil,
+                         completion: @Sendable @escaping (Result<Data, any Error>) -> Void)
+    {
         guard let apiKey = apiKey, !apiKey.isEmpty else {
             completion(.failure(FlagsmithError.apiKey))
             return
@@ -136,7 +139,7 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
 
         var request: URLRequest
         do {
-            request = try router.request(baseUrl: baseURL, apiKey: apiKey)
+            request = try router.request(baseUrl: baseURL ?? self.baseURL, apiKey: apiKey)
         } catch {
             completion(.failure(error))
             return
@@ -170,9 +173,12 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     ///
     /// - parameters:
     ///   - router: The path and parameters that should be requested.
+    ///   - baseURL: The base URL to request the route from, instead of `self.baseURL`.
     ///   - completion: Function block executed with the result of the request.
-    func request(_ router: Router, completion: @Sendable @escaping (Result<Void, any Error>) -> Void) {
-        request(router) { (result: Result<Data, Error>) in
+    func request(_ router: Router, baseURL: URL? = nil,
+                 completion: @Sendable @escaping (Result<Void, any Error>) -> Void)
+    {
+        request(router, baseURL: baseURL) { (result: Result<Data, Error>) in
             switch result {
             case let .failure(error):
                 completion(.failure(FlagsmithError(error)))
