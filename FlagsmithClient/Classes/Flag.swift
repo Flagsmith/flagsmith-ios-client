@@ -99,6 +99,8 @@ public struct Flag: Codable, Sendable, Equatable {
     public static func == (lhs: Flag, rhs: Flag) -> Bool {
         return lhs.feature.name == rhs.feature.name &&
             lhs.value == rhs.value &&
-            lhs.enabled == rhs.enabled
+            lhs.enabled == rhs.enabled &&
+            lhs.variant == rhs.variant &&
+            lhs.experiment == rhs.experiment
     }
 }

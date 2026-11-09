@@ -82,4 +82,35 @@ final class FlagTests: FlagsmithClientTestCase {
         XCTAssertEqual(flags.map(\.variant), [nil, nil])
         XCTAssertEqual(flags.map(\.experiment), [nil, nil])
     }
+
+    func testFlagChangesWhenTheIdentityIsEnrolledInAnExperimentServingTheSameValue() throws {
+        // Given
+        let json = """
+        [
+            { "feature": { "name": "banner" }, "feature_state_value": "hello", "enabled": true },
+            {
+                "feature": { "name": "banner" },
+                "feature_state_value": "hello",
+                "enabled": true,
+                "variant": "control",
+                "metadata": { "experiment": { "id": 1, "name": "banner experiment", "in_experiment": false } }
+            },
+            {
+                "feature": { "name": "banner" },
+                "feature_state_value": "hello",
+                "enabled": true,
+                "variant": "control",
+                "metadata": { "experiment": { "id": 1, "name": "banner experiment", "in_experiment": true } }
+            }
+        ]
+        """
+
+        // When
+        let flags = try decoder.decode([Flag].self, from: Data(json.utf8))
+
+        // Then
+        XCTAssertNotEqual(flags[0], flags[1])
+        XCTAssertNotEqual(flags[1], flags[2])
+        XCTAssertEqual(flags[2], try decoder.decode(Flag.self, from: encoder.encode(flags[2])))
+    }
 }
