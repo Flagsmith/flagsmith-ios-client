@@ -474,7 +474,7 @@ extension Flagsmith {
             completion(result.map { flags in
                 let flag = flags.first(where: { $0.feature.name == id })
                 if let flag = flag {
-                    self.events.trackExposure(to: flag, identifier: identity, traits: traits.map(self.traitValues))
+                    self.events.trackExposure(to: flag, identifier: identity, traits: traits.flatMap(Self.traitValues))
                 }
                 return flag
             })
@@ -498,7 +498,7 @@ extension Flagsmith {
         guard !event.hasPrefix("$") else {
             throw FlagsmithError.invalidArgument("Event names starting with \"$\" are reserved: \(event)")
         }
-        events.trackEvent(event, identifier: identity, value: value, traits: traits.map(traitValues),
+        events.trackEvent(event, identifier: identity, value: value, traits: traits.flatMap(Self.traitValues),
                           metadata: metadata)
     }
 
@@ -517,7 +517,7 @@ extension Flagsmith {
                                    metadata: [String: TypedValue]? = nil)
     {
         events.trackExposureEvent(featureName: featureName, identifier: identity, value: value,
-                                  traits: traits.map(traitValues), metadata: metadata)
+                                  traits: traits.flatMap(Self.traitValues), metadata: metadata)
     }
 
     /// Send the tracked events now
@@ -528,8 +528,10 @@ extension Flagsmith {
         events.flush(completion: completion)
     }
 
-    private func traitValues(_ traits: [Trait]) -> [String: TypedValue] {
-        Dictionary(traits.map { ($0.key, $0.typedValue) }) { _, last in last }
+    /// The values of the traits, by trait key, or `nil` when there are no traits.
+    static func traitValues(_ traits: [Trait]) -> [String: TypedValue]? {
+        guard !traits.isEmpty else { return nil }
+        return Dictionary(traits.map { ($0.key, $0.typedValue) }) { _, last in last }
     }
 
     /// Get all user traits for provided identity. Optionally filter results with a list of keys

@@ -71,4 +71,23 @@ final class TraitTests: FlagsmithClientTestCase {
         """.json(using: .utf8)
         XCTAssertEqual(try data.json(), json)
     }
+
+    func testTraitsAttachedToEventsAreKeyedByTraitKey() {
+        // Given
+        let traits = [Trait(key: "plan", value: .string("premium")), Trait(key: "age", value: .int(42))]
+
+        // When
+        let values = Flagsmith.traitValues(traits)
+
+        // Then
+        XCTAssertEqual(values, ["plan": .string("premium"), "age": .int(42)])
+    }
+
+    func testNoTraitsAreAttachedToEventsWhenTheTraitsAreEmpty() {
+        // Given / When
+        let values = Flagsmith.traitValues([])
+
+        // Then
+        XCTAssertNil(values)
+    }
 }
