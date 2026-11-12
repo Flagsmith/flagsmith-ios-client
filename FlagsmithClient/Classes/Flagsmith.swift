@@ -59,8 +59,12 @@ public final class Flagsmith: @unchecked Sendable {
     public var apiKey: String? {
         get { apiManager.apiKey }
         set {
+            let changed = apiManager.apiKey != newValue
             apiManager.apiKey = newValue
             sseManager.apiKey = newValue
+            if changed {
+                events.environmentKeyChanged()
+            }
         }
     }
 
@@ -522,10 +526,24 @@ extension Flagsmith {
 
     /// Send the tracked events now
     ///
+    /// A batch that still fails to send after retrying is kept for the next flush, unless the events API rejected it.
+    ///
     /// - Parameters:
-    ///   - completion: Closure called once the events have been sent, or dropped after failing to send (optional)
+    ///   - completion: Closure called once the events have been sent, retries included, or kept or dropped after
+    ///     failing to send (optional)
     public func flushEvents(completion: (@Sendable () -> Void)? = nil) {
         events.flush(completion: completion)
+    }
+
+    /// Send the tracked events, then stop sending events, e.g. before the application stops
+    ///
+    /// Events that could not be sent within the timeout are dropped. Setting `enableEvents` to `true` sends events again.
+    ///
+    /// - Parameters:
+    ///   - timeout: How long to wait for the events to be sent, in seconds
+    ///   - completion: Closure called once the events have been sent, or once the timeout has passed (optional)
+    public func close(timeout: TimeInterval = 5, completion: (@Sendable () -> Void)? = nil) {
+        events.close(timeout: timeout, completion: completion)
     }
 
     /// The values of the traits, by trait key, or `nil` when there are no traits.

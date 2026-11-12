@@ -115,10 +115,22 @@ public extension Flagsmith {
         }
     }
 
-    /// Send the tracked events now, and wait until they have been sent, or dropped after failing to send
+    /// Send the tracked events now, and wait until they have been sent, retries included, or kept or dropped after
+    /// failing to send
     func flushEvents() async {
         await withCheckedContinuation { continuation in
             flushEvents { continuation.resume() }
+        }
+    }
+
+    /// Send the tracked events, then stop sending events, and wait until they have been sent, or until the timeout
+    /// has passed
+    ///
+    /// - Parameters:
+    ///   - timeout: How long to wait for the events to be sent, in seconds
+    func close(timeout: TimeInterval = 5) async {
+        await withCheckedContinuation { continuation in
+            close(timeout: timeout) { continuation.resume() }
         }
     }
 

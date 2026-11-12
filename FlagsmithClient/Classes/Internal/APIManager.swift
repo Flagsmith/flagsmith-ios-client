@@ -67,6 +67,8 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     private var tasksToData: [Int: Data] = [:]
     private let serialAccessQueue = DispatchQueue(label: "flagsmithSerialAccessQueue", qos: .default)
     let propertiesSerialAccessQueue = DispatchQueue(label: "propertiesSerialAccessQueue", qos: .default)
+    /// Sends events: never cached, and answering off the main queue.
+    private let eventsSession = URLSession(configuration: .ephemeral)
 
     override init() {
         super.init()
@@ -186,6 +188,40 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
                 completion(.success(()))
             }
         }
+    }
+
+    /// Posts events to the events API.
+    ///
+    /// - parameters:
+    ///   - events: The events to send.
+    ///   - baseURL: The base URL of the events API.
+    ///   - completion: Function block executed with the HTTP status code of the response, or the error that prevented one.
+    /// - returns: A function cancelling the request.
+    func postEvents(_ events: [Event], baseURL: URL,
+                    completion: @Sendable @escaping (Result<Int, any Error>) -> Void) -> @Sendable () -> Void
+    {
+        guard let apiKey = apiKey, !apiKey.isEmpty else {
+            completion(.failure(FlagsmithError.apiKey))
+            return {}
+        }
+        let request: URLRequest
+        do {
+            request = try Router.postEvents(events: events).request(baseUrl: baseURL, apiKey: apiKey)
+        } catch {
+            completion(.failure(FlagsmithError(error)))
+            return {}
+        }
+        let task = eventsSession.dataTask(with: request) { _, response, error in
+            if let error = error {
+                completion(.failure(FlagsmithError.unhandled(error)))
+            } else if let response = response as? HTTPURLResponse {
+                completion(.success(response.statusCode))
+            } else {
+                completion(.failure(FlagsmithError.unhandled(URLError(.badServerResponse))))
+            }
+        }
+        task.resume()
+        return { task.cancel() }
     }
 
     /// Requests a api route and attempts the decode the response.

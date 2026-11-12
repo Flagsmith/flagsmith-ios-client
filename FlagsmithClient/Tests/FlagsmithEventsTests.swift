@@ -6,7 +6,8 @@
 @testable import FlagsmithClient
 import XCTest
 
-/// Records the batches sent to the events API, and answers each with `result`.
+/// Records the batches sent to the events API, and answers each with the next of `responses`, then with a 202.
+/// A `nil` response leaves the request unanswered until it is cancelled.
 final class EventsAPIMock: @unchecked Sendable {
     private let lock = NSLock()
     private var _batches: [(events: [Event], baseURL: URL)] = []
@@ -15,23 +16,48 @@ final class EventsAPIMock: @unchecked Sendable {
         defer { lock.unlock() }
         return _batches
     }
-    var result: Result<Void, any Error> = .success(())
+
+    private var _cancelled = 0
+    /// How many requests were cancelled.
+    var cancelled: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return _cancelled
+    }
+
+    var responses: [Result<Int, any Error>?] = []
     var onSend: (@Sendable () -> Void)?
 
-    func send(_ events: [Event], _ baseURL: URL, _ completion: @Sendable @escaping (Result<Void, any Error>) -> Void) {
+    func send(_ events: [Event], _ baseURL: URL,
+              _ completion: @Sendable @escaping (Result<Int, any Error>) -> Void) -> @Sendable () -> Void
+    {
         lock.lock()
         _batches.append((events, baseURL))
+        let response = responses.isEmpty ? .success(202) : responses.removeFirst()
         lock.unlock()
         onSend?()
-        completion(result)
+        guard let response = response else {
+            return { [self] in
+                lock.lock()
+                _cancelled += 1
+                lock.unlock()
+                completion(.failure(FlagsmithError.unhandled(URLError(.cancelled))))
+            }
+        }
+        completion(response)
+        return {}
     }
 }
 
 final class FlagsmithEventsTests: FlagsmithClientTestCase {
     let api = EventsAPIMock()
 
-    func makeEvents(maxBuffer: Int = 1000) -> FlagsmithEvents {
-        let events = FlagsmithEvents(maxBuffer: maxBuffer, retryDelay: 0) { [api] in api.send($0, $1, $2) }
+    func makeEvents(maxBuffer: Int = 1000, requestTimeout: TimeInterval = 3,
+                    jitter: @escaping @Sendable (TimeInterval) -> TimeInterval = { _ in 0 }) -> FlagsmithEvents
+    {
+        let events = FlagsmithEvents(maxBuffer: maxBuffer, requestTimeout: requestTimeout, jitter: jitter) { [api] in
+            api.send($0, $1, $2)
+        }
         events.enabled = true
         return events
     }
@@ -40,6 +66,17 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
         let flushed = expectation(description: "Events flushed")
         events.flush { flushed.fulfill() }
         wait(for: [flushed], timeout: 5)
+    }
+
+    func track(_ events: FlagsmithEvents, _ names: String...) {
+        for name in names {
+            events.trackEvent(name, identifier: "user_123", value: nil, traits: nil, metadata: nil)
+        }
+    }
+
+    /// The events of each batch sent, by name.
+    var sentEvents: [[String]] {
+        api.batches.map { $0.events.map(\.event) }
     }
 
     func testTrackedEventIsSentWithItsIdentityValueAndMetadata() throws {
@@ -218,18 +255,182 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
         XCTAssertEqual(api.batches.map { $0.events.map(\.event) }, [["checkout_completed"]])
     }
 
-    func testFailedEventsAreRetriedOnceThenDropped() {
+    func testABatchIsRetriedUntilTheEventsAPIAcceptsIt() {
         // Given
         let events = makeEvents()
-        api.result = .failure(FlagsmithError.statusCode(503))
+        api.responses = [.success(503), .failure(FlagsmithError.unhandled(URLError(.networkConnectionLost)))]
 
         // When
-        events.trackEvent("checkout_completed", identifier: nil, value: nil, traits: nil, metadata: nil)
-        flush(events)
+        track(events, "checkout")
         flush(events)
 
         // Then
-        XCTAssertEqual(api.batches.map { $0.events.map(\.event) }, [["checkout_completed"], ["checkout_completed"]])
+        XCTAssertEqual(sentEvents, [["checkout"], ["checkout"], ["checkout"]])
+    }
+
+    func testRetriesBackOffFromTheRetryDelayDoublingWithJitter() {
+        // Given
+        let delays = DelaysRecorder()
+        let events = makeEvents { delays.record($0) }
+        api.responses = [.success(503), .success(503), .success(503)]
+
+        // When
+        track(events, "checkout")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(delays.delays, [1, 2])
+    }
+
+    func testEachStatusIsRetriedOrNot() {
+        for status in [408, 429, 500, 502, 503, 504] {
+            XCTAssertEqual(FlagsmithEvents.Outcome(.success(status)), .retryable(keep: status != 500), "\(status)")
+        }
+        for status in [200, 202] {
+            XCTAssertEqual(FlagsmithEvents.Outcome(.success(status)), .delivered, "\(status)")
+        }
+        for status in [400, 404, 413, 501] {
+            XCTAssertEqual(FlagsmithEvents.Outcome(.success(status)), .rejected, "\(status)")
+        }
+        for status in [401, 403] {
+            XCTAssertEqual(FlagsmithEvents.Outcome(.success(status)), .unauthorised, "\(status)")
+        }
+        XCTAssertEqual(FlagsmithEvents.Outcome(.failure(FlagsmithError.unhandled(URLError(.timedOut)))),
+                       .retryable(keep: true))
+        XCTAssertEqual(FlagsmithEvents.Outcome(.failure(FlagsmithError.apiKey)), .rejected)
+    }
+
+    func testARequestThatIsNotAnsweredTimesOutAndIsRetried() {
+        // Given
+        let events = makeEvents(requestTimeout: 0.2)
+        api.responses = [nil]
+
+        // When
+        track(events, "checkout")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(sentEvents, [["checkout"], ["checkout"]])
+        XCTAssertEqual(api.cancelled, 1)
+    }
+
+    func testABatchThatKeepsFailingIsSentWithTheNextFlushAheadOfNewerEvents() {
+        // Given
+        let events = makeEvents()
+        api.responses = [.success(503), .success(503), .success(503)]
+
+        // When
+        track(events, "add_to_cart")
+        flush(events)
+        track(events, "checkout")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(sentEvents, [["add_to_cart"], ["add_to_cart"], ["add_to_cart"], ["add_to_cart", "checkout"]])
+    }
+
+    func testABatchWhoseLastAttemptGetsAServerErrorIsDropped() {
+        // Given
+        let events = makeEvents()
+        api.responses = [.success(503), .success(503), .success(500)]
+
+        // When
+        track(events, "add_to_cart")
+        flush(events)
+        track(events, "checkout")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(sentEvents, [["add_to_cart"], ["add_to_cart"], ["add_to_cart"], ["checkout"]])
+    }
+
+    func testABatchTheEventsAPIRejectsIsDroppedAtOnce() {
+        // Given
+        let events = makeEvents()
+        api.responses = [.success(400)]
+
+        // When
+        track(events, "add_to_cart")
+        flush(events)
+        track(events, "checkout")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(sentEvents, [["add_to_cart"], ["checkout"]])
+    }
+
+    func testAFullBufferDropsItsOldestEvent() {
+        // Given
+        let events = makeEvents(maxBuffer: 3)
+        api.responses = [.success(503), .success(503), .success(503)]
+
+        // When
+        track(events, "one", "two", "three")
+        flush(events)
+        track(events, "four")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(sentEvents.last, ["two", "three", "four"])
+        XCTAssertEqual(sentEvents.count, 4)
+    }
+
+    func testAnEventsAPIRefusingTheEnvironmentKeyStopsEventTrackingUntilTheKeyChanges() {
+        for status in [401, 403] {
+            // Given
+            let api = EventsAPIMock()
+            api.responses = [.success(status)]
+            let events = FlagsmithEvents { api.send($0, $1, $2) }
+            events.enabled = true
+
+            // When
+            events.trackEvent("add_to_cart", identifier: nil, value: nil, traits: nil, metadata: nil)
+            flush(events)
+            events.trackEvent("checkout", identifier: nil, value: nil, traits: nil, metadata: nil)
+            flush(events)
+            events.environmentKeyChanged()
+            events.trackEvent("signed_up", identifier: nil, value: nil, traits: nil, metadata: nil)
+            flush(events)
+
+            // Then
+            XCTAssertEqual(api.batches.map { $0.events.map(\.event) }, [["add_to_cart"], ["signed_up"]], "\(status)")
+        }
+    }
+
+    func testClosingSendsTheBufferedEventsRetriesIncludedThenStopsSendingEvents() {
+        // Given
+        let events = makeEvents()
+        api.responses = [.success(503)]
+        track(events, "checkout")
+
+        // When
+        let closed = expectation(description: "Closed")
+        events.close(timeout: 5) { closed.fulfill() }
+        wait(for: [closed], timeout: 5)
+        track(events, "signed_up")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(sentEvents, [["checkout"], ["checkout"]])
+        XCTAssertFalse(events.enabled)
+    }
+
+    func testClosingReturnsWithinItsTimeoutWhenTheEventsAPIDoesNotAnswer() {
+        // Given
+        let events = makeEvents(requestTimeout: 60)
+        api.responses = [nil]
+        track(events, "checkout")
+
+        // When
+        let closed = expectation(description: "Closed")
+        let started = Date()
+        events.close(timeout: 0.2) { closed.fulfill() }
+        wait(for: [closed], timeout: 5)
+
+        // Then
+        XCTAssertLessThan(Date().timeIntervalSince(started), 1)
+        XCTAssertEqual(api.cancelled, 1)
+        XCTAssertEqual(sentEvents, [["checkout"]])
     }
 
     func testTrackingAnEventWithAReservedNameIsRejected() {
@@ -240,5 +441,23 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
                 return XCTFail("Unexpected error: \(error)")
             }
         }
+    }
+}
+
+/// Records the backoffs before jitter, and waits none of them.
+final class DelaysRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var _delays: [TimeInterval] = []
+    var delays: [TimeInterval] {
+        lock.lock()
+        defer { lock.unlock() }
+        return _delays
+    }
+
+    func record(_ delay: TimeInterval) -> TimeInterval {
+        lock.lock()
+        _delays.append(delay)
+        lock.unlock()
+        return 0
     }
 }
