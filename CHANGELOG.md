@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.12.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.11.0...v3.12.0) (2026-11-13)
+
+
+### Features
+
+* Retry event delivery and flush on close ([#127](https://github.com/Flagsmith/flagsmith-ios-client/issues/127)) ([ade67c8](https://github.com/Flagsmith/flagsmith-ios-client/commit/ade67c81d1410dcb7c254d8b2cf77872701ada9f))
+
+
+### Other
+
+* Enable Renovate dependency dashboard ([#126](https://github.com/Flagsmith/flagsmith-ios-client/issues/126)) ([3a82262](https://github.com/Flagsmith/flagsmith-ios-client/commit/3a822625b124a31bafd21d3cb4b918b37df53cb0))
+
 ## [3.11.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.10.1...v3.11.0) (2026-11-09)
 
 
