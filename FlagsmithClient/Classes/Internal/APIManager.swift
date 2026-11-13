@@ -195,12 +195,13 @@ final class APIManager: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     /// - parameters:
     ///   - events: The events to send.
     ///   - baseURL: The base URL of the events API.
+    ///   - environmentKey: The environment key to send the events with.
     ///   - completion: Function block executed with the HTTP status code of the response, or the error that prevented one.
     /// - returns: A function cancelling the request.
-    func postEvents(_ events: [Event], baseURL: URL,
+    func postEvents(_ events: [Event], baseURL: URL, environmentKey: String?,
                     completion: @Sendable @escaping (Result<Int, any Error>) -> Void) -> @Sendable () -> Void
     {
-        guard let apiKey = apiKey, !apiKey.isEmpty else {
+        guard let apiKey = environmentKey, !apiKey.isEmpty else {
             completion(.failure(FlagsmithError.apiKey))
             return {}
         }

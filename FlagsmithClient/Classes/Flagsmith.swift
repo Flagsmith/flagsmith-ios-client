@@ -59,12 +59,9 @@ public final class Flagsmith: @unchecked Sendable {
     public var apiKey: String? {
         get { apiManager.apiKey }
         set {
-            let changed = apiManager.apiKey != newValue
             apiManager.apiKey = newValue
             sseManager.apiKey = newValue
-            if changed {
-                events.environmentKeyChanged()
-            }
+            events.environmentKey = newValue
         }
     }
 

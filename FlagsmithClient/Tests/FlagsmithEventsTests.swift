@@ -7,11 +7,13 @@
 import XCTest
 
 /// Records the batches sent to the events API, and answers each with the next of `responses`, then with a 202.
-/// A `nil` response leaves the request unanswered until it is cancelled.
+/// A `nil` response leaves the request unanswered until it is cancelled, or answered with `answer`.
 final class EventsAPIMock: @unchecked Sendable {
+    typealias Batch = (events: [Event], baseURL: URL, environmentKey: String?)
+
     private let lock = NSLock()
-    private var _batches: [(events: [Event], baseURL: URL)] = []
-    var batches: [(events: [Event], baseURL: URL)] {
+    private var _batches: [Batch] = []
+    var batches: [Batch] {
         lock.lock()
         defer { lock.unlock() }
         return _batches
@@ -25,15 +27,20 @@ final class EventsAPIMock: @unchecked Sendable {
         return _cancelled
     }
 
+    private var unanswered: [@Sendable (Result<Int, any Error>) -> Void] = []
+
     var responses: [Result<Int, any Error>?] = []
     var onSend: (@Sendable () -> Void)?
 
-    func send(_ events: [Event], _ baseURL: URL,
+    func send(_ events: [Event], _ baseURL: URL, _ environmentKey: String?,
               _ completion: @Sendable @escaping (Result<Int, any Error>) -> Void) -> @Sendable () -> Void
     {
         lock.lock()
-        _batches.append((events, baseURL))
+        _batches.append((events, baseURL, environmentKey))
         let response = responses.isEmpty ? .success(202) : responses.removeFirst()
+        if response == nil {
+            unanswered.append(completion)
+        }
         lock.unlock()
         onSend?()
         guard let response = response else {
@@ -47,6 +54,14 @@ final class EventsAPIMock: @unchecked Sendable {
         completion(response)
         return {}
     }
+
+    /// Answers the oldest request left unanswered.
+    func answer(_ response: Result<Int, any Error>) {
+        lock.lock()
+        let completion = unanswered.removeFirst()
+        lock.unlock()
+        completion(response)
+    }
 }
 
 final class FlagsmithEventsTests: FlagsmithClientTestCase {
@@ -56,8 +71,9 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
                     jitter: @escaping @Sendable (TimeInterval) -> TimeInterval = { _ in 0 }) -> FlagsmithEvents
     {
         let events = FlagsmithEvents(maxBuffer: maxBuffer, requestTimeout: requestTimeout, jitter: jitter) { [api] in
-            api.send($0, $1, $2)
+            api.send($0, $1, $2, $3)
         }
+        events.environmentKey = "key"
         events.enabled = true
         return events
     }
@@ -380,7 +396,8 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
             // Given
             let api = EventsAPIMock()
             api.responses = [.success(status)]
-            let events = FlagsmithEvents { api.send($0, $1, $2) }
+            let events = FlagsmithEvents { api.send($0, $1, $2, $3) }
+            events.environmentKey = "key"
             events.enabled = true
 
             // When
@@ -388,7 +405,7 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
             flush(events)
             events.trackEvent("checkout", identifier: nil, value: nil, traits: nil, metadata: nil)
             flush(events)
-            events.environmentKeyChanged()
+            events.environmentKey = "other_key"
             events.trackEvent("signed_up", identifier: nil, value: nil, traits: nil, metadata: nil)
             flush(events)
 
@@ -431,6 +448,79 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
         XCTAssertLessThan(Date().timeIntervalSince(started), 1)
         XCTAssertEqual(api.cancelled, 1)
         XCTAssertEqual(sentEvents, [["checkout"]])
+    }
+
+    func testOverlappingCloseCallsEachCompleteByTheirTimeout() {
+        // Given
+        let events = makeEvents(requestTimeout: 60)
+        api.responses = [nil]
+        track(events, "checkout")
+
+        // When
+        let closed = expectation(description: "Closed")
+        closed.expectedFulfillmentCount = 2
+        events.close(timeout: 0.2) { closed.fulfill() }
+        events.close(timeout: 30) { closed.fulfill() }
+
+        // Then
+        wait(for: [closed], timeout: 5)
+        XCTAssertEqual(api.cancelled, 1)
+    }
+
+    func testEventsAreSentWithTheEnvironmentKeyTheyWereTrackedUnder() {
+        // Given
+        let events = makeEvents()
+
+        // When
+        track(events, "one")
+        events.environmentKey = "other_key"
+        track(events, "two")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(api.batches.map { $0.events.map(\.event) }, [["one"], ["two"]])
+        XCTAssertEqual(api.batches.map(\.environmentKey), ["key", "other_key"])
+    }
+
+    func testABatchIsRetriedWithItsEnvironmentKeyAndBaseURLAfterTheyChange() throws {
+        // Given
+        let events = makeEvents(requestTimeout: 60)
+        api.responses = [nil]
+        track(events, "checkout")
+        let flushed = expectation(description: "Events flushed")
+        events.flush { flushed.fulfill() }
+
+        // When
+        events.environmentKey = "other_key"
+        events.baseURL = try XCTUnwrap(URL(string: "http://other-events:8080/"))
+        api.answer(.success(503))
+        wait(for: [flushed], timeout: 5)
+
+        // Then
+        XCTAssertEqual(api.batches.map(\.environmentKey), ["key", "key"])
+        XCTAssertEqual(api.batches.map(\.baseURL.absoluteString), ["https://events.api.flagsmith.com/",
+                                                                   "https://events.api.flagsmith.com/"])
+    }
+
+    func testARefusalOfAPreviousEnvironmentKeyDoesNotStopEventTracking() {
+        // Given
+        let events = makeEvents(requestTimeout: 60)
+        api.responses = [nil]
+        track(events, "add_to_cart")
+        let flushed = expectation(description: "Events flushed")
+        events.flush { flushed.fulfill() }
+
+        // When
+        events.environmentKey = "other_key"
+        track(events, "checkout")
+        api.answer(.success(401))
+        wait(for: [flushed], timeout: 5)
+        track(events, "signed_up")
+        flush(events)
+
+        // Then
+        XCTAssertEqual(api.batches.map { $0.events.map(\.event) }, [["add_to_cart"], ["checkout"], ["signed_up"]])
+        XCTAssertEqual(api.batches.map(\.environmentKey), ["key", "other_key", "other_key"])
     }
 
     func testTrackingAnEventWithAReservedNameIsRejected() {
