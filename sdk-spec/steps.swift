@@ -102,3 +102,21 @@ public func trackEvent(_ client: Client, event: String, identifier: String, valu
 public func trackExposureEvent(_ client: Client, feature: String, identifier: String, value: TypedValue, metadata: [String: TypedValue]) {
     client.flagsmith.trackExposureEvent(forFeature: feature, forIdentity: identifier, value: value, metadata: metadata)
 }
+
+// When the application tracks events "event_{first}" to "event_{last}" for identity "{identifier}"
+public func trackNumberedEvents(_ client: Client, first: Int, last: Int, identifier: String) throws {
+    let flagsmith = client.flagsmith
+    for number in first ... last {
+        try flagsmith.trackEvent("event_\(number)", forIdentity: identifier)
+    }
+}
+
+// When the application flushes events
+public func flushEvents(_ client: Client) async {
+    await client.flagsmith.flushEvents()
+}
+
+// When the application closes the client with a timeout of {timeout} seconds
+public func closeClient(_ client: Client, timeout: Double) async {
+    await client.flagsmith.close(timeout: timeout)
+}
