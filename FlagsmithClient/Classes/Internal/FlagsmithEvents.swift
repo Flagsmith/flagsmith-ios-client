@@ -25,6 +25,8 @@ struct Event: Encodable, Equatable, Sendable {
     let metadata: [String: TypedValue]
     /// Milliseconds since the Unix epoch.
     let timestamp: Int
+    /// The environment key the event was tracked under, which it is sent with. Not part of the event sent.
+    var environmentKey: String?
 
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -42,21 +44,31 @@ struct Event: Encodable, Equatable, Sendable {
 ///
 /// Sends every `flushPeriod` seconds, once `maxBuffer` events are buffered, and on `flush`. Exposures are
 /// deduplicated within a batch. One batch is in flight at a time, and each request times out after
-/// `requestTimeout` seconds.
+/// `requestTimeout` seconds. An event is sent with the environment key it was tracked under, so a batch only holds
+/// events of one key, and keeps its key and base URL across retries.
 ///
 /// A batch is retried on a network error, a timeout, or a 408, 429, 500, 502, 503 or 504, for up to
 /// `maxAttempts` attempts, backing off from `retryDelay` seconds, doubling, with full jitter. A batch that
 /// still fails is kept, ahead of newer events, for the next flush, unless its last attempt got a 500. Any
-/// other status drops the batch. A 401 or 403 drops the buffer, and makes tracking a no-op until the
-/// environment key changes. The buffer holds `maxBuffer` events, and drops the oldest when full.
+/// other status drops the batch. A 401 or 403 for the current environment key drops the buffer, and makes
+/// tracking a no-op until the key changes. The buffer holds `maxBuffer` events, and drops the oldest when full.
 final class FlagsmithEvents: @unchecked Sendable {
     static let flagExposureEvent = "$flag_exposure"
 
-    /// Sends a batch of events to the events API at a base URL, and returns a function cancelling the request.
+    /// Sends a batch of events to the events API at a base URL with an environment key, and returns a function
+    /// cancelling the request.
     ///
     /// The completion receives the HTTP status code of the response, or the error that prevented one.
-    typealias Send = @Sendable (_ events: [Event], _ baseURL: URL,
+    typealias Send = @Sendable (_ events: [Event], _ baseURL: URL, _ environmentKey: String?,
                                 _ completion: @Sendable @escaping (Result<Int, any Error>) -> Void) -> @Sendable () -> Void
+
+    /// A batch being sent, with where it goes, fixed when it is first sent, and which attempt this is.
+    private struct Batch {
+        let events: [Event]
+        let baseURL: URL
+        let environmentKey: String?
+        var attempt = 1
+    }
 
     private let send: Send
     private let queue = DispatchQueue(label: "flagsmithEventsQueue", qos: .utility)
@@ -76,6 +88,20 @@ final class FlagsmithEvents: @unchecked Sendable {
     var baseURL: URL {
         get { queue.sync { _baseURL } }
         set { queue.sync { _baseURL = newValue } }
+    }
+
+    private var _environmentKey: String?
+    /// The environment key events are tracked under. Changing it lets events be tracked again after the events API
+    /// refused the previous key.
+    var environmentKey: String? {
+        get { queue.sync { _environmentKey } }
+        set {
+            queue.sync {
+                guard newValue != _environmentKey else { return }
+                _environmentKey = newValue
+                unauthorised = false
+            }
+        }
     }
 
     private var _flushPeriod: Int = 10
@@ -110,6 +136,9 @@ final class FlagsmithEvents: @unchecked Sendable {
     private var generation = 0
     /// Called on `queue` once no batch is being sent.
     private var idleHandlers: [() -> Void] = []
+    /// The completions of the `close` calls in progress, by call.
+    private var closeCompletions: [Int: (@Sendable () -> Void)?] = [:]
+    private var lastCloseID = 0
 
     init(maxBuffer: Int = 1000, maxAttempts: Int = 3, retryDelay: TimeInterval = 1, requestTimeout: TimeInterval = 3,
          jitter: @escaping @Sendable (TimeInterval) -> TimeInterval = { .random(in: 0 ... $0) },
@@ -124,8 +153,8 @@ final class FlagsmithEvents: @unchecked Sendable {
     }
 
     convenience init(apiManager: APIManager) {
-        self.init { events, baseURL, completion in
-            apiManager.postEvents(events, baseURL: baseURL, completion: completion)
+        self.init { events, baseURL, environmentKey, completion in
+            apiManager.postEvents(events, baseURL: baseURL, environmentKey: environmentKey, completion: completion)
         }
     }
 
@@ -164,14 +193,9 @@ final class FlagsmithEvents: @unchecked Sendable {
     func flush(completion: (@Sendable () -> Void)? = nil) {
         queue.sync {
             held = false
-            whenIdle { [self] in
-                if !held {
-                    sendBuffer()
-                }
-                whenIdle {
-                    if let completion = completion {
-                        DispatchQueue.global().async(execute: completion)
-                    }
+            drain {
+                if let completion = completion {
+                    DispatchQueue.global().async(execute: completion)
                 }
             }
         }
@@ -181,44 +205,51 @@ final class FlagsmithEvents: @unchecked Sendable {
     /// seconds have passed, whichever comes first.
     ///
     /// When the timeout passes, the request in flight is cancelled, and the events not sent are dropped.
-    /// Setting `enabled` sends events again.
+    /// Overlapping calls share the flush, and each completes by its own timeout. Setting `enabled` sends events again.
     func close(timeout: TimeInterval, completion: (@Sendable () -> Void)? = nil) {
         queue.sync {
-            let closing = generation
-            let stop: @Sendable () -> Void = { [self] in
-                guard generation == closing else { return }
-                generation += 1
-                request?.cancel()
-                request = nil
-                sending = false
+            lastCloseID += 1
+            let id = lastCloseID
+            let isFirst = closeCompletions.isEmpty
+            closeCompletions[id] = completion
+            if isFirst {
                 held = false
-                buffer = []
-                exposureKeys = []
-                _enabled = false
-                timer?.cancel()
-                timer = nil
-                if let completion = completion {
-                    DispatchQueue.global().async(execute: completion)
+                drain { [self] in
+                    if !closeCompletions.isEmpty {
+                        stop()
+                    }
                 }
-                runIdleHandlers()
             }
-            held = false
-            whenIdle { [self] in
-                sendBuffer()
-                whenIdle(stop)
+            queue.asyncAfter(deadline: .now() + timeout) { [weak self] in
+                guard let self = self, self.closeCompletions[id] != nil else { return }
+                self.stop()
             }
-            queue.asyncAfter(deadline: .now() + timeout, execute: stop)
         }
     }
 
-    /// Lets events be tracked again after the events API refused the environment key, once that key has changed.
-    func environmentKeyChanged() {
-        queue.sync { unauthorised = false }
+    /// Stops sending events, dropping those not sent, and completes the `close` calls in progress. Must be called on `queue`.
+    private func stop() {
+        generation += 1
+        request?.cancel()
+        request = nil
+        sending = false
+        held = false
+        buffer = []
+        exposureKeys = []
+        _enabled = false
+        timer?.cancel()
+        timer = nil
+        let completions = closeCompletions.values.compactMap { $0 }
+        closeCompletions = [:]
+        completions.forEach { DispatchQueue.global().async(execute: $0) }
+        runIdleHandlers()
     }
 
     private func record(_ event: Event) {
         queue.sync {
             guard _enabled, !unauthorised else { return }
+            var event = event
+            event.environmentKey = _environmentKey
             if event.event == Self.flagExposureEvent {
                 // The experiment is part of the key, so that a new experiment on the same flag and variant is recorded.
                 let key = [event.featureName, event.identifier, event.value, event.metadata["experiment_id"]?.description]
@@ -264,6 +295,19 @@ final class FlagsmithEvents: @unchecked Sendable {
         }
     }
 
+    /// Sends the buffered events, batch after batch, then runs `completion`, once no batch is being sent. Stops at a
+    /// batch that fails, which is kept for the next flush. Must be called on `queue`.
+    private func drain(then completion: @escaping () -> Void) {
+        whenIdle { [self] in
+            guard !held, !unauthorised, !buffer.isEmpty else {
+                completion()
+                return
+            }
+            sendBuffer()
+            drain(then: completion)
+        }
+    }
+
     /// Must be called on `queue`.
     private func runIdleHandlers() {
         let handlers = idleHandlers
@@ -271,25 +315,27 @@ final class FlagsmithEvents: @unchecked Sendable {
         handlers.forEach { $0() }
     }
 
-    /// Sends the buffered events, unless a batch is being sent already. Must be called on `queue`.
+    /// Sends the oldest buffered events tracked under one environment key, unless a batch is being sent already.
+    /// Must be called on `queue`.
     private func sendBuffer() {
-        guard !buffer.isEmpty, !sending, !unauthorised else { return }
-        let events = buffer
-        buffer = []
+        guard let first = buffer.first, !sending, !unauthorised else { return }
+        let count = buffer.prefix { $0.environmentKey == first.environmentKey }.count
+        let events = Array(buffer.prefix(count))
+        buffer.removeFirst(count)
         exposureKeys = []
         sending = true
-        upload(events, attempt: 1, generation: generation)
+        upload(Batch(events: events, baseURL: _baseURL, environmentKey: first.environmentKey), generation: generation)
     }
 
     /// Must be called on `queue`.
-    private func upload(_ events: [Event], attempt: Int, generation: Int) {
+    private func upload(_ batch: Batch, generation: Int) {
         guard generation == self.generation else { return }
         lastRequestID += 1
         let id = lastRequestID
-        let cancel = send(events, _baseURL) { @Sendable [weak self] result in
+        let cancel = send(batch.events, batch.baseURL, batch.environmentKey) { @Sendable [weak self] result in
             guard let self = self else { return }
             self.queue.async {
-                self.uploaded(events, attempt: attempt, generation: generation, requestID: id, result: result)
+                self.uploaded(batch, generation: generation, requestID: id, result: result)
             }
         }
         // The completion runs on `queue`, so after this.
@@ -297,18 +343,21 @@ final class FlagsmithEvents: @unchecked Sendable {
         queue.asyncAfter(deadline: .now() + requestTimeout) { [weak self] in
             guard let self = self, self.request?.id == id else { return }
             self.request?.cancel()
-            self.uploaded(events, attempt: attempt, generation: generation, requestID: id,
+            self.uploaded(batch, generation: generation, requestID: id,
                           result: .failure(FlagsmithError.unhandled(URLError(.timedOut))))
         }
     }
 
     /// Must be called on `queue`.
-    private func uploaded(_ events: [Event], attempt: Int, generation: Int, requestID: Int, result: Result<Int, any Error>) {
+    private func uploaded(_ batch: Batch, generation: Int, requestID: Int, result: Result<Int, any Error>) {
         guard generation == self.generation, request?.id == requestID else { return }
+        let events = batch.events
         request = nil
         switch Outcome(result) {
         case .delivered:
             break
+        case .unauthorised where batch.environmentKey != _environmentKey:
+            print("Flagsmith - The events API refused a previous environment key, dropping \(events.count) events: \(result)")
         case .unauthorised:
             print("Flagsmith - The events API refused the environment key, so events are no longer tracked: \(result)")
             unauthorised = true
@@ -316,10 +365,12 @@ final class FlagsmithEvents: @unchecked Sendable {
             exposureKeys = []
         case .rejected:
             print("Flagsmith - The events API rejected \(events.count) events, dropping them: \(result)")
-        case .retryable where attempt < maxAttempts:
-            let delay = jitter(retryDelay * pow(2, Double(attempt - 1)))
-            queue.asyncAfter(deadline: .now() + delay) { [weak self] in
-                self?.upload(events, attempt: attempt + 1, generation: generation)
+        case .retryable where batch.attempt < maxAttempts:
+            let delay = jitter(retryDelay * pow(2, Double(batch.attempt - 1)))
+            var retry = batch
+            retry.attempt += 1
+            queue.asyncAfter(deadline: .now() + delay) { [weak self, retry] in
+                self?.upload(retry, generation: generation)
             }
             return
         case .retryable(keep: false):
