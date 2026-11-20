@@ -17,6 +17,7 @@ public struct Flag: Codable, Sendable, Equatable {
         case enabled
         case variant
         case metadata
+        case reason
     }
 
     private struct Metadata: Codable {
@@ -30,6 +31,9 @@ public struct Flag: Codable, Sendable, Equatable {
     public let variant: String?
     /// The running experiment the flag was evaluated under, for an identity.
     public let experiment: Experiment?
+    /// Why Flagsmith served this flag's state, e.g. `STATIC`, `DEFAULT` or `TARGETING_MATCH; segment=premium_users`.
+    /// `nil` if Flagsmith did not return a reason.
+    public let reason: String?
 
     public init(featureName: String, boolValue: Bool, enabled: Bool,
                 featureType: String? = nil, featureDescription: String? = nil)
@@ -74,6 +78,7 @@ public struct Flag: Codable, Sendable, Equatable {
         self.enabled = enabled
         variant = nil
         experiment = nil
+        reason = nil
     }
 
     public init(from decoder: any Decoder) throws {
@@ -83,6 +88,7 @@ public struct Flag: Codable, Sendable, Equatable {
         enabled = try container.decode(Bool.self, forKey: .enabled)
         variant = try container.decodeIfPresent(String.self, forKey: .variant)
         experiment = (try? container.decodeIfPresent(Metadata.self, forKey: .metadata))?.experiment
+        reason = try container.decodeIfPresent(String.self, forKey: .reason)
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -94,6 +100,7 @@ public struct Flag: Codable, Sendable, Equatable {
         if let experiment = experiment {
             try container.encode(Metadata(experiment: experiment), forKey: .metadata)
         }
+        try container.encodeIfPresent(reason, forKey: .reason)
     }
     
     public static func == (lhs: Flag, rhs: Flag) -> Bool {
@@ -101,6 +108,7 @@ public struct Flag: Codable, Sendable, Equatable {
             lhs.value == rhs.value &&
             lhs.enabled == rhs.enabled &&
             lhs.variant == rhs.variant &&
-            lhs.experiment == rhs.experiment
+            lhs.experiment == rhs.experiment &&
+            lhs.reason == rhs.reason
     }
 }

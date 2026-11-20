@@ -48,11 +48,13 @@ public struct SpecFlag: Encodable {
     let feature: String
     let enabled: Bool
     let value: TypedValue
+    let reason: String?
 
     init(_ flag: Flag) {
         feature = flag.feature.name
         enabled = flag.enabled
         value = flag.value
+        reason = flag.reason
     }
 }
 
