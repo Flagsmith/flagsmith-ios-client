@@ -113,4 +113,43 @@ final class FlagTests: FlagsmithClientTestCase {
         XCTAssertNotEqual(flags[1], flags[2])
         XCTAssertEqual(flags[2], try decoder.decode(Flag.self, from: encoder.encode(flags[2])))
     }
+
+    func testDecodeFlagReason() throws {
+        // Given
+        let json = """
+        [
+            {
+                "feature": { "name": "banner" },
+                "feature_state_value": "hi",
+                "enabled": true,
+                "reason": "TARGETING_MATCH; segment=premium_users"
+            },
+            { "feature": { "name": "theme" }, "feature_state_value": "dark", "enabled": true, "reason": "STATIC" },
+            { "feature": { "name": "beta" }, "feature_state_value": null, "enabled": false }
+        ]
+        """
+
+        // When
+        let flags = try decoder.decode([Flag].self, from: Data(json.utf8))
+
+        // Then
+        XCTAssertEqual(flags.map(\.reason), ["TARGETING_MATCH; segment=premium_users", "STATIC", nil])
+        XCTAssertEqual(try flags.map { try decoder.decode(Flag.self, from: encoder.encode($0)) }, flags)
+    }
+
+    func testFlagChangesWhenItsReasonChanges() throws {
+        // Given
+        let json = """
+        [
+            { "feature": { "name": "banner" }, "feature_state_value": "hello", "enabled": true, "reason": "DEFAULT" },
+            { "feature": { "name": "banner" }, "feature_state_value": "hello", "enabled": true, "reason": "IDENTITY_OVERRIDE" }
+        ]
+        """
+
+        // When
+        let flags = try decoder.decode([Flag].self, from: Data(json.utf8))
+
+        // Then
+        XCTAssertNotEqual(flags[0], flags[1])
+    }
 }
