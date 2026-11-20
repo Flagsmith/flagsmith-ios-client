@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.12.0...v3.13.0) (2026-11-20)
+
+
+### Features
+
+* Every SDK includes `reason` in responses for identity and environment flags ([#132](https://github.com/Flagsmith/flagsmith-ios-client/issues/132)) ([33989f9](https://github.com/Flagsmith/flagsmith-ios-client/commit/33989f9caeda4e0a74dd8f3c506942d8c8521667))
+
 ## [3.12.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.11.0...v3.12.0) (2026-11-13)
 
 
