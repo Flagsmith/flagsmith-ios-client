@@ -13,7 +13,7 @@ jobs:
         # Current list here: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
         runs-on: macOS-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
             - name: Check for FLAGSMITH_TEST_API_KEY
               run: |
                 if [ -z "$FLAGSMITH_TEST_API_KEY" ]; then
@@ -31,7 +31,7 @@ jobs:
     swift-lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
             - name: Check for FLAGSMITH_TEST_API_KEY
               run: |
                 if [ -z "$FLAGSMITH_TEST_API_KEY" ]; then
