@@ -21,6 +21,9 @@ public final class Flagsmith: @unchecked Sendable {
     private let sseManager: SSEManager
     private let analytics: FlagsmithAnalytics
     private let events: FlagsmithEvents
+    #if canImport(UIKit) && !os(watchOS)
+        private let backgroundEventsFlush: BackgroundEventsFlush
+    #endif
 
     // The last time we got flags via the API
     private var lastUpdatedAt: Double = 0.0
@@ -117,6 +120,16 @@ public final class Flagsmith: @unchecked Sendable {
         set { events.flushPeriod = newValue }
     }
 
+    /// Are the tracked events sent when the application enters the background? Defaults to `true`.
+    ///
+    /// Otherwise events wait for the next `eventsFlushPeriod`, and are lost if the application is suspended or
+    /// terminated meanwhile. The events are sent inside a background task, so that the request can finish. Has no
+    /// effect on platforms without UIKit, such as macOS.
+    public var flushEventsOnBackground: Bool {
+        get { events.flushOnBackground }
+        set { events.flushOnBackground = newValue }
+    }
+
     /// Default flags to fall back on if an API call fails
     private var _defaultFlags: [Flag] = []
     public var defaultFlags: [Flag] {
@@ -148,6 +161,9 @@ public final class Flagsmith: @unchecked Sendable {
         sseManager = SSEManager()
         analytics = FlagsmithAnalytics(apiManager: apiManager)
         events = FlagsmithEvents(apiManager: apiManager)
+        #if canImport(UIKit) && !os(watchOS)
+            backgroundEventsFlush = BackgroundEventsFlush(events: events)
+        #endif
     }
 
     /// Get all feature flags (flags and remote config) optionally for a specific identity

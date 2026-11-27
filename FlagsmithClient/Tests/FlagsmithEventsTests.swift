@@ -433,6 +433,68 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
         XCTAssertEqual(sentEvents, [["checkout"]])
     }
 
+    func testEnteringTheBackgroundSendsTheBufferedEvents() {
+        // Given
+        let events = makeEvents()
+        track(events, "checkout")
+
+        // When
+        let flushed = expectation(description: "Events flushed")
+        let flushing = events.flushForBackground { flushed.fulfill() }
+        wait(for: [flushed], timeout: 5)
+
+        // Then
+        XCTAssertTrue(flushing)
+        XCTAssertEqual(sentEvents, [["checkout"]])
+    }
+
+    func testEnteringTheBackgroundSendsABatchThatFailedEarlier() {
+        // Given
+        let events = makeEvents()
+        api.responses = [.success(503), .success(503), .success(503)]
+        track(events, "checkout")
+        flush(events)
+
+        // When
+        let flushed = expectation(description: "Events flushed")
+        events.flushForBackground { flushed.fulfill() }
+        wait(for: [flushed], timeout: 5)
+
+        // Then
+        XCTAssertEqual(sentEvents, [["checkout"], ["checkout"], ["checkout"], ["checkout"]])
+    }
+
+    func testEnteringTheBackgroundSendsNothingWhenTurnedOff() {
+        // Given
+        let events = makeEvents()
+        events.flushOnBackground = false
+        track(events, "checkout")
+
+        // When
+        let flushing = events.flushForBackground { XCTFail("Unexpected flush") }
+
+        // Then
+        XCTAssertFalse(flushing)
+        XCTAssertTrue(api.batches.isEmpty)
+    }
+
+    func testEnteringTheBackgroundStartsNoFlushWithoutEventsToSend() {
+        // Given
+        let events = makeEvents()
+        let disabled = makeEvents()
+        disabled.enabled = false
+
+        // When
+        let flushingEmpty = events.flushForBackground { XCTFail("Unexpected flush") }
+        let flushingDisabled = disabled.flushForBackground { XCTFail("Unexpected flush") }
+
+        // Then
+        XCTAssertTrue(events.flushOnBackground)
+        XCTAssertFalse(flushingEmpty)
+        XCTAssertFalse(flushingDisabled)
+        XCTAssertTrue(api.batches.isEmpty)
+    }
+
     func testTrackingAnEventWithAReservedNameIsRejected() {
         // Given / When
         XCTAssertThrowsError(try Flagsmith.shared.trackEvent("$flag_exposure")) { error in
