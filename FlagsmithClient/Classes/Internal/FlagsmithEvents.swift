@@ -40,7 +40,8 @@ struct Event: Encodable, Equatable, Sendable {
 
 /// Batches experimentation events to Flagsmith's events API.
 ///
-/// Sends every `flushPeriod` seconds, once `maxBuffer` events are buffered, and on `flush`. Exposures are
+/// Sends every `flushPeriod` seconds, once `maxBuffer` events are buffered, on `flush`, and when the application
+/// enters the background (`flushOnBackground`). Exposures are
 /// deduplicated within a batch. One batch is in flight at a time, and each request times out after
 /// `requestTimeout` seconds.
 ///
@@ -86,6 +87,13 @@ final class FlagsmithEvents: @unchecked Sendable {
             queue.sync { _flushPeriod = newValue }
             setupTimer()
         }
+    }
+
+    private var _flushOnBackground = true
+    /// Indicates if the buffered events are sent when the application enters the background.
+    var flushOnBackground: Bool {
+        get { queue.sync { _flushOnBackground } }
+        set { queue.sync { _flushOnBackground = newValue } }
     }
 
     let maxBuffer: Int
@@ -175,6 +183,19 @@ final class FlagsmithEvents: @unchecked Sendable {
                 }
             }
         }
+    }
+
+    /// Flushes the buffered events because the application is entering the background, unless `flushOnBackground`
+    /// is off, events are disabled, or there is nothing to send.
+    ///
+    /// Returns whether a flush started. If it did, `completion` is called once it ends, as with `flush`.
+    @discardableResult
+    func flushForBackground(completion: @escaping @Sendable () -> Void) -> Bool {
+        let flushing = queue.sync { _flushOnBackground && _enabled && !unauthorised && (!buffer.isEmpty || sending) }
+        if flushing {
+            flush(completion: completion)
+        }
+        return flushing
     }
 
     /// Flushes the buffered events, then stops sending events, calling `completion` once done or once `timeout`
