@@ -484,10 +484,14 @@ final class FlagsmithEventsTests: FlagsmithClientTestCase {
         let disabled = makeEvents()
         disabled.enabled = false
 
-        // When / Then
+        // When
+        let flushingEmpty = events.flushForBackground { XCTFail("Unexpected flush") }
+        let flushingDisabled = disabled.flushForBackground { XCTFail("Unexpected flush") }
+
+        // Then
         XCTAssertTrue(events.flushOnBackground)
-        XCTAssertFalse(events.flushForBackground { XCTFail("Unexpected flush") })
-        XCTAssertFalse(disabled.flushForBackground { XCTFail("Unexpected flush") })
+        XCTAssertFalse(flushingEmpty)
+        XCTAssertFalse(flushingDisabled)
         XCTAssertTrue(api.batches.isEmpty)
     }
 
