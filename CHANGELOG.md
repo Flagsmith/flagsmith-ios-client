@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.1](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.13.0...v3.13.1) (2026-11-28)
+
+
+### Other
+
+* retire CocoaPods publishing ([#135](https://github.com/Flagsmith/flagsmith-ios-client/issues/135)) ([2df7bc7](https://github.com/Flagsmith/flagsmith-ios-client/commit/2df7bc7840bce823c0e62de264fdcc3cd390a9bf))
+
 ## [3.13.0](https://github.com/Flagsmith/flagsmith-ios-client/compare/v3.12.0...v3.13.0) (2026-11-20)
 
 

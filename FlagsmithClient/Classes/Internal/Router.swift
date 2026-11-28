@@ -12,7 +12,7 @@ import Foundation
 
 enum Router: Sendable {
     // x-release-please-start-version
-    static let sdkVersion = "3.13.0"
+    static let sdkVersion = "3.13.1"
     // x-release-please-end
     static let userAgent = "flagsmith-swift-ios-sdk/\(sdkVersion)"
 
