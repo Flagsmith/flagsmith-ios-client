@@ -18,7 +18,7 @@ For full documentation visit [https://docs.flagsmith.com/clients/ios/](https://d
 
 ### CocoaPods
 
-CocoaPods is no longer supported. [CocoaPods trunk stopped accepting new versions on 2 December 2026](https://blog.cocoapods.org/CocoaPods-Specs-Repo/), so `FlagsmithClient` is frozen there at **3.13.0**.
+CocoaPods is no longer supported. [CocoaPods trunk stops accepting new versions on 2 December 2026](https://blog.cocoapods.org/CocoaPods-Specs-Repo/), so `FlagsmithClient` is frozen there at **3.13.0**.
 
 Existing `pod install` and `pod update` runs will keep resolving 3.13.0 and earlier indefinitely, but no new releases will be published to trunk. Use Swift Package Manager to receive updates.
 

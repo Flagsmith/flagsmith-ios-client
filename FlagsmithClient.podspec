@@ -1,5 +1,5 @@
 #
-# CocoaPods trunk stopped accepting new versions on 2 December 2026, so this pod
+# CocoaPods trunk stops accepting new versions on 2 December 2026, so this pod
 # is frozen on trunk at 3.13.0 and we no longer publish to it. Swift Package
 # Manager is the supported route.
 #
