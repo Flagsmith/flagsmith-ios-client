@@ -1,8 +1,13 @@
 #
-# Be sure to run `pod lib lint FlagsmithClient.podspec' to ensure this is a
-# valid spec before submitting.
+# CocoaPods trunk stops accepting new versions on 2 December 2026, so this pod
+# is frozen on trunk at 3.13.0 and we no longer publish to it. Swift Package
+# Manager is the supported route.
 #
-# Any lines starting with a # are optional, but their use is encouraged
+# This spec is kept, and release-please keeps bumping its version, so that it
+# stays consistent with the tag it ships on. `s.source` resolves to
+# "v#{s.version}", so a stale version here would point at the wrong tag for
+# anyone consuming this pod from a private specs repo or a direct git reference.
+#
 # To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
 #
 
